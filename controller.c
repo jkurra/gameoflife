@@ -22,6 +22,68 @@ void controller_model(view_model *model, int type)
 }
 
 G_MODULE_EXPORT
+void on_menu_button_clicked( GtkButton *button, gpointer data )
+{
+	jsm_update_model( (view_model*)data );
+	controller_model( (view_model*)data, MENU );
+}
+
+G_MODULE_EXPORT
+void on_row_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	model->game->grid_x = gtk_spin_button_get_value_as_int (button);
+}
+
+G_MODULE_EXPORT
+void on_col_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	model->game->grid_y = gtk_spin_button_get_value_as_int (button);
+}
+
+G_MODULE_EXPORT
+void on_int_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	model->game->tick_t = gtk_spin_button_get_value_as_int (button);
+}
+
+G_MODULE_EXPORT
+void on_rule1spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+
+}
+
+G_MODULE_EXPORT
+void on_rule2spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+
+}
+
+G_MODULE_EXPORT
+void on_rule3spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+
+}
+G_MODULE_EXPORT
+void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	gtk_color_button_get_color (button, &model->game->backGround);
+}
+
+G_MODULE_EXPORT
+void on_cell_colorbutton_color_set( GtkColorButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	gtk_color_chooser_get_rgba ( button, &model->game->cellColor );
+}
+
+/*
+	deprecated
+*/
+G_MODULE_EXPORT
 void set_cell_color(GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
@@ -41,7 +103,7 @@ void gridRowChange(GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	model->game->grid_x = gtk_spin_button_get_value_as_int (button);
-	g_print("button pressed %s\n", model->pref_path);
+	//g_print("button pressed %s\n", model->pref_path);
 }
 
 G_MODULE_EXPORT
@@ -49,7 +111,7 @@ void gridColumnChange(GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	model->game->grid_y = gtk_spin_button_get_value_as_int (button);
-	g_print("button pressed %s\n", model->pref_path);
+	//g_print("button pressed %s\n", model->pref_path);
 }
 
 G_MODULE_EXPORT
@@ -88,6 +150,7 @@ G_MODULE_EXPORT
 void one_menuButton_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
+	jsm_update_model( (view_model*)data );
 	controller_model((view_model*)data, MENU);
 }
 

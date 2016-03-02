@@ -56,24 +56,25 @@ void view_pref_init( view_model *model )
 
   if( !gtk_builder_add_from_file( builder, "glade-ui/gof_pref.glade", &error ) )
   {
-        g_warning( "%s", error->message );
-        g_free( error );
-        return( 1 );
+		g_warning( "%s", error->message );
+		g_free( error );
+		return( 1 );
 	}
+
 	/* Set values for elements received from the model. */
-	GtkSpinButton *sp = GTK_WIDGET( gtk_builder_get_object(builder, "spinbutton11") );
+	GtkSpinButton *sp = GTK_WIDGET( gtk_builder_get_object(builder, "row_spinbutton") );
 	gtk_spin_button_set_value (sp, model->game->grid_x);
-	GtkSpinButton *sp1 = GTK_WIDGET( gtk_builder_get_object(builder, "spinbutton12") );
+	GtkSpinButton *sp1 = GTK_WIDGET( gtk_builder_get_object(builder, "col_spinbutton") );
 	gtk_spin_button_set_value (sp1, model->game->grid_y);
-	GtkSpinButton *sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "spinbutton13") );
+	GtkSpinButton *sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
 	gtk_spin_button_set_value (sp2, model->game->tick_t);
 
-	GtkColorButton *cb = GTK_WIDGET( gtk_builder_get_object(builder, "colorbutton1") );
+	GtkColorButton *cb = GTK_WIDGET( gtk_builder_get_object(builder, "bg_colorbutton") );
 	gtk_color_button_set_color (cb, &model->game->backGround);
-	GtkColorButton *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "colorbutton2") );
+	GtkColorButton *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton") );
 	gtk_color_button_set_color (cb2, &model->game->cellColor);
 	/* Tie signals to objects */
-	model->pref->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
+	model->pref->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "main_frame" ) );
 	gtk_builder_connect_signals( builder, model );
 	g_object_unref( G_OBJECT( builder ) );
 
@@ -116,24 +117,12 @@ void view_game_draw ( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 {
 	view_model *model = (view_model*)data;
 
-	//g_print("startx: %d\n", model->game->grid_x);
 	int max_x = model->game->grid_x,
 			max_y = model->game->grid_y,
 			cur_x = model->game->startAtCellX,
 			cur_y = model->game->startAtCellY;
 
-		//cairo_set_source_rgb (cr, 0, 0, 0);
-	//GdkRGBA bgColor;	// background color
-	//GdkRGBA frColor;	// color of front
-
-//	G//dkColor bgColor;
-	//bgColor = gdk_color_copy(model->game->backGround);
-/*	gdk_color_parse ( "black", &bgColor );
-	gtk_widget_modify_bg(area, GTK_STATE_NORMAL, &bgColor);
-*/
-	//gdk_color_parse ( "black", &model->game->backGround );
 	gtk_widget_modify_bg(area, GTK_STATE_NORMAL, &model->game->backGround);
-	//gtk_widget_override_background_color(area, GTK_STATE_NORMAL, &model->game->backGround);
 	int x_start=5, y_start=5;
 	for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
 		for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
@@ -151,9 +140,6 @@ void view_game_draw ( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 		y_start += model->game->cell_s/3;
 	}
 
-	//GdkRGBA color;
-	//gdk_cairo_set_source_rgba(cr, &model->game->cellColor);
-	//gdk_rgba_parse (&color, "black");
 	gdk_cairo_set_source_rgba(cr, &model->game->cellColor);
 
 	cairo_fill(cr);

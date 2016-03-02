@@ -16,17 +16,16 @@ void model_init_view( view_model *model )
 {
 	switch( model->type ) {
 		case MENU:
-			g_print("INIT: menu,\n");
+			g_print("MODEL [INIT] : menu\n");
 			view_menu_init( model );
 			break;
 		case GAME:
-			g_print("INIT: game,\n");
-			jsm_read_model( model );
-			//model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) model_grid_update, model);
+			g_print("MODEL [INIT] : game\n");
+			model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) model_grid_update, model);
 			view_game_init( model );
 			break;
 		case PREF:
-			g_print("INIT: preferences,\n");
+			g_print("MODEL [INIT] : pref\n");
 			view_pref_init( model );
 			break;
 		default:

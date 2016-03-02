@@ -2,7 +2,7 @@
 
 jsmrtn_t jsm_default_model( view_model *model )
 {
-	printf("openign file %s\n", model->pref_path);
+	//printf("openign file %s\n", model->pref_path);
 	FILE *fp;
 	fp = fopen(model->pref_path, "w");
 	if (fp == NULL) {
@@ -14,13 +14,13 @@ jsmrtn_t jsm_default_model( view_model *model )
 	fprintf(fp, "   \"Y_SIZE\": \"200\",\n");
 	fprintf(fp, "   \"TICK_TIME\": \"200\"\n");
 	fprintf(fp, "}");
+
 	fclose(fp);
 }
 
 jsmrtn_t jsm_update_model( view_model *model )
 {
-
-	printf("openign file %s\n", model->pref_path);
+	//printf("openign file %s\n", model->pref_path);
 	FILE *fp;
 	fp = fopen(model->pref_path, "w");
 	if (fp == NULL) {
@@ -34,6 +34,7 @@ jsmrtn_t jsm_update_model( view_model *model )
 	fprintf(fp, "   \"bgColor\": \"%s\"\n",  gdk_rgba_to_string (&model->game->backGround));
 	fprintf(fp, "   \"frColor\": \"%s\"\n",  gdk_rgba_to_string (&model->game->cellColor));
 	fprintf(fp, "}");
+
 	fclose(fp);
 
 }
@@ -63,10 +64,10 @@ jsmrtn_t jsm_read_model( view_model *model )
 		model->game->grid_y = y;
 		model->game->tick_t = time;
 
+		/* parse colors to model  */
 		gdk_rgba_parse (&model->game->backGround, bgCol);
 		gdk_rgba_parse (&model->game->cellColor , frCol);
-	//	model->game->backGround = bgCol;
-		//model->game->cellColor = frCol;
+
 		/* static modifiers for now */
 		model->game->cell_s = 10;
 		model->game->zoom   = 1;
