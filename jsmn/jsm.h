@@ -5,7 +5,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "jsmn/jsmn.h"
+#include "../view.h"
+#include "jsmn.h"
 
 typedef enum {
 	/* Success */
@@ -14,8 +15,22 @@ typedef enum {
 	JSM_ERROR_FREAD = -1,
 	/* Memory allocation failed */
 	JSM_ERROR_ALLOC = -2
-	//JSM_ERROR_PART = -3
 } jsmrtn_t;
+
+/*
+ * Updates cdefault values to file, creates if not exist
+ */
+jsmrtn_t jsm_default_model( view_model *model );
+
+/*
+ * Updates current to a settings file.
+ */
+jsmrtn_t jsm_update_model( view_model *model );
+
+/*
+ * Reads current values of model from a settings file.
+ */
+jsmrtn_t jsm_read_model( view_model *model );
 
 /*
  * Read content of a file to a string.

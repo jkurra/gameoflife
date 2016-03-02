@@ -31,6 +31,10 @@ typedef struct
 typedef struct
 {
 	GtkWidget *main_frame;
+
+	GdkRGBA backGround;
+	GdkRGBA cellColor;
+
 	int initilized; /* tells if settings have already been found */
 	int grid_x;
 	int grid_y;
@@ -58,7 +62,6 @@ typedef struct
 	pref_model *pref;
 
 	char **pref_path;
-
 } view_model;
 
 /*
