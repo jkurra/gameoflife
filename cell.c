@@ -5,6 +5,7 @@ int cell_next_turn(int c_state, int nbrs) {
     if(c_state == 1) { // cell is currently alive
         if(nbrs == 2 || nbrs == 3) {
             n_state = 1;
+            
         }
     }
     else {

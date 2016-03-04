@@ -1,9 +1,10 @@
 CC=gcc
 CFLAGS= -Wall
 
-INCDIR    = ./jsmn
+INCDIR = ./jsmn
+
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 gmodule-2.0`
-OBJECTS   = cell.o grid.o model.o jsm.o view.o controller.o main.o jsmn/jsmn.o
+OBJECTS   = cell.o grid.o model.o view.o controller.o main.o jsmn/jsmn.o jsmn/jsm.o
 
 all: subsystem gameoflife
 
@@ -17,4 +18,4 @@ gameoflife: $(OBJECTS)
 	$(CC) $(PKGCONFIG) $(CFLAGS) -c $<
 
 clean:
-	rm -rf *o gameoflife
+	rm -rf *o subsystem gameoflife

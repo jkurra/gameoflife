@@ -2,7 +2,7 @@
 
 int **grid_init(int x, int y, int **arr)
 {
-	  printf("allocating x:%d y:%d\n", x, y);
+	  //printf("allocating x:%d y:%d\n", x, y);
     arr = (int**)calloc(y, sizeof(int*)); // reallocate user value, BUG leaves some nodes unallocated
     // arr = malloc(y * sizeof(int *));
     int i=0;
