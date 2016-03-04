@@ -8,6 +8,7 @@ void controller_model(view_model *model, int type)
 			break;
 		case GAME: /* GAME */
 			g_source_remove(model->game->timerid);
+			
 			gtk_widget_destroy(GTK_WIDGET(model->game->main_frame));
 			break;
 		case PREF: /* PREFERENCES */

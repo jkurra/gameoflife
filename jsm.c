@@ -50,7 +50,6 @@ jsmrtn_t jsm_val(char *rtn, const char *json, const char *key)
 	printf("JSM [PARSE] : %s : ", key);
 		/* Calculate lenght for the full json */
 	int i=0, l=strlen(json);
-
 	/* Parse all elements into an array */
 	jsmn_parser parser;
 	jsmntok_t 	tokens[256];
