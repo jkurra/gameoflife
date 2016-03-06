@@ -1,26 +1,48 @@
 #include "controller.h"
 
-void controller_model(view_model *model, int type)
+void controller_model( view_model *model, int type )
 {
-	//g_print("Buttonpressed, value : %s\n", model->pref_path);
-	switch (model->type) { /* Determine which model is sending the signal. */
-		case MENU: /* MAIN MENU */
-			gtk_widget_destroy(GTK_WIDGET(model->menu->main_frame));
-			break;
-		case GAME: /* GAME */
-			g_source_remove(model->game->timerid);
-			gtk_widget_destroy(GTK_WIDGET(model->game->main_frame));
-			break;
-		case PREF: /* PREFERENCES */
-			jsm_update_model( model );
-			jsm_read_model( model );
-			gtk_widget_destroy(GTK_WIDGET(model->pref->main_frame));
-			break;
-		default:
-			break;
+	if(!model) {
+		g_print("Unable to initialize, model was null. \n");
 	}
-	model->type = type;
-	model_init_view( model );
+	else {
+		switch (model->type) { /* Determine which model is sending the signal. */
+			case MENU: /* MAIN MENU */
+				gtk_widget_destroy( GTK_WIDGET(model->menu->main_frame) );
+				break;
+			case GAME: /* GAME */
+				if(model->game->timerid != -1) {
+					g_source_remove( model->game->timerid );
+					model->game->timerid = -1;
+				}
+				else {
+						g_print("CONTROL [INIT]: Timer not available, skip removal. \n");
+				}
+				gtk_widget_destroy( GTK_WIDGET(model->game->main_frame) );
+				break;
+			case PREF: /* PREFERENCES */
+				jsm_update_model( model );
+				jsm_read_model( model );
+				gtk_widget_destroy( GTK_WIDGET(model->pref->main_frame) );
+				break;
+			default:
+				break;
+		}
+		model->type = type;
+		model_init_view( model );
+	}
+}
+
+G_MODULE_EXPORT
+void on_settingsbutton_clicked( GtkButton *button, gpointer data )
+{
+	controller_model( (view_model*)data, PREF );
+}
+
+G_MODULE_EXPORT
+void on_startgamebutton_clicked( GtkButton *button, gpointer data )
+{
+	controller_model( (view_model*)data, GAME );
 }
 
 G_MODULE_EXPORT
@@ -33,21 +55,24 @@ G_MODULE_EXPORT
 void on_row_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->grid_x = gtk_spin_button_get_value_as_int (button);
+	if(model)
+		model->game->grid_x = gtk_spin_button_get_value_as_int (button);
 }
 
 G_MODULE_EXPORT
 void on_col_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->grid_y = gtk_spin_button_get_value_as_int (button);
+	if(model)
+		model->game->grid_y = gtk_spin_button_get_value_as_int (button);
 }
 
 G_MODULE_EXPORT
 void on_int_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->tick_t = gtk_spin_button_get_value_as_int (button);
+	if(model)
+		model->game->tick_t = gtk_spin_button_get_value_as_int (button);
 }
 
 G_MODULE_EXPORT
@@ -84,56 +109,27 @@ void on_cell_colorbutton_color_set( GtkColorButton *button, gpointer data )
 /*
 	deprecated
 */
-G_MODULE_EXPORT
-void set_cell_color(GtkColorButton *button, gpointer data )
-{
-	view_model *model = (view_model*)data;
-	gtk_color_chooser_get_rgba (button,  &model->game->cellColor);
-}
 
-G_MODULE_EXPORT
-void set_bg_color(GtkColorButton *button, gpointer data )
-{
-	view_model *model = (view_model*)data;
-	gtk_color_button_get_color (button, &model->game->backGround);
-}
-
-
-G_MODULE_EXPORT
-void one_menuButton_clicked( GtkButton *button, gpointer data )
-{
-	view_model *model = (view_model*)data;
-	jsm_update_model( (view_model*)data );
-	controller_model((view_model*)data, MENU);
-}
-
-G_MODULE_EXPORT
-void on_SettingsButton_clicked( GtkButton *button, gpointer data )
-{
-	controller_model((view_model*)data, PREF);
-}
-
-G_MODULE_EXPORT
-void on_startGamebutton_clicked( GtkButton *button, gpointer data )
-{
-	controller_model((view_model*)data, GAME);
-}
 
 G_MODULE_EXPORT
 void on_pause_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-
-	g_source_remove(model->game->timerid);
-	g_print("pause pressed %d\n", model->game->timerid);
+	if(model && model->game->timerid != -1) {
+		g_source_remove(model->game->timerid);
+		model->game->timerid = -1;
+		g_print("pause pressed %d\n", model->game->timerid);
+	}
 }
 
 G_MODULE_EXPORT
 void on_resume_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) model_grid_update, model->game);
-	g_print("resume pressed %d\n", model->game->timerid);
+	if(model && model->game->timerid == -1) {
+		model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
+		g_print("resume pressed %d\n", model->game->timerid);
+	}
 }
 
 G_MODULE_EXPORT
@@ -160,7 +156,8 @@ G_MODULE_EXPORT
 void on_down_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->startAtCellY+=5;
+	if(model->game->startAtCellY < model->game->grid_y)
+		model->game->startAtCellY+=5;
 }
 
 G_MODULE_EXPORT
@@ -175,22 +172,25 @@ G_MODULE_EXPORT
 void on_right_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	model->game->startAtCellX += 5;
+	if(model->game->startAtCellX < model->game->grid_x)
+		model->game->startAtCellX += 5;
 }
 
 G_MODULE_EXPORT
 void on_zoom_in_clicked( GtkButton *button, gpointer data )
 {
-	game_model *game = (game_model*)data;
-	if(game->zoom > 1)
-		game->zoom = game->zoom-1;
+	//game_model *game = (game_model*)data;
+	view_model *model = (view_model*)data;
+	if(model->game->zoom > 1)
+		model->game->zoom = model->game->zoom-1;
 		//model_draw_game(game);
 }
 
 G_MODULE_EXPORT
 void on_zoom_out_clicked( GtkButton *button, gpointer data )
 {
-	game_model *game = (game_model*)data;
-	game->zoom = game->zoom+1;
+	//game_model *game = (game_model*)data;
+	view_model *model = (view_model*)data;
+	model->game->zoom = model->game->zoom+1;
 	//model_draw_game(game);
 }

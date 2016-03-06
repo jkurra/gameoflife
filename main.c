@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 	game_model game;
 	pref_model pref;
 
+  game.timerid = -1;
 	view_model main_model;
 
   main_model.type = 0; /* initialize menu */
@@ -27,11 +28,6 @@ int main(int argc, char *argv[])
 	main_model.menu = &menu;
 	main_model.game = &game;
 	main_model.pref = &pref;
-
-  /*
-    gdk_rgba_parse (&main_model.game->cellColor, "yellow");;
-    gdk_rgba_parse (&main_model.game->backGround , "black");;
-  */
 
 	main_model.pref_path = result;
 

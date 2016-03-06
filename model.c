@@ -21,7 +21,7 @@ void model_init_view( view_model *model )
 			break;
 		case GAME:
 			g_print("MODEL [INIT] : game\n");
-			model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) model_grid_update, model);
+			model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
 			view_game_init( model );
 			break;
 		case PREF:

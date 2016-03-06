@@ -79,7 +79,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="xalign">0.49000000953674316</property>
                     <signal name="clicked" handler="on_pause_clicked" swapped="no"/>
                   </object>
                   <packing>
