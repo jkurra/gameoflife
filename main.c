@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
   }
 
   char *fname  = "/config/config";
-  char *result = malloc( strlen(cwd)+strlen(fname)+1 );  //+1 for the zero-terminator
+  char *result = malloc( strlen(cwd) + strlen(fname)+1 );  //+1 for the zero-terminator
 
   strcpy( result, cwd );
   strcat( result, fname );
@@ -27,10 +27,12 @@ int main(int argc, char *argv[])
 	main_model.menu = &menu;
 	main_model.game = &game;
 	main_model.pref = &pref;
+
   /*
     gdk_rgba_parse (&main_model.game->cellColor, "yellow");;
     gdk_rgba_parse (&main_model.game->backGround , "black");;
   */
+
 	main_model.pref_path = result;
 
   jsm_read_model ( &main_model );
