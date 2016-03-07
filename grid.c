@@ -26,15 +26,17 @@ int **grid_rand(int x, int y, int **arr)
     return arr;
 }
 
-void grid_next(int x, int y, int **grid)
+void grid_next(int x, int y, int **grid, int *live_a, int *live_d  )
 {
     int tmp_grid[y][x];
     int k=0, i=0;
     for(i=0; i<y; i++) {
         for(k=0; k<x; k++) {
             int nbrs = grid_nbrs_count(k, i, x, y, grid);
-            int life = cell_next_turn(grid[i][k], nbrs);
-
+            //int live_a[2] = { 3, 2 };
+          //  int live_d[1] = { 3 };
+            int life = cell_next_turn( grid[i][k], nbrs, live_a, live_d );//cell_next_turn(grid[i][k], nbrs);
+            //cell_next_turn1(grid[i][k], nbrs, 3, 2, 3);
             tmp_grid[i][k] = life;
         }
     }

@@ -35,19 +35,29 @@ typedef struct
 	GdkRGBA backGround;
 	GdkRGBA cellColor;
 
-	int initilized; /* tells if settings have already been found */
+	int initialized; /* tells if settings have already been found */
+
 	int grid_x;
 	int grid_y;
+	int **grid;
 
 	int cell_s;
 	int tick_t;
-	int **grid;
 
 	int timerid;
 	int zoom;
 
 	int startAtCellX;
 	int startAtCellY;
+
+	/* RULES */
+	int nbrs_max;
+	int nbrs_min;
+	int born_at;
+
+	int *live_a;
+	int *live_d;
+
 } game_model;
 
 /*

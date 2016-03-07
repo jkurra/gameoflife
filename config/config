@@ -1,7 +1,7 @@
 {
-   "X_SIZE": "190",
-   "Y_SIZE": "250",
-   "TICK_TIME": "100"
-   "bgColor": "rgba(0,0,0,4.94066e-324)"
-   "frColor": "rgb(173,127,168)"
+   "X_SIZE": "100",
+   "Y_SIZE": "100",
+   "TICK_TIME": "100",
+   "bgColor": "rgb(0,0,0)",
+   "frColor": "rgb(245,121,0)"
 }

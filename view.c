@@ -12,7 +12,7 @@ void view_menu_init( view_model *model )
   {
         g_warning( "%s", error->message );
         g_free( error );
-        return( 1 );
+        //return( 1 );
 	}
 
 	model->menu->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
@@ -35,7 +35,7 @@ void view_game_init( view_model *model )
   {
         g_warning( "%s", error->message );
         g_free( error );
-        return( 1 );
+        //return( 1 );
 	}
 
 	model->game->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
@@ -58,21 +58,21 @@ void view_pref_init( view_model *model )
   {
 		g_warning( "%s", error->message );
 		g_free( error );
-		return( 1 );
+		//return( 1 );
 	}
 
 	/* Set values for elements received from the model. */
-	GtkSpinButton *sp = GTK_WIDGET( gtk_builder_get_object(builder, "row_spinbutton") );
-	gtk_spin_button_set_value (sp, model->game->grid_x);
-	GtkSpinButton *sp1 = GTK_WIDGET( gtk_builder_get_object(builder, "col_spinbutton") );
-	gtk_spin_button_set_value (sp1, model->game->grid_y);
-	GtkSpinButton *sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
-	gtk_spin_button_set_value (sp2, model->game->tick_t);
+	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(builder, "row_spinbutton") );
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->game->grid_x);
+	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "col_spinbutton") );
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->game->grid_y);
+	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->game->tick_t);
 
-	GtkColorButton *cb = GTK_WIDGET( gtk_builder_get_object(builder, "bg_colorbutton") );
-	gtk_color_button_set_color (cb, &model->game->backGround);
-	GtkColorButton *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton") );
-	gtk_color_button_set_color (cb2, &model->game->cellColor);
+	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(builder, "bg_colorbutton") );
+	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->game->backGround);
+	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton") );
+	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb2), &model->game->cellColor);
 	/* Tie signals to objects */
 	model->pref->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "main_frame" ) );
 	gtk_builder_connect_signals( builder, model );
@@ -95,7 +95,7 @@ void view_popup_init( game_model *model )
   {
 		g_warning( "%s", error->message );
     g_free( error );
-    return( 1 );
+    //return( 1 );
 	}
 
 	model->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
@@ -122,7 +122,8 @@ void view_game_draw ( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			cur_x = model->game->startAtCellX,
 			cur_y = model->game->startAtCellY;
 
-	gtk_widget_modify_bg(area, GTK_STATE_NORMAL, &model->game->backGround);
+	//gtk_widget_modify_bg(area, GTK_STATE_NORMAL, &model->game->backGround);
+	gtk_widget_override_background_color(GTK_WIDGET(area), GTK_STATE_NORMAL, &model->game->backGround);
 	int x_start=5, y_start=5;
 	for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
 		for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {

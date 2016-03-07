@@ -3,7 +3,7 @@
 gboolean model_grid_update( view_model *model )
 {
 //	g_print("testing");
-	grid_next(model->game->grid_x, model->game->grid_y, model->game->grid);
+	grid_next(model->game->grid_x, model->game->grid_y, model->game->grid, model->game->live_a, model->game->live_d);
 	//print_game(game_data->grid);
 	//gtk_widget_queue_draw (game_data->win);
 //g_print("testing");
@@ -21,7 +21,7 @@ void model_init_view( view_model *model )
 			break;
 		case GAME:
 			g_print("MODEL [INIT] : game\n");
-			model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) model_grid_update, model);
+			model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
 			view_game_init( model );
 			break;
 		case PREF:

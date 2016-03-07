@@ -11,6 +11,8 @@
 typedef enum {
 	/* Success */
 	JSM_OK = 1,
+	/* NULL pointer error */
+	JSM_NULL = -3,
 	/* File read failed */
 	JSM_ERROR_FREAD = -1,
 	/* Memory allocation failed */
