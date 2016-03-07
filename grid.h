@@ -19,7 +19,7 @@ int **grid_rand(int x, int y, int **arr);
 /*
  * Calculate next state for the grid
  */
-void grid_next(int x, int y, int **arr);
+void grid_next(int x, int y, int **arr, int *live_a, int *live_d );
 
 /*
  * Calculate next state for the grid

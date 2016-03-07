@@ -17,21 +17,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="rule1Adjustement">
-    <property name="upper">9</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="rule2Adjustment">
-    <property name="upper">9</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="rule3Adjustment">
-    <property name="upper">9</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkWindow" id="main_frame">
     <property name="can_focus">False</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
@@ -228,7 +213,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="margin_left">10</property>
-                    <property name="label" translatable="yes">Die when &lt;</property>
+                    <property name="label" translatable="yes">Live when alive [0-8]</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -237,11 +222,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="rule1spinbutton">
+                  <object class="GtkEntry" id="entry1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">rule1Adjustement</property>
-                    <signal name="value-changed" handler="on_rule1spinbutton_value_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -268,7 +251,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="margin_left">10</property>
-                    <property name="label" translatable="yes">Die when &gt;</property>
+                    <property name="label" translatable="yes">Live when dead [0-8]</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -277,11 +260,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="rule2spinbutton">
+                  <object class="GtkEntry" id="entry2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">rule2Adjustment</property>
-                    <signal name="value-changed" handler="on_rule2spinbutton_value_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -307,8 +288,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_left">10</property>
-                    <property name="label" translatable="yes">Turn alive =</property>
+                    <property name="valign">center</property>
+                    <property name="label" translatable="yes">Infinite grid</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -317,11 +298,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="rule3spinbutton">
+                  <object class="GtkSwitch" id="switch1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">rule3Adjustment</property>
-                    <signal name="value-changed" handler="on_rule3spinbutton_value_changed" swapped="no"/>
+                    <property name="halign">end</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -369,13 +349,13 @@
               <object class="GtkBox" id="box13">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="label10">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_left">10</property>
                     <property name="margin_right">5</property>
                     <property name="label" translatable="yes">Background</property>
                   </object>
@@ -390,7 +370,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="halign">start</property>
+                    <property name="halign">end</property>
                     <property name="color">#000000000000</property>
                     <signal name="color-set" handler="on_bg_colorbutton_color_set" swapped="no"/>
                   </object>
@@ -411,13 +391,13 @@
               <object class="GtkBox" id="box14">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="label11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="margin_left">10</property>
                     <property name="margin_right">5</property>
                     <property name="label" translatable="yes">Cell</property>
                   </object>
@@ -432,7 +412,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="halign">start</property>
+                    <property name="halign">end</property>
                     <property name="color">#ededd4d40000</property>
                     <signal name="color-set" handler="on_cell_colorbutton_color_set" swapped="no"/>
                   </object>
@@ -447,6 +427,44 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="box3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkLabel" id="label12">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="margin_right">5</property>
+                    <property name="label" translatable="yes">Show grid</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="switch2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="halign">end</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -497,5 +515,20 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="rule1Adjustement">
+    <property name="upper">9</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="rule2Adjustment">
+    <property name="upper">9</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="rule3Adjustment">
+    <property name="upper">9</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>

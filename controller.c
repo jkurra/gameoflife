@@ -96,16 +96,30 @@ G_MODULE_EXPORT
 void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	gtk_color_chooser_get_rgba ( button, &model->game->backGround );
+	if(model)
+		gtk_color_chooser_get_rgba ( button, &model->game->backGround );
 }
 
 G_MODULE_EXPORT
 void on_cell_colorbutton_color_set( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	gtk_color_chooser_get_rgba ( button, &model->game->cellColor );
+	if(model)
+		gtk_color_chooser_get_rgba ( button, &model->game->cellColor );
 }
 
+G_MODULE_EXPORT
+void on_nextButton_clicked( GtkColorButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	if(model)
+		grid_next(model->game->grid_x, model->game->grid_y, model->game->grid);
+		model_draw_view(model);
+	//print_game(game_data->grid);
+	//gtk_widget_queue_draw (game_data->win);
+	//g_print("testing");
+ 		//model_draw_game(game_data);
+}
 /*
 	deprecated
 */

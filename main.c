@@ -21,6 +21,14 @@ int main(int argc, char *argv[])
 	pref_model pref;
 
   game.timerid = -1;
+  game.born_at = 3;
+
+  int live_a1[2] = { 3, 2 };
+  int live_d1[1] = { 3 };
+
+  game.live_a = &live_a1;
+  game.live_d = &live_d1;
+
 	view_model main_model;
 
   main_model.type = 0; /* initialize menu */

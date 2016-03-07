@@ -12,6 +12,7 @@ int cell_next_turn(int c_state, int nbrs);
 /*
  * Calculate previous state of the cell based on neighbourgs and rules.
  */
-int cell_prev_turn(int c_state, int nbrs);
+int cell_prev_turn( int c_state, int nbrs, int *live_a, int *live_d );
 
+int cell_next_turn1( int c_state, int nbrs, int *live_a, int *live_d );
 #endif

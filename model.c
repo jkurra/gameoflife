@@ -3,7 +3,7 @@
 gboolean model_grid_update( view_model *model )
 {
 //	g_print("testing");
-	grid_next(model->game->grid_x, model->game->grid_y, model->game->grid);
+	grid_next(model->game->grid_x, model->game->grid_y, model->game->grid, model->game->live_a, model->game->live_d);
 	//print_game(game_data->grid);
 	//gtk_widget_queue_draw (game_data->win);
 //g_print("testing");

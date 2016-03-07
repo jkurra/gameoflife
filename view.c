@@ -62,14 +62,14 @@ void view_pref_init( view_model *model )
 	}
 
 	/* Set values for elements received from the model. */
-	GtkWidget *sp = GTK_WIDGET( gtk_builder_get_object(builder, "row_spinbutton") );
+	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(builder, "row_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->game->grid_x);
-	GtkWidget *sp1 = GTK_WIDGET( gtk_builder_get_object(builder, "col_spinbutton") );
+	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "col_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->game->grid_y);
 	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->game->tick_t);
 
-	GtkWidget *cb = GTK_WIDGET( gtk_builder_get_object(builder, "bg_colorbutton") );
+	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(builder, "bg_colorbutton") );
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->game->backGround);
 	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton") );
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb2), &model->game->cellColor);
