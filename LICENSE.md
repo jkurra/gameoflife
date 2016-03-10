@@ -1,4 +1,4 @@
-GameOfLife code License
+GameOfLife license
 
 Copyright (c) 2016, Jarmo Kurra
 
