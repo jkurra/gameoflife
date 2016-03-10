@@ -1,8 +1,8 @@
 #ifndef GRID_H_INCLUDED
 #define GRID_H_INCLUDED
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "cell.h"
 
@@ -16,10 +16,9 @@
  *
  * @param x   desired amount of columns in the array.
  * @param y   desired amount of rows in the array.
- * @param arr array to be resized and initalized.
- * @return success if 1 else < 0
+ * @return pointer to  created two-dimensional array
  */
-int **grid_init(int x, int y, int **arr);
+int **grid_new( int x, int y );
 
 /** @brief Initialize random values to each cell in a grid
  *
@@ -35,9 +34,8 @@ int **grid_init(int x, int y, int **arr);
  * @param x   amount of columns in the array.
  * @param y   amount of rows in the array.
  * @param arr array to be initalized.
- * @return success if 1 else < 0
  */
-int **grid_rand ( int x, int y, int **arr );
+void grid_rand( int x, int y, int **arr );
 
 /** @brief Update grid to next values.
  *
@@ -54,12 +52,20 @@ int **grid_rand ( int x, int y, int **arr );
  * @param live_a rules to apply when cell is currently alive.
  * @param live_d rules to apply when cell is currently dead.
  */
-void grid_next ( int x, int y, int **arr, int *live_a, int *live_d );
+void grid_next( int x, int y, int **arr, int *live_a, int *live_d );
 
-/*
- * Calculate next state for the grid
+/** @brief Update grid to previous values.
+ *
+ * @param x   Amount of columns in the array.
+ * @param y   Amount of rows in the array.
+ * @param arr Array to update.
  */
-void grid_prev(int x, int y, int **arr);
+void grid_prev( int x, int y, int **arr, int *live_a, int *live_d );
+
+/** @brief Print two dimensional array to console.
+ *
+ */
+void grid_print( int x, int y, int **arr );
 
 /** @brief Count current neighbours for a cell.
  *
@@ -76,7 +82,7 @@ void grid_prev(int x, int y, int **arr);
  * @grid    Grid containing the cell that is examined.
  * @return  Count of neighbours for the given cell.
  */
-int grid_nbrs_count(int x, int y, int max_x, int max_y, int **grid);
+int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
 
 
 #endif /* GRID_H_ */

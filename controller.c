@@ -8,7 +8,7 @@ void controller_model( view_model *model, int type )
 	else {
 		switch (model->type) { /* Determine which model is sending the signal. */
 			case MENU: /* MAIN MENU */
-				gtk_widget_destroy( GTK_WIDGET(model->menu->main_frame) );
+				/* Nothing special needed for menu */
 				break;
 			case GAME: /* GAME */
 				if(model->game->timerid != -1) {
@@ -18,16 +18,15 @@ void controller_model( view_model *model, int type )
 				else {
 						g_print("CONTROL [INIT]: Timer not available, skip removal. \n");
 				}
-				gtk_widget_destroy( GTK_WIDGET(model->game->main_frame) );
 				break;
 			case PREF: /* PREFERENCES */
-				jsm_update_model( model );
+				jsm_update_model( model ); /* update model since leaving from preferences */
 				jsm_read_model( model );
-				gtk_widget_destroy( GTK_WIDGET(model->pref->main_frame) );
 				break;
 			default:
 				break;
 		}
+		model_close_view( model );
 		model->type = type;
 		model_init_view( model );
 	}
@@ -92,6 +91,22 @@ void on_rule3spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 
 }
+
+G_MODULE_EXPORT
+void  on_switch2_state_set( GtkSwitch *sw, gboolean state, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	if(model) {
+		if(state == TRUE) {
+			model->game->visible = 1;
+		}
+		else {
+			model->game->visible = 0;
+		}
+	}
+
+}
+
 G_MODULE_EXPORT
 void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
 {
@@ -116,10 +131,10 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 		grid_next(model->game->grid_x, model->game->grid_y, model->game->grid, model->game->live_a, model->game->live_d);
 		model_draw_view(model);
 }
+
 /*
 	deprecated
 */
-
 
 G_MODULE_EXPORT
 void on_pause_clicked( GtkButton *button, gpointer data )

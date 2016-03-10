@@ -54,6 +54,7 @@ jsmrtn_t jsm_update_model ( view_model *model )
 		fprintf(fp, "   \"TICK_TIME\": \"%d\",\n",  model->game->tick_t);
 		fprintf(fp, "   \"bgColor\": \"%s\",\n",  gdk_rgba_to_string (&model->game->backGround));
 		fprintf(fp, "   \"frColor\": \"%s\"\n",  gdk_rgba_to_string (&model->game->cellColor));
+		fprintf(fp, "   \"gridVis\": \"%d\"\n",  model->game->visible);
 		fprintf(fp, "}");
 
 		fclose(fp);
@@ -73,17 +74,18 @@ jsmrtn_t jsm_read_model( view_model *model )
 	}
 
 	if(rtn == JSM_OK) { /* file read successfully */
-		char *tick_time[30], *x_size[30], *y_size[30], *bgCol[30], *frCol[30];
+		char *tick_time[30], *x_size[30], *y_size[30], *bgCol[30], *frCol[30],*infi[30], *visi[30];
 
 		rtn = jsm_val( tick_time, json, "TICK_TIME" );
 		rtn = jsm_val( x_size, json, "X_SIZE" );
 		rtn = jsm_val( y_size, json, "Y_SIZE" );
 		rtn = jsm_val( bgCol,  json, "bgColor" );
 		rtn = jsm_val( frCol,  json, "frColor" );
+		rtn = jsm_val( visi,  json, "gridVis" );
 
-		int x = atoi(x_size); /* TODO  check if cast was succesfull */
-		int y = atoi(y_size);
-
+		int x = atoi( x_size ); /* TODO  check if cast was succesfull */
+		int y = atoi( y_size) ;
+		int visible = atoi(visi) ;
 		int time = atoi(tick_time);
 
 		/* populate values for model */
@@ -92,17 +94,17 @@ jsmrtn_t jsm_read_model( view_model *model )
 		model->game->tick_t = time;
 
 		/* parse colors to model  */
-		gdk_rgba_parse (&model->game->backGround, bgCol);
-		gdk_rgba_parse (&model->game->cellColor , frCol);
+		gdk_rgba_parse( &model->game->backGround, bgCol );
+		gdk_rgba_parse( &model->game->cellColor , frCol );
 
 		/* static modifiers for now */
 		model->game->cell_s = 10;
 		model->game->zoom   = 1;
 		model->game->tick_t = 100;
-
-		model->game->grid = grid_init(x, y, model->game->grid);
-		model->game->grid = grid_rand(x, y, model->game->grid);
-
+		model->game->visible = visible;
+		model->game->grid = grid_new( x, y );
+		grid_rand(x, y, model->game->grid);
+		//grid_print(x, y, model->game->grid);
 		/* set drawing start point at beginning of grid */
 		model->game->startAtCellX = 0;
 		model->game->startAtCellY = 0;

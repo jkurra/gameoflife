@@ -1,80 +1,82 @@
 #include "grid.h"
 
-int **grid_init(int x, int y, int **arr)
+int **grid_new( int x, int y )
 {
-	  //printf("allocating x:%d y:%d\n", x, y);
-    arr = (int**)calloc(y, sizeof(int*)); // reallocate user value, BUG leaves some nodes unallocated
-    // arr = malloc(y * sizeof(int *));
     int i=0;
+    int **arr = (int**)calloc(y, sizeof(int*)); // reallocate user value, BUG leaves some nodes unallocated
     for(i=0; i<y; i++) {
-        //printf("calloc line: %d\n", i);
         arr[i] = (int*)calloc(x, sizeof(int*));
-        //arr[i] = malloc(x * sizeof(int *));
     }
+
     return arr;
 }
 
-int **grid_rand(int x, int y, int **arr)
+void grid_rand( int x, int y, int **arr )
 {
     int i=0, k=0;
-    for(i=0; i<y; i++) {
-        for(k=0; k<x; k++) {
-            int randomval = rand()%2;
-            arr[i][k] = randomval;
+    if(arr) {
+        for(i=0; i<y; i++) {
+            for(k=0; k<x; k++) { arr[i][k] = rand()%2; }
         }
     }
-    return arr;
 }
 
-void grid_next(int x, int y, int **grid, int *live_a, int *live_d  )
+void grid_next( int x, int y, int **grid, int *live_a, int *live_d )
 {
     int tmp_grid[y][x];
     int k=0, i=0;
     for(i=0; i<y; i++) {
         for(k=0; k<x; k++) {
-            int nbrs = grid_nbrs_count(k, i, x, y, grid);
-            //int live_a[2] = { 3, 2 };
-          //  int live_d[1] = { 3 };
-            int life = cell_next_turn( grid[i][k], nbrs, live_a, live_d );//cell_next_turn(grid[i][k], nbrs);
-            //cell_next_turn1(grid[i][k], nbrs, 3, 2, 3);
+            int nbrs = grid_nbrs( k, i, x, y, grid );
+            int life = cell_next( grid[i][k], nbrs, live_a, live_d );//cell_next_turn(grid[i][k], nbrs);
             tmp_grid[i][k] = life;
         }
     }
-
     for(i=0; i<y; i++) {
-		//printf("%d: ", i);
         for(k=0; k<x; k++) {
             grid[i][k] = tmp_grid[i][k] ;
-            //g_print("[%d]", tmp_grid[i][k]);
-        }//g_print("\n");
+        }
     }
 }
 
-int grid_nbrs_count(int x, int y, int max_x, int max_y, int **grid)
+void grid_prev( int x, int y, int **grid, int *live_a, int *live_d )
+{
+
+}
+
+void grid_print( int x, int y, int **grid )
+{
+  int i=0, k=0;
+
+  printf("Printing array:\n");
+  if(grid) {
+    for(i=0; i<y; i++) {
+        g_print("r:%d ", i);
+        for(k=0; k<x; k++) { g_print("[%d]", grid[i][k]); }
+        g_print("\n");
+    }
+  }
+}
+
+int grid_nbrs( int x, int y, int max_x, int max_y, int **grid )
 {
     int c=0;
     int grid_x=x-1, grid_y=y-1;
     //printf("start values x : %d, y : %d : state : %d\n", x, y, grid[y][x]);
-
     for(grid_y=y-1;grid_y<y+2; grid_y++) {
         for(grid_x=x-1; grid_x<x+2; grid_x++) {//printf("x : %d, y : %d = %d\n", grid_x, grid_y, grid[grid_x][grid_y] );
-         //printf("round %d\n", grid_x);
             if(grid_x >= 0 && grid_x < max_x && grid_y >= 0 && grid_y < max_y) { // set limits for the grid outside cells are dead
-
                 if(grid[grid_y][grid_x] == 1) {
                     if(grid_x == x && grid_y == y) {
 
                     }
                     else {
-                       // printf("alive found : x : %d, y : %d \n", grid_x, grid_y);
                         c++;
                     }
 
                 }
             }
         }
-
-
     }
 
     return c;

@@ -8,18 +8,19 @@
 #define GAME  1
 #define PREF  2
 
-gboolean model_grid_update( view_model *game_data );
-
-/*
+/** @brief Initialize current model.
  *
  */
 void model_init_view( view_model *model );
 
-/*
+/** @brief Draw current model.
  *
  */
 void model_draw_view( view_model *model );
 
-
+/** @brief Close current model.
+ *
+ */
+void model_close_view( view_model *model );
 
 #endif

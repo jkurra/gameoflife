@@ -453,6 +453,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="halign">end</property>
+                    <signal name="state-set" handler="on_switch2_state_set" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

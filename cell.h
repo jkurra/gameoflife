@@ -25,7 +25,7 @@
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in previous turn.
  */
-int cell_prev_turn( int c_state, int nbrs, int *live_a, int *live_d );
+int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
 
 /** @brief Checks state of the cell in next turn.
  *
@@ -47,6 +47,6 @@ int cell_prev_turn( int c_state, int nbrs, int *live_a, int *live_d );
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in next turn.
  */
-int cell_next_turn( int c_state, int nbrs, int *live_a, int *live_d );
+int cell_next( int c_state, int nbrs, int *live_a, int *live_d );
 
 #endif /* CELL_H_ */

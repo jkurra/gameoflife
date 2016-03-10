@@ -30,8 +30,17 @@ typedef struct
  */
 typedef struct
 {
-	GtkWidget *main_frame;
+	GtkWidget *main_frame; /* Main widget containing elements of the view */
 
+	GdkRGBA bgrn_col; /* Background color of the grid */
+	GdkRGBA cell_col; /* Color of each cell in grid */
+
+	int max_x, max_y; /* Maximum dimensions of the game grid */
+	int **grid;				/* Game board containing values */
+	int infinite;
+	int visible;
+
+  /* TODO: remove */
 	GdkRGBA backGround;
 	GdkRGBA cellColor;
 
@@ -39,22 +48,18 @@ typedef struct
 
 	int grid_x;
 	int grid_y;
-	int **grid;
+  /* TODO: end remove */
 
-	int cell_s;
-	int tick_t;
+	int cell_s;		/* Size of each cell in the screen. */
+	int tick_t;		/* Interval of each step in the game */
+	int zoom; 		/* How big or small cells appear on the screen.	*/
 
-	int timerid;
-	int zoom;
+	int timerid;	/* Id of the widget containing update timer. */
 
-	int startAtCellX;
-	int startAtCellY;
+	int startAtCellX; /* From which column to start drawing */
+	int startAtCellY; /* From which row to start drawing */
 
 	/* RULES */
-	int nbrs_max;
-	int nbrs_min;
-	int born_at;
-
 	int *live_a;
 	int *live_d;
 
@@ -74,17 +79,20 @@ typedef struct
 	char **pref_path;
 } view_model;
 
-/*
+
+gboolean model_grid_update( view_model *game_data );
+
+/** @brief Initialize menu view.
  *
  */
 void view_menu_init( view_model *model );
 
-/*
+/** @brief Initialize game view.
  *
  */
 void view_game_init( view_model *model );
 
-/*
+/** @brief Initialize pref view.
  *
  */
 void view_pref_init( view_model *model );
