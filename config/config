@@ -1,8 +1,8 @@
 {
-   "X_SIZE": "110",
-   "Y_SIZE": "120",
+   "X_SIZE": "100",
+   "Y_SIZE": "100",
    "TICK_TIME": "100",
    "bgColor": "rgb(0,0,0)",
-   "frColor": "rgb(239,41,41)"
+   "frColor": "rgb(117,80,123)"
    "gridVis": "1"
 }

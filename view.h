@@ -41,18 +41,14 @@ typedef struct
 	int visible;
 
   /* TODO: remove */
-	GdkRGBA backGround;
-	GdkRGBA cellColor;
 
-	int initialized; /* tells if settings have already been found */
 
-	int grid_x;
-	int grid_y;
+
   /* TODO: end remove */
 
-	int cell_s;		/* Size of each cell in the screen. */
-	int tick_t;		/* Interval of each step in the game */
-	int zoom; 		/* How big or small cells appear on the screen.	*/
+	float cell_s;		/* Size of each cell in the screen. */
+	float zoom; 		/* How big or small cells appear on the screen.	*/
+	int tick_t;
 
 	int timerid;	/* Id of the widget containing update timer. */
 

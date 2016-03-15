@@ -21,7 +21,8 @@ void controller_model( view_model *model, int type )
 				break;
 			case PREF: /* PREFERENCES */
 				jsm_update_model( model ); /* update model since leaving from preferences */
-				jsm_read_model( model );
+				//jsm_read_model( model );
+				model_update(model, GAME);
 				break;
 			default:
 				break;
@@ -55,7 +56,7 @@ void on_row_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		model->game->grid_x = gtk_spin_button_get_value_as_int (button);
+		model->game->max_x = gtk_spin_button_get_value_as_int (button);
 }
 
 G_MODULE_EXPORT
@@ -63,7 +64,7 @@ void on_col_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		model->game->grid_y = gtk_spin_button_get_value_as_int (button);
+		model->game->max_y = gtk_spin_button_get_value_as_int (button);
 }
 
 G_MODULE_EXPORT
@@ -112,7 +113,8 @@ void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		gtk_color_chooser_get_rgba ( button, &model->game->backGround );
+		gtk_color_chooser_get_rgba ( button, &model->game->bgrn_col );
+
 }
 
 G_MODULE_EXPORT
@@ -120,7 +122,7 @@ void on_cell_colorbutton_color_set( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		gtk_color_chooser_get_rgba ( button, &model->game->cellColor );
+		gtk_color_chooser_get_rgba ( button, &model->game->cell_col );
 }
 
 G_MODULE_EXPORT
@@ -128,7 +130,7 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		grid_next(model->game->grid_x, model->game->grid_y, model->game->grid, model->game->live_a, model->game->live_d);
+		grid_next(model->game->max_x, model->game->max_y, model->game->grid, model->game->live_a,2, model->game->live_d, 1);
 		model_draw_view(model);
 }
 
@@ -175,14 +177,16 @@ void on_up_clicked( GtkButton *button, gpointer data )
 	view_model *model = (view_model*)data;
 	if(model->game->startAtCellY >= 5)
 		model->game->startAtCellY-=5;
+		model_draw_view( model );
 }
 
 G_MODULE_EXPORT
 void on_down_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellY < model->game->grid_y)
+	if(model->game->startAtCellY < model->game->max_y)
 		model->game->startAtCellY+=5;
+		model_draw_view( model );
 }
 
 G_MODULE_EXPORT
@@ -191,14 +195,16 @@ void on_left_clicked( GtkButton *button, gpointer data )
 	view_model *model = (view_model*)data;
 	if(model->game->startAtCellX >= 5)
 		model->game->startAtCellX -= 5;
+		model_draw_view( model );
 }
 
 G_MODULE_EXPORT
 void on_right_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellX < model->game->grid_x)
+	if(model->game->startAtCellX < model->game->max_x)
 		model->game->startAtCellX += 5;
+		model_draw_view( model );
 }
 
 G_MODULE_EXPORT
@@ -206,8 +212,9 @@ void on_zoom_in_clicked( GtkButton *button, gpointer data )
 {
 	//game_model *game = (game_model*)data;
 	view_model *model = (view_model*)data;
-	if(model->game->zoom > 1)
-		model->game->zoom = model->game->zoom-1;
+	//if(model->game->zoom > 1)
+		model->game->zoom = model->game->zoom-0.2;
+		model_draw_view( model );
 		//model_draw_game(game);
 }
 
@@ -216,6 +223,7 @@ void on_zoom_out_clicked( GtkButton *button, gpointer data )
 {
 	//game_model *game = (game_model*)data;
 	view_model *model = (view_model*)data;
-	model->game->zoom = model->game->zoom+1;
+	model->game->zoom = model->game->zoom+0.2;
+	model_draw_view( model );
 	//model_draw_game(game);
 }

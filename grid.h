@@ -20,6 +20,8 @@
  */
 int **grid_new( int x, int y );
 
+void grid_free( int y, int **arr);
+
 /** @brief Initialize random values to each cell in a grid
  *
  * Initializes two dimensional array with random values, random meaning 1 or 0.
@@ -52,7 +54,7 @@ void grid_rand( int x, int y, int **arr );
  * @param live_a rules to apply when cell is currently alive.
  * @param live_d rules to apply when cell is currently dead.
  */
-void grid_next( int x, int y, int **arr, int *live_a, int *live_d );
+void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, int dead_s );
 
 /** @brief Update grid to previous values.
  *

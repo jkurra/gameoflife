@@ -47,6 +47,6 @@ int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in next turn.
  */
-int cell_next( int c_state, int nbrs, int *live_a, int *live_d );
+int cell_next( int c_state, int nbrs, int live_a[], int live_s, int live_d[], int dead_s ) ;
 
 #endif /* CELL_H_ */

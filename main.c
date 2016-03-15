@@ -1,4 +1,5 @@
 #include "view.h"
+#include "model.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +30,23 @@ int main(int argc, char *argv[])
   game.live_a  = &live_a1;
   game.live_d  = &live_d1;
 
+  game.bgrn_col;
+  game.cell_col;
+  game.max_x = 0;
+  game.max_y = 0;
+  game.grid = NULL;
+  game.infinite =0;
+  game.visible = 0;
+  game.cell_s = 0;		/* Size of each cell in the screen. */
+  game.zoom = 0; 		/* How big or small cells appear on the screen.	*/
+  game.tick_t  =0;
+  game.timerid = 0;	/* Id of the widget containing update timer. */
+  game.startAtCellX = 0; /* From which column to start drawing */
+  game.startAtCellY = 0; /* From which row to start drawing */
+
+
+
+
   view_model main_model;
 
   main_model.type = 0; /* initialize menu */
@@ -39,8 +57,22 @@ int main(int argc, char *argv[])
 
   main_model.pref_path = result;
 
-  jsm_read_model ( &main_model );
+  //jsm_read_model ( &main_model );
+
+  model_update(&main_model, GAME);
   model_init_view ( &main_model );
+  //p/rintf("freeing all grids\n" );
+  gdk_rgba_free(&game.bgrn_col);
+  gdk_rgba_free(&game.cell_col);
+  if( game.grid ) {
+      grid_free(game.max_y, game.grid);
+  }
+
+  g_object_ref_sink(G_OBJECT(menu.main_frame));
+  gtk_widget_destroy (menu.main_frame);
+  g_object_unref (G_OBJECT(menu.main_frame));
+
+
   free ( result );
 
   return 0;

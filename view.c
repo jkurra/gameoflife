@@ -2,7 +2,7 @@
 
 gboolean model_grid_update( view_model *model )
 {
-	grid_next(model->game->grid_x, model->game->grid_y, model->game->grid, model->game->live_a, model->game->live_d);
+	grid_next(model->game->max_x, model->game->max_y, model->game->grid, model->game->live_a,2, model->game->live_d, 1);
 	model_draw_view(model);
 	return TRUE;
 }
@@ -40,6 +40,7 @@ void view_game_init( view_model *model )
 		g_warning( "%s", error->message );
         g_free( error );
 	}
+
 	model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
 	model->game->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
 	gtk_builder_connect_signals( builder, model );
@@ -64,16 +65,16 @@ void view_pref_init( view_model *model )
 
 	/* Set values for elements received from the model. */
 	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(builder, "row_spinbutton") );
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->game->grid_x);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->game->max_x);
 	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "col_spinbutton") );
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->game->grid_y);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->game->max_y);
 	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->game->tick_t);
 
 	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(builder, "bg_colorbutton") );
-	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->game->backGround);
+	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->game->bgrn_col);
 	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton") );
-	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb2), &model->game->cellColor);
+	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb2), &model->game->cell_col);
 
 	GtkWidget *switchVis = GTK_WIDGET( gtk_builder_get_object(builder, "switch2") );
 	gtk_switch_set_state (GTK_SWITCH(switchVis),model->game->visible);
@@ -119,13 +120,13 @@ void view_game_draw ( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 {
 	view_model *model = (view_model*)data;
 
-	int max_x = model->game->grid_x,
-			max_y = model->game->grid_y,
+	int max_x = model->game->max_x,
+			max_y = model->game->max_y,
 			cur_x = model->game->startAtCellX,
 			cur_y = model->game->startAtCellY;
 
-	gtk_widget_override_background_color(GTK_WIDGET(area), GTK_STATE_NORMAL, &model->game->backGround);
-	int x_start=5, y_start=5;
+	gtk_widget_override_background_color(GTK_WIDGET(area), GTK_STATE_NORMAL, &model->game->bgrn_col);
+	float x_start=5.0, y_start=5.0;
 	for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
 		for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
 			int state = -1;
@@ -133,28 +134,31 @@ void view_game_draw ( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			state = model->game->grid[cur_y][cur_x];
 			if( state == 1 ) {
 				cairo_rectangle(cr, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
-				gdk_cairo_set_source_rgba(cr, &model->game->cellColor);
+				gdk_cairo_set_source_rgba(cr, &model->game->cell_col);
 				cairo_fill(cr);
 			}
 			else if( state != 1 && model->game->visible == 1)  {
 
 				GdkRGBA *rgba;
 				//gdk_rgba_parse (&rgba, "grey");
-				rgba = gdk_rgba_copy(&model->game->backGround);
+				rgba = gdk_rgba_copy(&model->game->bgrn_col);
 				rgba->red   += 0.1;
 				rgba->green += 0.1;
 				rgba->blue  += 0.1;
-				cairo_rectangle(cr, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
+				cairo_rectangle(cr, x_start, y_start, (model->game->cell_s/model->game->zoom), (model->game->cell_s/model->game->zoom));
 				gdk_cairo_set_source_rgba(cr, rgba);
 				cairo_fill(cr);
+				gdk_rgba_free(rgba);
+				//x_start -= 0.1;
+				//y_start -= 0.1;
 			}
 
 			x_start += model->game->cell_s/model->game->zoom;
-			x_start += model->game->cell_s/3; // space between cells
+			x_start += model->game->cell_s/3.0; // space between cells
 		}
-		x_start = 5;
+		x_start = 5.0;
 		y_start += model->game->cell_s/model->game->zoom;
-		y_start += model->game->cell_s/3;
+		y_start += model->game->cell_s/3.0;
 	}
 
 //	gdk_cairo_set_source_rgba(cr, &model->game->cellColor);
