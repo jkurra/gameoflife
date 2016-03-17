@@ -3,7 +3,7 @@
 
 #include "view.h"
 #include "jsmn/jsm.h"
-
+#include <stdlib.h>
 #define MENU  0
 #define GAME  1
 #define PREF  2
@@ -24,5 +24,7 @@ void model_draw_view( view_model *model );
 void model_close_view( view_model *model );
 
 void model_update( view_model *model, int type );
+
+void model_rwrite( view_model *model, int type );
 
 #endif

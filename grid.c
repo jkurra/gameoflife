@@ -3,7 +3,7 @@
 int **grid_new( int x, int y )
 {
     int i=0;
-    int **arr = (int**)calloc(y, sizeof(int*)); // reallocate user value, BUG leaves some nodes unallocated
+    int **arr = (int**)calloc(y, sizeof(int*)); 
     for(i=0; i<y; i++) {
         arr[i] = (int*)calloc(x, sizeof(int*));
     }
@@ -14,7 +14,6 @@ int **grid_new( int x, int y )
 void grid_free( int y, int **arr )
 {
     int i=0;
-    //nt **arr = (int**)calloc(y, sizeof(int*)); // reallocate user value, BUG leaves some nodes unallocated
     for(i=0; i<y; i++) {
         free(arr[i]);// = (int*)calloc(x, sizeof(int*));
     }
@@ -29,7 +28,6 @@ void grid_rand( int x, int y, int **arr )
         for(i=0; i<y; i++) {
             for(k=0; k<x; k++) { arr[i][k] = rand()%2; }
         }
-
     }
 }
 

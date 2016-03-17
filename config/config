@@ -1,8 +1,1 @@
-{
-   "X_SIZE": "100",
-   "Y_SIZE": "100",
-   "TICK_TIME": "100",
-   "bgColor": "rgb(0,0,0)",
-   "frColor": "rgb(117,80,123)"
-   "gridVis": "1"
-}
+{"X_SIZE":"100","Y_SIZE":"100","TICK_TIME":"100","gridVis":"1","bgColor":"rgb(173,127,168)","frColor":"rgb(252,233,79)"}

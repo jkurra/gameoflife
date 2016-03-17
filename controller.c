@@ -20,9 +20,10 @@ void controller_model( view_model *model, int type )
 				}
 				break;
 			case PREF: /* PREFERENCES */
-				jsm_update_model( model ); /* update model since leaving from preferences */
+				//jsm_update_model( model ); /* update model since leaving from preferences */
 				//jsm_read_model( model );
-				model_update(model, GAME);
+				model_rwrite(model, GAME); /* Write changes to to file */
+				model_update(model, GAME); /* update model with new changes */
 				break;
 			default:
 				break;
@@ -94,7 +95,7 @@ void on_rule3spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
-void  on_switch2_state_set( GtkSwitch *sw, gboolean state, gpointer data )
+void on_switch2_state_set( GtkSwitch *sw, gboolean state, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model) {
