@@ -1,55 +1,71 @@
 #include "controller.h"
 
+void controller_clean_menu( view_model *model )
+{
+
+}
+
+void controller_clean_game( view_model *model )
+{
+	if(model && model->game->timerid != -1)
+		g_source_remove(model->game->timerid);
+		model->game->timerid = -1;
+}
+
+void controller_clean_pref( view_model *model )
+{
+	if(model)
+		model_rwrite(model, GAME); /* Write changes to to file */
+		model_update(model, GAME); /* update model with new changes */
+}
+
 void controller_model( view_model *model, int type )
 {
 	if(!model) {
-		g_print("Unable to initialize, model was null. \n");
+		printf("CONTROL [ERROR] : Received null model pointer.\n");
 	}
 	else {
 		switch (model->type) { /* Determine which model is sending the signal. */
 			case MENU: /* MAIN MENU */
-				/* Nothing special needed for menu */
+				controller_clean_menu(model);
 				break;
 			case GAME: /* GAME */
-				if(model->game->timerid != -1) {
-					g_source_remove( model->game->timerid );
-					model->game->timerid = -1;
-				}
-				else {
-						g_print("CONTROL [INIT]: Timer not available, skip removal. \n");
-				}
+				controller_clean_game(model);
 				break;
 			case PREF: /* PREFERENCES */
-				//jsm_update_model( model ); /* update model since leaving from preferences */
-				//jsm_read_model( model );
-				model_rwrite(model, GAME); /* Write changes to to file */
-				model_update(model, GAME); /* update model with new changes */
+				controller_clean_pref(model);
 				break;
 			default:
 				break;
 		}
-		model_close_view( model );
-		model->type = type;
-		model_init_view( model );
+		model_close_view(model);	/* Close currently selected view */
+		model->type = type;			/* Select new view to be initialized */
+		model_init_view(model); 	/* Initialize new view */
 	}
 }
 
 G_MODULE_EXPORT
 void on_settingsbutton_clicked( GtkButton *button, gpointer data )
 {
-	controller_model( (view_model*)data, PREF );
+	view_model *model = (view_model*)data;
+	if(model)
+		controller_model(model, PREF);
 }
 
 G_MODULE_EXPORT
 void on_startgamebutton_clicked( GtkButton *button, gpointer data )
 {
-	controller_model( (view_model*)data, GAME );
+	view_model *model = (view_model*)data;
+	if(model)
+		controller_model(model, GAME);
 }
 
 G_MODULE_EXPORT
 void on_menu_button_clicked( GtkButton *button, gpointer data )
 {
-	controller_model( (view_model*)data, MENU );
+	view_model *model = (view_model*)data;
+	if(model)
+		controller_model(model, MENU);
 }
 
 G_MODULE_EXPORT
@@ -211,20 +227,16 @@ void on_right_clicked( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_zoom_in_clicked( GtkButton *button, gpointer data )
 {
-	//game_model *game = (game_model*)data;
 	view_model *model = (view_model*)data;
 	//if(model->game->zoom > 1)
 		model->game->zoom = model->game->zoom-0.2;
 		model_draw_view( model );
-		//model_draw_game(game);
 }
 
 G_MODULE_EXPORT
 void on_zoom_out_clicked( GtkButton *button, gpointer data )
 {
-	//game_model *game = (game_model*)data;
 	view_model *model = (view_model*)data;
 	model->game->zoom = model->game->zoom+0.2;
 	model_draw_view( model );
-	//model_draw_game(game);
 }

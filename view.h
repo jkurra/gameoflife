@@ -40,12 +40,6 @@ typedef struct
 	int infinite;
 	int visible;
 
-  /* TODO: remove */
-
-
-
-  /* TODO: end remove */
-
 	float cell_s;		/* Size of each cell in the screen. */
 	float zoom; 		/* How big or small cells appear on the screen.	*/
 	int tick_t;
