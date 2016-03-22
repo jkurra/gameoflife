@@ -3,7 +3,7 @@
 int **grid_new( int x, int y )
 {
     int i=0;
-    int **arr = (int**)calloc(y, sizeof(int*)); 
+    int **arr = (int**)calloc(y, sizeof(int*));
     for(i=0; i<y; i++) {
         arr[i] = (int*)calloc(x, sizeof(int*));
     }

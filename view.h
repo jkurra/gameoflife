@@ -69,9 +69,6 @@ typedef struct
 	char **pref_path;
 } view_model;
 
-
-gboolean model_grid_update( view_model *game_data );
-
 /** @brief Initialize menu view.
  *
  */
@@ -87,4 +84,24 @@ void view_game_init( view_model *model );
  */
 void view_pref_init( view_model *model );
 
-#endif
+/** @brief Close menu view.
+ *
+ * Closes all UI-related items (Widgets etc.) and makes sure that
+ * @param model
+ */
+void view_menu_close( menu_model *model );
+
+/** @brief Close game view.
+ *
+ */
+void view_game_close( game_model *model );
+
+/** @brief Close pref view.
+ *
+ */
+void view_pref_close( pref_model *model );
+
+
+gboolean view_timer_update( view_model *model );
+
+#endif /* VIEW_H_ */

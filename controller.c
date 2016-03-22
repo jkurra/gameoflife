@@ -126,7 +126,7 @@ void on_switch2_state_set( GtkSwitch *sw, gboolean state, gpointer data )
 }
 
 G_MODULE_EXPORT
-void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
+void on_bg_colorbutton_color_set( GtkColorChooser *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
@@ -135,7 +135,7 @@ void on_bg_colorbutton_color_set( GtkColorButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
-void on_cell_colorbutton_color_set( GtkColorButton *button, gpointer data )
+void on_cell_colorbutton_color_set( GtkColorChooser *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
@@ -160,8 +160,8 @@ void on_pause_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model && model->game->timerid != -1) {
-		g_source_remove(model->game->timerid);
-		model->game->timerid = -1;
+		//g_source_remove(model->game->timerid);
+		//model->game->timerid = -1;
 		g_print("pause pressed %d\n", model->game->timerid);
 	}
 }
@@ -171,7 +171,7 @@ void on_resume_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model && model->game->timerid == -1) {
-		model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
+		//model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
 		g_print("resume pressed %d\n", model->game->timerid);
 	}
 }

@@ -4,18 +4,18 @@ void model_init_view( view_model *model )
 {
 	if(model) {
 		switch( model->type ) {
-			case MENU:{
+			case MENU:
 				printf("MODEL [INIT] : menu\n");
 				view_menu_init( model );
-				break; }
-			case GAME:{
+				break;
+			case GAME:
 				printf("MODEL [INIT] : game\n");
 				view_game_init( model );
-				break;}
-			case PREF:{
+				break;
+			case PREF:
 				printf("MODEL [INIT] : pref\n");
 				view_pref_init( model );
-				break;}
+				break;
 			default:
 				break;
 		}
@@ -47,21 +47,15 @@ void model_close_view( view_model *model )
 		switch( model->type ) {
 			case MENU:
 				printf("MODEL [CLOSE] : menu\n");
-				g_object_ref_sink(G_OBJECT(model->menu->main_frame));
-				gtk_widget_destroy(GTK_WIDGET(model->menu->main_frame));
-				g_object_unref(G_OBJECT(model->menu->main_frame ));
+				view_menu_close(model->menu);
 				break;
 			case GAME:
 				printf("MODEL [CLOSE] : game\n");
-				g_object_ref_sink(G_OBJECT(model->game->main_frame));
-				gtk_widget_destroy( GTK_WIDGET(model->game->main_frame));
-				g_object_unref(G_OBJECT(model->game->main_frame));
+				view_game_close(model->game);
 				break;
 			case PREF:
 				printf("MODEL [CLOSE] : pref\n");
-				g_object_ref_sink(G_OBJECT(model->pref->main_frame));
-				gtk_widget_destroy( GTK_WIDGET(model->pref->main_frame) );
-				g_object_unref(G_OBJECT(model->pref->main_frame));
+				view_pref_close(model->pref);
 				break;
 			default:
 				break;
@@ -71,110 +65,118 @@ void model_close_view( view_model *model )
 
 void model_update( view_model *model, int type )
 {
-	switch( type ) {
-		case MENU:
-			break;
-		case GAME: {
-
-			char *json = jsm_read(model->pref_path);
-			//printf("JSM [PARSE] : %s : ", json);
-			if(json) {
-				char *tick_time, *x_size, *y_size, *bgCol, *frCol,*infi, *visi; /* free these */
-				tick_time = jsm_json_val( json, "TICK_TIME", 3 );
-				x_size 	  = jsm_json_val( json, "X_SIZE", 3 );
-				y_size	  = jsm_json_val( json, "Y_SIZE", 3 );
-				bgCol 	  = jsm_json_val( json, "bgColor", 3 );
-				frCol 	  = jsm_json_val( json, "frColor", 3 );
-				visi      = jsm_json_val( json, "gridVis", 3 );
-
-				int x = atoi( x_size ); /* TODO  check if cast was succesfull */
-				int y = atoi( y_size) ;
-				int visible = atoi(visi) ;
-				int time = atoi(tick_time);
-
-				/* populate values for model */
-				model->game->max_x = x;
-				model->game->max_y = y;
-				model->game->tick_t = time;
-
-				/* parse colors to model  */
-				gdk_rgba_parse( &model->game->bgrn_col, bgCol );
-				gdk_rgba_parse( &model->game->cell_col , frCol );
-
-				/* static modifiers for now */
-				model->game->cell_s = 10.0;
-				model->game->zoom   = 1.0;
-				model->game->tick_t = 100;
-				model->game->visible = visible;
-				if(model->game->grid) {
-					grid_free(y, model->game->grid);
-				}
-
-				free(tick_time);
-				free(x_size);
-				free(y_size);
-				free(bgCol);
-				free(frCol);
-				free(visi);
-
-				model->game->grid = grid_new( x, y );
-				grid_rand(x, y, model->game->grid);
-				//grid_print(x, y, model->game->grid);
-				/* set drawing start point at beginning of grid */
-				model->game->startAtCellX = 0;
-				model->game->startAtCellY = 0;
-
-				free(json);
-			}
-			break;
+	if(model) {
+		switch(type) {
+			case MENU:
+				printf("MODEL [UPDATE] : pref\n");
+				break;
+			case GAME:
+				printf("MODEL [UPDATE] : game\n");
+				model_game_setup(model->game, model->pref_path);
+				break;
+			case PREF:
+				printf("MODEL [UPDATE] : pref\n");
+				break;
+			default:
+				break;
 		}
-		case PREF:
-			break;
-		default:
-			break;
-	}
+	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
 }
 
 void model_rwrite( view_model *model, int type)
 {
-	switch( type ) {
-		case MENU:
+	if(model) {
+		switch( type ) {
+			case MENU:
+				printf("MODEL [WRITE] : menu\n");
+				break;
+			case GAME:
+				printf("MODEL [WRITE] : game\n");
+				model_game_save(model->game, model->pref_path);
+				break;
+			case PREF:
+				printf("MODEL [WRITE] : pref\n");
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
+}
 
-			break;
-		case GAME:{
-			char *json = NULL;
-			char x_size[10];
-			char y_size[10];
-			char t_time[10];
-			char vis[10];
+void model_game_save( game_model *model, const char *pref_path )
+{
+	char *json = NULL;
+	char x_size[10];
+	char y_size[10];
+	char t_time[10];
+	char vis[10];
 
-			sprintf(x_size, "%d", model->game->max_x);
-			sprintf(y_size, "%d", model->game->max_y);
-			sprintf(t_time, "%d", model->game->tick_t);
-			sprintf(vis, "%d", model->game->visible);
+	sprintf(x_size, "%d", model->max_x);
+	sprintf(y_size, "%d", model->max_y);
+	sprintf(t_time, "%d", model->tick_t);
+	sprintf(vis, "%d", model->visible);
 
-			gchar *bgrn = gdk_rgba_to_string(&model->game->bgrn_col);
-			gchar *cell = gdk_rgba_to_string(&model->game->cell_col);
+	gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
+	gchar *cell = gdk_rgba_to_string(&model->cell_col);
 
-			json = jsm_json_add(json, "X_SIZE", &x_size);
-			json = jsm_json_add(json, "Y_SIZE", &y_size);
-			json = jsm_json_add(json, "TICK_TIME", &t_time);
-			json = jsm_json_add(json, "gridVis", &vis);
-			json = jsm_json_add(json, "bgColor", bgrn);
-			json = jsm_json_add(json, "frColor", cell);
+	json = jsm_json_add(json, "X_SIZE", &x_size);
+	json = jsm_json_add(json, "Y_SIZE", &y_size);
+	json = jsm_json_add(json, "TICK_TIME", &t_time);
+	json = jsm_json_add(json, "gridVis", &vis);
+	json = jsm_json_add(json, "bgColor", bgrn);
+	json = jsm_json_add(json, "frColor", cell);
 
-			free(bgrn);
-			free(cell);
+	free(bgrn);
+	free(cell);
 
-			int s = jsm_write(json, model->pref_path);
-			if(s != JSM_OK) {
-				printf("write failed");
-			}
-			break;}
-		case PREF:
-
-			break;
-		default:
-			break;
+	int s = jsm_write(json, pref_path);
+	if(s != JSM_OK) {
+		printf("write failed");
 	}
+}
+
+void model_game_setup( game_model *model, const char *pref_path )
+{
+	char *json = jsm_read(pref_path);
+	if(model->grid) { /* Free current grid if allocated */
+		grid_free(model->max_y, model->grid);
+	}
+	char *tick_i, *row_s, *col_s, *bgCol, *frCol, *infi, *visi; /* free these */
+
+	tick_i = jsm_json_val( json, "TICK_TIME", 3 );
+	row_s  = jsm_json_val( json, "Y_SIZE", 3 );
+	col_s  = jsm_json_val( json, "X_SIZE", 3 );
+	visi   = jsm_json_val( json, "gridVis", 3 );
+	bgCol  = jsm_json_val( json, "bgColor", 3 );
+	frCol  = jsm_json_val( json, "frColor", 3 );
+	/* Convert numeric values NOTE will be 0 if unable to convert */
+	int row  = atoi(row_s);
+	int col  = atoi(col_s);
+	int vis  = atoi(visi);
+	int tick = atoi(tick_i);
+	/* populate values for model */
+	model->max_y  = row;
+	model->max_x  = col;
+	model->tick_t = tick;
+	model->visible = vis;
+	/* TODO: static modifiers for now */
+	model->cell_s = 10.0;
+	model->zoom   = 1.0;
+	/* parse colors to model  */
+	gdk_rgba_parse(&model->bgrn_col, bgCol);
+	gdk_rgba_parse(&model->cell_col, frCol);
+	/* Free dynamically allocated values */
+	free(tick_i);
+	free(row_s);
+	free(col_s);
+	free(visi);
+	free(bgCol);
+	free(frCol);
+	free(json);
+	/* Initialize new grid and give random values */
+	model->grid = grid_new(model->max_x, model->max_y);
+	grid_rand(model->max_x, model->max_y, model->grid);
+	/* set drawing start point at beginning of grid */
+	model->startAtCellX = 0;
+	model->startAtCellY = 0;
 }

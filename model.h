@@ -53,4 +53,8 @@ void model_update( view_model *model, int type );
 
 void model_rwrite( view_model *model, int type );
 
-#endif
+void model_game_save( game_model *model, const char *pref_path );
+
+void model_game_setup( game_model *model, const char *pref_path );
+
+#endif /* MODEL_H_ */

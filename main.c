@@ -59,9 +59,7 @@ int main(int argc, char *argv[])
 
   model_update(&main_model, GAME);
   model_init_view ( &main_model );
-  //p/rintf("freeing all grids\n" );
-  //gdk_rgba_free(&game.bgrn_col);
-  //gdk_rgba_free(&game.cell_col);
+
   if( game.grid ) {
       grid_free(game.max_y, game.grid);
   }
