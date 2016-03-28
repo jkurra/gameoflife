@@ -3,37 +3,39 @@
 void model_init_view( view_model *model )
 {
 	if(model) {
-		switch( model->type ) {
+		switch(model->type) {
 			case MENU:
 				printf("MODEL [INIT] : menu\n");
-				view_menu_init( model );
+				view_menu_init(model);
+				//gtk_builder_connect_signals(model->builder, model);
 				break;
 			case GAME:
 				printf("MODEL [INIT] : game\n");
-				view_game_init( model );
+				view_game_init(model);
 				break;
 			case PREF:
 				printf("MODEL [INIT] : pref\n");
-				view_pref_init( model );
+				view_pref_init(model);
 				break;
 			default:
 				break;
 		}
+		gtk_main();
 	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
 }
 
 void model_draw_view( view_model *model )
 {
 	if(model) {
-		switch( model->type ) {
+		switch(model->type) {
 			case MENU:
-				gtk_widget_queue_draw( model->menu->main_frame );
+				gtk_widget_queue_draw(model->menu->main_frame);
 				break;
 			case GAME:
-				gtk_widget_queue_draw( model->game->main_frame );
+				gtk_widget_queue_draw(model->game->main_frame);
 				break;
 			case PREF:
-				gtk_widget_queue_draw( model->pref->main_frame );
+				gtk_widget_queue_draw(model->pref->main_frame);
 				break;
 			default:
 				break;
@@ -44,9 +46,10 @@ void model_draw_view( view_model *model )
 void model_close_view( view_model *model )
 {
 	if(model) {
-		switch( model->type ) {
+		gtk_main_quit();
+		switch(model->type) {
 			case MENU:
-				printf("MODEL [CLOSE] : menu\n");
+				printf("MODEL [CLOSE] : menu %d\n", model->menu->main_frame);
 				view_menu_close(model->menu);
 				break;
 			case GAME:

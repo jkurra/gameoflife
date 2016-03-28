@@ -1,85 +1,77 @@
 #include "view.h"
 
+void view_init( view_model *model )
+{
+	if(model)
+		gtk_init(NULL, NULL);
+		model->builder = gtk_builder_new();
+}
 
+void view_free( view_model *model )
+{
+	if(model->builder)
+		g_object_unref(G_OBJECT(model->builder));
+}
 
 void view_menu_init( view_model *model )
 {
-	GtkBuilder *builder;
-	GError     *error = NULL;
-
-	gtk_init(NULL, NULL);
-	builder = gtk_builder_new();
-
-	if(!gtk_builder_add_from_file(builder, "glade-ui/gof_menu.glade", &error)){
+	GError	*error = NULL;
+	if(!model->builder) { g_print("builder unitialized"); }
+	if(!gtk_builder_add_from_file(model->builder, "glade-ui/gof_menu.glade", &error)) {
 		g_warning("%s", error->message);
-        g_free(error);
+    g_free(error);
 	}
 
-	model->menu->main_frame = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
-	gtk_builder_connect_signals(builder, model);
-	g_object_unref(G_OBJECT( builder ));
+	model->menu->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
+	gtk_builder_connect_signals(model->builder, model);
 
-  	gtk_widget_show( model->menu->main_frame );
-  	gtk_main();
+  gtk_widget_show(model->menu->main_frame);
 }
 
 void view_game_init( view_model *model )
 {
-	GtkBuilder *builder;
-	GError     *error = NULL;
-
-	gtk_init(NULL, NULL);
-	builder = gtk_builder_new();
-
-	if( !gtk_builder_add_from_file(builder, "glade-ui/gof_game.glade", &error)) {
-		g_warning( "%s", error->message );
-        g_free( error );
+	GError  *error = NULL;
+	if(!model->builder) { g_print("builder unitialized"); }
+	if(!gtk_builder_add_from_file(model->builder, "glade-ui/gof_game.glade", &error)) {
+		g_warning("%s", error->message);
+    g_free( error );
 	}
 
-	model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) view_timer_update, model );
-	model->game->main_frame = GTK_WIDGET( gtk_builder_get_object( builder, "window1" ) );
-	gtk_builder_connect_signals( builder, model);
-	g_object_unref(G_OBJECT( builder ));
+	model->game->timerid = g_timeout_add(model->game->tick_t, (GSourceFunc) view_timer_update, model);
+	model->game->main_frame = GTK_WIDGET( gtk_builder_get_object( model->builder, "window1" ) );
+	gtk_builder_connect_signals( model->builder, model);
 
 	gtk_widget_show(model->game->main_frame);
-	gtk_main();
 }
 
 void view_pref_init( view_model *model )
 {
-	GtkBuilder *builder;
-	GError     *error = NULL;
-
-	gtk_init(NULL, NULL);
-	builder = gtk_builder_new();
-
-	if( !gtk_builder_add_from_file(builder, "glade-ui/gof_pref.glade", &error)) {
+	GError *error = NULL;
+	if(!model->builder) { g_print("builder unitialized"); }
+	if( !gtk_builder_add_from_file(model->builder, "glade-ui/gof_pref.glade", &error)) {
 		g_warning("%s", error->message);
 		g_free(error);
 	}
-
 	/* Set values for elements received from the model. */
-	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(builder, "row_spinbutton") );
+	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "row_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->game->max_x);
-	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "col_spinbutton") );
+	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(model->builder, "col_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->game->max_y);
-	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
+	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(model->builder, "int_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->game->tick_t);
 
-	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(builder, "bg_colorbutton"));
+	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(model->builder, "bg_colorbutton"));
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->game->bgrn_col);
-	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton"));
+	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(model->builder, "cell_colorbutton"));
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb2), &model->game->cell_col);
 
-	GtkWidget *switchVis = GTK_WIDGET( gtk_builder_get_object(builder, "switch2"));
+	GtkWidget *switchVis = GTK_WIDGET( gtk_builder_get_object(model->builder, "switch2"));
 	gtk_switch_set_state (GTK_SWITCH(switchVis),model->game->visible);
 	/* Tie signals to objects */
-	model->pref->main_frame = GTK_WIDGET( gtk_builder_get_object(builder, "main_frame" ));
-	gtk_builder_connect_signals(builder, model);
-	g_object_unref(G_OBJECT( builder ));
+	model->pref->main_frame = GTK_WIDGET( gtk_builder_get_object(model->builder, "main_frame" ));
+	gtk_builder_connect_signals(model->builder, model);
 
-  	gtk_widget_show( model->pref->main_frame );
-  	gtk_main();
+  gtk_widget_show( model->pref->main_frame );
 }
 
 void view_menu_close( menu_model *model )
@@ -87,7 +79,7 @@ void view_menu_close( menu_model *model )
 	if(model) {
 		g_object_ref_sink(G_OBJECT(model->main_frame));
 		gtk_widget_destroy(GTK_WIDGET(model->main_frame));
-		g_object_unref(G_OBJECT(model->main_frame ));
+		g_object_unref(G_OBJECT(model->main_frame));
 	} else { printf("view [CLOSE] : ERROR! Received null pointer.\n"); }
 }
 
@@ -96,7 +88,7 @@ void view_game_close( game_model *model )
 	if(model) {
 		g_object_ref_sink(G_OBJECT(model->main_frame));
 		gtk_widget_destroy(GTK_WIDGET(model->main_frame));
-		g_object_unref(G_OBJECT(model->main_frame ));
+		g_object_unref(G_OBJECT(model->main_frame));
 	} else { printf("view [CLOSE] : ERROR! Received null pointer.\n"); }
 }
 
@@ -105,7 +97,7 @@ void view_pref_close( pref_model *model )
 	if(model) {
 		g_object_ref_sink(G_OBJECT(model->main_frame));
 		gtk_widget_destroy(GTK_WIDGET(model->main_frame));
-		g_object_unref(G_OBJECT(model->main_frame ));
+		g_object_unref(G_OBJECT(model->main_frame));
 	} else { printf("view [CLOSE] : ERROR! Received null pointer.\n"); }
 }
 

@@ -67,6 +67,7 @@ typedef struct
 	pref_model *pref;
 
 	char **pref_path;
+	GtkBuilder *builder;
 } view_model;
 
 /** @brief Initialize menu view.

@@ -56,17 +56,18 @@ int main(int argc, char *argv[])
   main_model.pref_path = result;
 
   //jsm_read_model ( &main_model );
-
+  view_init(&main_model);
   model_update(&main_model, GAME);
   model_init_view ( &main_model );
+  view_free(&main_model);
 
   if( game.grid ) {
       grid_free(game.max_y, game.grid);
   }
 
-  g_object_ref_sink(G_OBJECT(menu.main_frame));
-  gtk_widget_destroy (menu.main_frame);
-  g_object_unref (G_OBJECT(menu.main_frame));
+  //g_object_ref_sink(G_OBJECT(menu.main_frame));
+  //gtk_widget_destroy (menu.main_frame);
+//  g_object_unref (G_OBJECT(menu.main_frame));
 
   free ( result );
 
