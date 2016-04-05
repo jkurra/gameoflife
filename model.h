@@ -9,7 +9,23 @@
 #define GAME  1
 #define PREF  2
 
-/** @brief Initialize current model.
+view_model *model_view_new();
+
+void model_view_free( view_model *model );
+
+game_model *model_game_new();
+
+void model_game_free( game_model *model );
+
+menu_model *model_menu_new();
+
+void model_menu_free( menu_model *model );
+
+pref_model *model_pref_new();
+
+void model_pref_free( pref_model *model );
+
+/** @brief Initialize values current model.
  *
  * Initializes view using view_model, which contains type value. Type value is
  * used to determine which model is to be initialized. Therefore it must be set
@@ -56,5 +72,5 @@ void model_rwrite( view_model *model, int type );
 void model_game_save( game_model *model, const char *pref_path );
 
 void model_game_setup( game_model *model, const char *pref_path );
-
+void model_pref_setup( pref_model *model, const char *pref_path );
 #endif /* MODEL_H_ */

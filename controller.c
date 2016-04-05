@@ -38,6 +38,7 @@ void controller_model( view_model *model, int type )
 			default:
 				break;
 		}
+		//g_print("Init : %d", type);
 		model_close_view(model);	/* Close currently selected view */
 		model->type = type;			/* Select new view to be initialized */
 		model_init_view(model); 	/* Initialize new view */
@@ -147,6 +148,7 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
+		g_print("rules1 %d %d: %d\n", model->game->max_x, model->game->live_a[1], model->game->live_d[0]);
 		grid_next(model->game->max_x, model->game->max_y, model->game->grid, model->game->live_a,2, model->game->live_d, 1);
 		model_draw_view(model);
 }
@@ -229,8 +231,8 @@ void on_zoom_in_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	//if(model->game->zoom > 1)
-		model->game->zoom = model->game->zoom-0.2;
-		model_draw_view( model );
+	model->game->zoom = model->game->zoom-0.2;
+	model_draw_view( model );
 }
 
 G_MODULE_EXPORT

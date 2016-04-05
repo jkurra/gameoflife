@@ -3,6 +3,7 @@
 int **grid_new( int x, int y )
 {
     int i=0;
+    //g_print("array init: %d %d", x, y);
     int **arr = (int**)calloc(y, sizeof(int*));
     for(i=0; i<y; i++) {
         arr[i] = (int*)calloc(x, sizeof(int*));
@@ -33,7 +34,7 @@ void grid_rand( int x, int y, int **arr )
 
 void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, int dead_s )
 {
-
+   //g_print("rules %d %d: %d\n", live_a[0], live_a[1], live_d[0]);
     int **tmp_grid = grid_new(x,y);
     int k=0, i=0;
     for(i=0; i<y; i++) {

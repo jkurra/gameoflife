@@ -17,15 +17,15 @@ int main(int argc, char *argv[])
   strcpy( result, cwd );
   strcat( result, fname );
 
-  menu_model menu;
-  game_model game;
-  pref_model pref;
+  // menu_model menu;
+  // game_model game;
+  // pref_model pref;
 
   /*TODO: tmp values, read from confiog file */
   int live_a1[2] = { 3, 2 };
   int live_d1[1] = { 3 };
 
-  /* set default values for game */
+  /* set default values for game
   game.timerid = -1;
   game.live_a  = &live_a1;
   game.live_d  = &live_d1;
@@ -38,36 +38,34 @@ int main(int argc, char *argv[])
   game.infinite =0;
   game.visible = 0;
   game.cell_s = 0;		/* Size of each cell in the screen. */
-  game.zoom = 0; 		/* How big or small cells appear on the screen.	*/
-  game.tick_t  =0;
-  game.timerid = 0;	/* Id of the widget containing update timer. */
-  game.startAtCellX = 0; /* From which column to start drawing */
-  game.startAtCellY = 0; /* From which row to start drawing */
+ // game.zoom = 0; 		/* How big or small cells appear on the screen.	*/
+  //game.tick_t  =0;
+  //game.timerid = 0;	/* Id of the widget containing update timer. */
+  //game.startAtCellX = 0; /* From which column to start drawing */
+  //game.startAtCellY = 0; /* From which row to start drawing */
 
+  view_model *main_model = model_view_new();
 
-  view_model main_model;
+  main_model->type = 0; /* initialize menu */
 
-  main_model.type = 0; /* initialize menu */
-
-  main_model.menu = &menu;
-  main_model.game = &game;
-  main_model.pref = &pref;
-
-  main_model.pref_path = result;
-
+/*
+  main_model.menu = model_menu_new();
+  main_model.game = model_game_new();
+  main_model.pref = model_menu_new();
+*/
+  main_model->pref_path = result;
+  //printf("game : %d\n", main_model->game->infinite);
   //jsm_read_model ( &main_model );
-  view_init(&main_model);
-  model_update(&main_model, GAME);
-  model_init_view ( &main_model );
-  view_free(&main_model);
+  view_init(main_model);
+  model_update(main_model, GAME);
+  model_update(main_model, PREF);
+  model_init_view(main_model);
+  view_free(main_model);
 
-  if( game.grid ) {
-      grid_free(game.max_y, game.grid);
-  }
 
-  //g_object_ref_sink(G_OBJECT(menu.main_frame));
-  //gtk_widget_destroy (menu.main_frame);
-//  g_object_unref (G_OBJECT(menu.main_frame));
+  // g_object_ref_sink(G_OBJECT(menu.main_frame));
+  // gtk_widget_destroy (menu.main_frame);
+  // g_object_unref (G_OBJECT(menu.main_frame));
 
   free ( result );
 

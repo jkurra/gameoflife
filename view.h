@@ -23,6 +23,20 @@ typedef struct
 typedef struct
 {
 	GtkWidget *main_frame;
+
+	GdkRGBA bgrn_col; /* Background color of the grid */
+	GdkRGBA cell_col; /* Color of each cell in grid */
+
+	int max_x, max_y; /* Maximum dimensions of the game grid */
+	int **grid;				/* Game board containing values */
+	int infinite;
+	int visible;
+
+	float cell_s;		/* Size of each cell in the screen. */
+	float zoom; 		/* How big or small cells appear on the screen.	*/
+	int tick_t;
+
+	int timerid;
 } pref_model;
 
 /*
@@ -31,12 +45,13 @@ typedef struct
 typedef struct
 {
 	GtkWidget *main_frame; /* Main widget containing elements of the view */
+	GtkWidget *game_area;
 
 	GdkRGBA bgrn_col; /* Background color of the grid */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
 	int max_x, max_y; /* Maximum dimensions of the game grid */
-	int **grid;				/* Game board containing values */
+	int **grid;			/* Game board containing values */
 	int infinite;
 	int visible;
 
@@ -70,20 +85,21 @@ typedef struct
 	GtkBuilder *builder;
 } view_model;
 
+
 /** @brief Initialize menu view.
  *
  */
-void view_menu_init( view_model *model );
+void view_menu_init( menu_model *model, GtkBuilder *builder );
 
 /** @brief Initialize game view.
  *
  */
-void view_game_init( view_model *model );
+void view_game_init( game_model *model, GtkBuilder *builder );
 
 /** @brief Initialize pref view.
  *
  */
-void view_pref_init( view_model *model );
+void view_pref_init( pref_model *model, GtkBuilder *builder );
 
 /** @brief Close menu view.
  *
@@ -102,7 +118,8 @@ void view_game_close( game_model *model );
  */
 void view_pref_close( pref_model *model );
 
+GtkAllocation *view_widget_pos( GtkWidget *widget );
 
-gboolean view_timer_update( view_model *model );
+gboolean view_timer_update( game_model *model );
 
 #endif /* VIEW_H_ */
