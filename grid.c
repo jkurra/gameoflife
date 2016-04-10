@@ -2,10 +2,8 @@
 
 int **grid_new( int x, int y )
 {
-    int i=0;
-    //g_print("array init: %d %d", x, y);
     int **arr = (int**)calloc(y, sizeof(int*));
-    for(i=0; i<y; i++) {
+    for(int i=0; i<y; i++) {
         arr[i] = (int*)calloc(x, sizeof(int*));
     }
 
@@ -14,20 +12,18 @@ int **grid_new( int x, int y )
 
 void grid_free( int y, int **arr )
 {
-    int i=0;
-    for(i=0; i<y; i++) {
-        free(arr[i]);// = (int*)calloc(x, sizeof(int*));
+    if(arr) {
+       for(int i=0; i<y; i++) { free(arr[i]); }
+       free(arr);
     }
-    free(arr);
-    arr = NULL;
+    //arr = NULL;
 }
 
 void grid_rand( int x, int y, int **arr )
 {
-    int i=0, k=0;
     if(arr) {
-        for(i=0; i<y; i++) {
-            for(k=0; k<x; k++) { arr[i][k] = rand()%2; }
+        for(int i=0; i<y; i++) {
+            for(int k=0; k<x; k++) { arr[i][k] = rand()%2; }
         }
     }
 }
@@ -62,13 +58,11 @@ void grid_prev( int x, int y, int **grid, int *live_a, int *live_d )
 
 void grid_print( int x, int y, int **grid )
 {
-  int i=0, k=0;
-
   printf("Printing array:\n");
   if(grid) {
-    for(i=0; i<y; i++) {
+    for(int i=0; i<y; i++) {
         g_print("r:%d ", i);
-        for(k=0; k<x; k++) { g_print("[%d]", grid[i][k]); }
+        for(int k=0; k<x; k++) { g_print("[%d]", grid[i][k]); }
         g_print("\n");
     }
   }

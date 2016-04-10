@@ -28,7 +28,7 @@ typedef struct
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
 	int max_x, max_y; /* Maximum dimensions of the game grid */
-	int **grid;				/* Game board containing values */
+	//int **grid;				/* Game board containing values */
 	int infinite;
 	int visible;
 

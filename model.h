@@ -1,6 +1,10 @@
 #ifndef MODEL_H_INCLUDED
 #define MODEL_H_INCLUDED
 
+#include <stdint.h>
+#include <stdio.h>
+#include <time.h>
+
 #include "view.h"
 #include "jsmn/jsm.h"
 
@@ -9,20 +13,44 @@
 #define GAME  1
 #define PREF  2
 
-view_model *model_view_new();
+/* @brief Get new view model.
+ *
+ */
+view_model *model_view_new( int type, const char *pref_path );
 
-void model_view_free( view_model *model );
-
+/* @brief Get new view model.
+ *
+ */
 game_model *model_game_new();
 
-void model_game_free( game_model *model );
-
+/* @brief Get new view model.
+ *
+ */
 menu_model *model_menu_new();
 
-void model_menu_free( menu_model *model );
-
+/* @brief Get new view model.
+ *
+ */
 pref_model *model_pref_new();
 
+/* @brief Free given view model.
+ *
+ */
+void model_view_free( view_model *model );
+
+/* @brief Get new view model.
+ *
+ */
+void model_game_free( game_model *model );
+
+/* @brief Get new view model.
+ *
+ */
+void model_menu_free( menu_model *model );
+
+/* @brief Get new view model.
+ *
+ */
 void model_pref_free( pref_model *model );
 
 /** @brief Initialize values current model.
@@ -65,12 +93,26 @@ void model_draw_view( view_model *model );
  */
 void model_close_view( view_model *model );
 
+/* @brief Get new view model.
+ *
+ */
 void model_update( view_model *model, int type );
 
+/* @brief Get new view model.
+ *
+ */
 void model_rwrite( view_model *model, int type );
+
+/* @brief Get new view model.
+ *
+ */
+void model_game_setup( game_model *model, const char *pref_path );
+
+/* @brief Get new view model.
+ *
+ */
+void model_pref_setup( pref_model *model, const char *pref_path );
 
 void model_game_save( game_model *model, const char *pref_path );
 
-void model_game_setup( game_model *model, const char *pref_path );
-void model_pref_setup( pref_model *model, const char *pref_path );
 #endif /* MODEL_H_ */
