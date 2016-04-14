@@ -46,8 +46,8 @@ game_model *model_game_new()
 	game->zoom   	= -1; 	/* How big or small cells appear on the screen.	*/
 	game->tick_t  	= -1;
 	game->timerid 	= -1;	/* Id of the widget containing update timer. */
-	game->startAtCellX = -1; /* From which column to start drawing */
-	game->startAtCellY = -1; /* From which row to start drawing */
+	game->startAtCellX = 0; /* From which column to start drawing */
+	game->startAtCellY = 0; /* From which row to start drawing */
 
 	return game;
 }
@@ -241,102 +241,77 @@ void model_game_save( game_model *model, const char *pref_path )
 
 }
 
+int model_integer_value( const char *json, char *key )
+{
+	int rtn = -1;
+	char *str = jsm_json_val( json, key, 3 );
+	rtn = atoi(str);
+	free(str);
+	return rtn;
+}
+
 void model_game_setup( game_model *model, const char *pref_path )
 {
-	char *json = jsm_read(pref_path);
 	if(model) { /* Free current grid if allocated */
+		char *json = jsm_read(pref_path);
 		grid_free(model->max_y, model->grid);
 		free(model->live_a);
 		free(model->live_d);
-	}
-	char *tick_i, *row_s, *col_s, *bgCol, *frCol, *infi, *visi; /* free these */
 
-	tick_i = jsm_json_val( json, "tickInterval", 3 );
-	row_s  = jsm_json_val( json, "gridHeight", 3 );
-	col_s  = jsm_json_val( json, "gridLength", 3 );
-	visi   = jsm_json_val( json, "gridVisible", 3 );
-	bgCol  = jsm_json_val( json, "backgroundColor", 3 );
-	frCol  = jsm_json_val( json, "cellColor", 3 );
-	/* Convert numeric values NOTE will be 0 if unable to convert */
-	int row  = atoi(row_s);
-	int col  = atoi(col_s);
-	int vis  = atoi(visi);
-	int tick = atoi(tick_i);
-	if(tick<100) {
-		printf("Warning, interval very small : %d\n", tick);
-	}
-	/* populate values for model */
-	model->max_y  = row;
-	model->max_x  = col;
-	model->tick_t = tick;
-	model->visible = vis;
-	/* TODO: static modifiers for now */
-	model->cell_s = 10.0;
-	model->zoom   = 1.0;
-	/* parse colors to model  */
-	gdk_rgba_parse(&model->bgrn_col, bgCol);
-	gdk_rgba_parse(&model->cell_col, frCol);
-	/* Free dynamically allocated values */
-	int *live_a1 = (int*)calloc(2, sizeof(int));
-	int *live_d1 = (int*)calloc(1, sizeof(int));
-	live_a1[0] = 3;
-	live_a1[1] = 2;
-
-	live_d1[0] = 3;
-	model->live_a = live_a1;
-	model->live_d = live_d1;
-	g_print("rules %d %d: %d\n", model->live_a[0], model->live_a[1], model->live_d[0]);
-	free(tick_i);
-	free(row_s);
-	free(col_s);
-	free(visi);
-	free(bgCol);
-	free(frCol);
-	free(json);
-	/* Initialize new grid and give random values */
-	model->grid = grid_new(model->max_x, model->max_y);
-	grid_rand(model->max_x, model->max_y, model->grid);
-	/* set drawing start point at beginning of grid */
-	model->startAtCellX = 0;
-	model->startAtCellY = 0;
+		char *bgCol, *frCol, *infi; /* free these */
+		/* populate values for model */
+		model->max_y   = model_integer_value(json, "gridHeight");
+		model->max_x   = model_integer_value(json, "gridLength");
+		model->tick_t  = model_integer_value(json, "tickInterval");
+		model->visible = model_integer_value(json, "gridVisible");
+		/* TODO: static modifiers for now */
+		model->cell_s = 10.0;
+		model->zoom   = 1.0;
+		bgCol = jsm_json_val(json, "backgroundColor", 3);
+		frCol = jsm_json_val(json, "cellColor", 3);
+		/* parse colors to model  */
+		gdk_rgba_parse(&model->bgrn_col, bgCol);
+		gdk_rgba_parse(&model->cell_col, frCol);
+		/* Free dynamically allocated values */
+		int *live_a1 = (int*)calloc(2, sizeof(int));
+		int *live_d1 = (int*)calloc(1, sizeof(int));
+		live_a1[0] = 3;
+		live_a1[1] = 2;
+		live_d1[0] = 3;
+		model->live_a = live_a1;
+		model->live_d = live_d1;
+		//g_print("rules %d %d: %d\n", model->live_a[0], model->live_a[1], model->live_d[0]);
+		free(bgCol);
+		free(frCol);
+		free(json);
+		/* Initialize new grid and give random values */
+		model->grid = grid_new(model->max_x, model->max_y);
+		grid_rand(model->max_x, model->max_y, model->grid);
+	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 
 void model_pref_setup( pref_model *model, const char *pref_path )
 {
-	char *json = jsm_read(pref_path);
-	//free(model);
-	char *tick_i, *row_s, *col_s, *bgCol, *frCol, *infi, *visi; /* free these */
+	if(model) {
+		char *json = jsm_read(pref_path);
 
-	tick_i = jsm_json_val( json, "tickInterval", 3 );
-	row_s  = jsm_json_val( json, "gridHeight", 3 );
-	col_s  = jsm_json_val( json, "gridLength", 3 );
-	visi   = jsm_json_val( json, "gridVisible", 3 );
-	bgCol  = jsm_json_val( json, "backgroundColor", 3 );
-	frCol  = jsm_json_val( json, "cellColor", 3 );
-	/* Convert numeric values NOTE will be 0 if unable to convert */
-	int row  = atoi(row_s);
-	int col  = atoi(col_s);
-	int vis  = atoi(visi);
-	int tick = atoi(tick_i);
-
-	/* populate values for model */
-	model->max_y  = row;
-	model->max_x  = col;
-	model->tick_t = tick;
-	model->visible = vis;
-	/* TODO: static modifiers for now */
-	model->cell_s = 10.0;
-	model->zoom   = 1.0;
-	/* parse colors to model  */
-	gdk_rgba_parse(&model->bgrn_col, bgCol);
-	gdk_rgba_parse(&model->cell_col, frCol);
-	/* Free dynamically allocated values */
-
-	free(tick_i);
-	free(row_s);
-	free(col_s);
-	free(visi);
-	free(bgCol);
-	free(frCol);
-	free(json);
+		char *bgCol, *frCol, *infi; /* free these */
+		/* populate values for model */
+		model->max_y   = model_integer_value(json, "gridHeight");
+		model->max_x   = model_integer_value(json, "gridLength");
+		model->tick_t  = model_integer_value(json, "tickInterval");
+		model->visible = model_integer_value(json, "gridVisible");
+		/* TODO: static modifiers for now */
+		model->cell_s = 10.0;
+		model->zoom   = 1.0;
+		bgCol = jsm_json_val(json, "backgroundColor", 3);
+		frCol = jsm_json_val(json, "cellColor", 3);
+		/* parse colors to model  */
+		gdk_rgba_parse(&model->bgrn_col, bgCol);
+		gdk_rgba_parse(&model->cell_col, frCol);
+		/* Free dynamically allocated values */
+		free(bgCol);
+		free(frCol);
+		free(json);
+	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }

@@ -108,7 +108,7 @@ gboolean view_timer_update( game_model *model )
 
 view_draw_rectangle( cairo_t *cairo, GdkRGBA *color, int start_x, int start_y, int width, int height )
 {
-	if(cairo) {
+	if(cairo && color) {
 		cairo_rectangle(cairo, start_x, start_y, width, height);
 		gdk_cairo_set_source_rgba(cairo, color);
 		cairo_fill(cairo);
@@ -119,15 +119,57 @@ G_MODULE_EXPORT
 void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	//GtkAllocation allocation;
-	//gtk_widget_get_allocation(GTK_DRAWING_AREA(gameArea), &allocation);
-	int max_x = model->game->max_x,
-		 max_y = model->game->max_y,
-		 cur_x = model->game->startAtCellX,
-		 cur_y = model->game->startAtCellY;
+
+	if(model) {
+		int max_x = model->game->max_x,
+			max_y = model->game->max_y,
+			cur_x = model->game->startAtCellX,
+			cur_y = model->game->startAtCellY;
+		/* Get currently drawn size of the widget */
+		GtkAllocation widget_alloc;
+		gtk_widget_get_allocation(GTK_DRAWING_AREA(area), &widget_alloc);
+		int maxx = widget_alloc.width,
+			maxy = widget_alloc.height;
+		/* Draw background */
+		view_draw_rectangle(cr, &model->game->bgrn_col, 0, 0, maxx, maxy);
+		float x_start = 5.0, y_start = 5.0;
+		for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
+			for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
+				int state = -1;
+				if(x_start > maxx) {
+					break;
+				}
+				if(y_start > maxy) {
+					break;
+				}
+				state = model->game->grid[cur_y][cur_x];
+				if(state == 1) {
+					view_draw_rectangle(cr, &model->game->cell_col, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
+				}
+				else if(state != 1 && model->game->visible == 1)  {
+					int size = (model->game->cell_s/model->game->zoom)+1.5;
+					GdkRGBA *rgba;
+					rgba = gdk_rgba_copy(&model->game->bgrn_col);
+					rgba->red   += 0.1;
+					rgba->green += 0.1;
+					rgba->blue  += 0.1;
+					view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+					gdk_rgba_free(rgba);
+				}
+
+				x_start += model->game->cell_s/model->game->zoom;
+				x_start += model->game->cell_s/3.0; // space between cells
+			}
+			x_start = 5.0;
+			y_start += model->game->cell_s/model->game->zoom;
+			y_start += model->game->cell_s/3.0;
+		}
+	} else { }
+
+/*
 
 	int maxx = gtk_widget_get_allocated_width(area),
-		 maxy = gtk_widget_get_allocated_height(area);
+		maxy = gtk_widget_get_allocated_height(area);
 
 	view_draw_rectangle(cr, &model->game->bgrn_col, 0, 0, maxx, maxy);
 
@@ -146,8 +188,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 				view_draw_rectangle(cr, &model->game->cell_col, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
 			}
 			else if(state != 1 && model->game->visible == 1)  {
-				/*x_start -= 0.5;
-				y_start -= 0.5;*/
+
 				int size = (model->game->cell_s/model->game->zoom)+1.5;
 				GdkRGBA *rgba;
 				rgba = gdk_rgba_copy(&model->game->bgrn_col);
@@ -158,12 +199,12 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 /*
 				cairo_rectangle(cr, x_start, y_start, (model->game->cell_s/model->game->zoom), (model->game->cell_s/model->game->zoom));
 				gdk_cairo_set_source_rgba(cr, rgba);
-				cairo_fill(cr);*/
+				cairo_fill(cr);
 				gdk_rgba_free(rgba);
 /*				x_start += 0.5;
 				y_start += 0.5;
-*/				//x_start -= 0.1;
-				//y_start -= 0.1;
+			// x_start -= 0.1;
+				// y_start -= 0.1;
 			}
 
 			x_start += model->game->cell_s/model->game->zoom;
@@ -172,7 +213,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 		x_start = 5.0;
 		y_start += model->game->cell_s/model->game->zoom;
 		y_start += model->game->cell_s/3.0;
-	}
+	}*/
 }
 
 G_MODULE_EXPORT
