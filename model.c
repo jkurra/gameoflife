@@ -241,15 +241,6 @@ void model_game_save( game_model *model, const char *pref_path )
 
 }
 
-int model_integer_value( const char *json, char *key )
-{
-	int rtn = -1;
-	char *str = jsm_json_val( json, key, 3 );
-	rtn = atoi(str);
-	free(str);
-	return rtn;
-}
-
 void model_game_setup( game_model *model, const char *pref_path )
 {
 	if(model) { /* Free current grid if allocated */
@@ -260,10 +251,10 @@ void model_game_setup( game_model *model, const char *pref_path )
 
 		char *bgCol, *frCol, *infi; /* free these */
 		/* populate values for model */
-		model->max_y   = model_integer_value(json, "gridHeight");
-		model->max_x   = model_integer_value(json, "gridLength");
-		model->tick_t  = model_integer_value(json, "tickInterval");
-		model->visible = model_integer_value(json, "gridVisible");
+		model->max_y   = jsm_atoi(json, "gridHeight");
+		model->max_x   = jsm_atoi(json, "gridLength");
+		model->tick_t  = jsm_atoi(json, "tickInterval");
+		model->visible = jsm_atoi(json, "gridVisible");
 		/* TODO: static modifiers for now */
 		model->cell_s = 10.0;
 		model->zoom   = 1.0;
@@ -297,10 +288,10 @@ void model_pref_setup( pref_model *model, const char *pref_path )
 
 		char *bgCol, *frCol, *infi; /* free these */
 		/* populate values for model */
-		model->max_y   = model_integer_value(json, "gridHeight");
-		model->max_x   = model_integer_value(json, "gridLength");
-		model->tick_t  = model_integer_value(json, "tickInterval");
-		model->visible = model_integer_value(json, "gridVisible");
+		model->max_y   = jsm_atoi(json, "gridHeight");
+		model->max_x   = jsm_atoi(json, "gridLength");
+		model->tick_t  = jsm_atoi(json, "tickInterval");
+		model->visible = jsm_atoi(json, "gridVisible");
 		/* TODO: static modifiers for now */
 		model->cell_s = 10.0;
 		model->zoom   = 1.0;

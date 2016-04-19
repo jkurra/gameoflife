@@ -45,4 +45,6 @@ char *jsm_read( const char *file );
  */
 jsmrtn_t jsm_write( char *json, const char *file );
 
+int jsm_atoi( const char *json, const char *key );
+
 #endif /* __JSM_H_ */

@@ -13,8 +13,18 @@
 #define GAME  1
 #define PREF  2
 
-/* @brief Get new view model.
+/* @brief Initializes new view_model
  *
+ * Initializes view model containing game, menu and pref-models. This way any
+ * function of those models may be accessed through view_model. It also creates
+ * simple and fast way of initializing all necessary models safely without having
+ * to initalize every model individually. It is then possible to change active
+ * model to close and open other views included in this model. Must be freed
+ * using model_view_free.
+ *
+ * @param type Type of the model that is set active.
+ * @param pref_path Path to file containing settings.
+ * @return Pointer to newly allocated view_model.
  */
 view_model *model_view_new( int type, const char *pref_path );
 

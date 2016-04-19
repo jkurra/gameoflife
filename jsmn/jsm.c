@@ -124,3 +124,27 @@ jsmrtn_t jsm_write( char *json, const char *file )
 
 	return rtn;
 }
+char *jsm_ctoa()
+{
+
+}
+void jsm_atoc(GdkRGBA *color, char *asStr )
+{
+
+	gdk_rgba_parse(color, asStr);
+}
+
+char *jsm_itoa( const char *value )
+{
+	char *rtn;
+	return rtn;
+}
+/* Exctract integer directly from json string */
+int jsm_atoi( const char *json, const char* key )
+{
+	int rtn = -1;
+	char *str = jsm_json_val( json, key, 3 );
+	rtn = atoi(str);
+	free(str);
+	return rtn;
+}
