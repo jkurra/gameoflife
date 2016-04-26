@@ -37,7 +37,7 @@ game_model *model_game_new()
 		This way it is easy to check if values are usable later.
 	*/
 	game->timerid = -1;
-	game->max_x   = -1;
+	game->max_rows   = -1;
 	game->max_y   = -1;
 
 	game->infinite = -1;
@@ -163,7 +163,7 @@ void model_close_view( view_model *model )
 }
 
 void model_update( view_model *model, int type )
-{
+{	//TODO this should read current view values
 	if(model) {
 		switch(type) {
 			case MENU:
@@ -181,6 +181,26 @@ void model_update( view_model *model, int type )
 				break;
 		}
 	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
+}
+
+void model_fread( view_model *model, int type )
+{
+	if(model) {
+		switch( type ) {
+			case MENU:
+				printf("MODEL [READ] : menu\n");
+				break;
+			case GAME:
+				printf("MODEL [READ] : game\n");
+				model_game_setup(model->game, model->pref_path);
+				break;
+			case PREF:
+				printf("MODEL [READ] : pref\n");
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [READ] : ERROR! Received null pointer to model\n"); }
 }
 
 void model_rwrite( view_model *model, int type )
@@ -207,8 +227,8 @@ void model_game_save( game_model *model, const char *pref_path )
 {
 	/*
 		Used json keys will be:
-		"gridLength"
-		"gridHeight"
+		"gridRows"
+		"gridCols"
 		"tickInterval"
 		"gridVisible"
 		"backgroundColor"
@@ -219,7 +239,7 @@ void model_game_save( game_model *model, const char *pref_path )
 	char t_time[10];
 	char vis[10];
 
-	sprintf(x_size, "%d", model->max_x);
+	sprintf(x_size, "%d", model->max_rows);
 	sprintf(y_size, "%d", model->max_y);
 	sprintf(t_time, "%d", model->tick_t);
 	sprintf(vis, "%d", model->visible);
@@ -227,42 +247,55 @@ void model_game_save( game_model *model, const char *pref_path )
 	gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
 	gchar *cell = gdk_rgba_to_string(&model->cell_col);
 
-	json = jsm_json_add(json, "gridLength", &x_size);
-	json = jsm_json_add(json, "gridHeight", &y_size);
-	json = jsm_json_add(json, "tickInterval", &t_time);
-	json = jsm_json_add(json, "gridVisible", &vis);
-	json = jsm_json_add(json, "backgroundColor", bgrn);
-	json = jsm_json_add(json, "cellColor", cell);
+	char *strings[6];
+	strings[0] = jsm_jval("gridRows", &x_size, 1);
+	strings[1] = jsm_jval("gridCols", &y_size, 1);
+	strings[2] = jsm_jval("tickInterval", &t_time, 1);
+	strings[3] = jsm_jval("gridVisible", &vis, 1);
+	strings[4] = jsm_jval("backgroundColor", bgrn, 1);
+	strings[5] = jsm_jval("cellColor", cell, 0);
+
+	char *rst = jsm_create_object(6, strings, 3);
+
+	for(int i=0; i<6; i++) {
+		free(strings[i]);
+	}
 
 	free(bgrn);
 	free(cell);
 
-	jsm_write(json, pref_path);
-
+	jsm_write(rst, pref_path);
+	free(rst);
 }
 
 void model_game_setup( game_model *model, const char *pref_path )
 {
 	if(model) { /* Free current grid if allocated */
 		char *json = jsm_read(pref_path);
-		grid_free(model->max_y, model->grid);
+		//g_print("free grid : %d\n", model->max_rows);
+		//grid_free(model->max_rows, model->grid);
 		free(model->live_a);
 		free(model->live_d);
 
 		char *bgCol, *frCol, *infi; /* free these */
 		/* populate values for model */
-		model->max_y   = jsm_atoi(json, "gridHeight");
-		model->max_x   = jsm_atoi(json, "gridLength");
-		model->tick_t  = jsm_atoi(json, "tickInterval");
-		model->visible = jsm_atoi(json, "gridVisible");
+		model->max_y    = jsm_atoi(json, "gridCols");
+		model->max_rows = jsm_atoi(json, "gridRows");
+		model->tick_t   = jsm_atoi(json, "tickInterval");
+		model->visible  = jsm_atoi(json, "gridVisible");
+
+		g_print("changed rows : %d\n", model->max_rows);
 		/* TODO: static modifiers for now */
 		model->cell_s = 10.0;
 		model->zoom   = 1.0;
 		bgCol = jsm_json_val(json, "backgroundColor", 3);
 		frCol = jsm_json_val(json, "cellColor", 3);
 		/* parse colors to model  */
+		/*model->bgrn_col = jsm_ctoa(bgCol);
+		model->cell_col = jsm_ctoa(frCol);*/
 		gdk_rgba_parse(&model->bgrn_col, bgCol);
 		gdk_rgba_parse(&model->cell_col, frCol);
+
 		/* Free dynamically allocated values */
 		int *live_a1 = (int*)calloc(2, sizeof(int));
 		int *live_d1 = (int*)calloc(1, sizeof(int));
@@ -275,9 +308,15 @@ void model_game_setup( game_model *model, const char *pref_path )
 		free(bgCol);
 		free(frCol);
 		free(json);
+		//g_print("prefsetup\n");
 		/* Initialize new grid and give random values */
-		model->grid = grid_new(model->max_x, model->max_y);
-		grid_rand(model->max_x, model->max_y, model->grid);
+		model->grid = grid_new(model->max_rows, model->max_y);
+		grid_rand(model->max_rows, model->max_y, model->grid);
+
+		if(model->tick_t < 100) {
+			g_print("WARNING: update value too small setting to : 100ms.\n");
+			model->tick_t = 100;
+		}
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 
@@ -288,8 +327,8 @@ void model_pref_setup( pref_model *model, const char *pref_path )
 
 		char *bgCol, *frCol, *infi; /* free these */
 		/* populate values for model */
-		model->max_y   = jsm_atoi(json, "gridHeight");
-		model->max_x   = jsm_atoi(json, "gridLength");
+		model->max_y   = jsm_atoi(json, "gridCols");
+		model->max_rows   = jsm_atoi(json, "gridRows");
 		model->tick_t  = jsm_atoi(json, "tickInterval");
 		model->visible = jsm_atoi(json, "gridVisible");
 		/* TODO: static modifiers for now */

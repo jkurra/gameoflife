@@ -18,9 +18,9 @@
  * @param y   desired amount of rows in the array.
  * @return pointer to  created two-dimensional array
  */
-int **grid_new( int x, int y );
+int **grid_new( int rows, int cols );
 
-void grid_free( int y, int **arr);
+void grid_free( int rows, int **arr);
 
 /** @brief Initialize random values to each cell in a grid
  *
@@ -37,7 +37,7 @@ void grid_free( int y, int **arr);
  * @param y   amount of rows in the array.
  * @param arr array to be initalized.
  */
-void grid_rand( int x, int y, int **arr );
+void grid_rand( int rows, int cols, int **arr );
 
 /** @brief Update grid to next values.
  *

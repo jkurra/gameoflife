@@ -104,11 +104,16 @@ void model_draw_view( view_model *model );
 void model_close_view( view_model *model );
 
 /* @brief Get new view model.
- *
+ *  TODO: update from view, not from file for clarity
  */
 void model_update( view_model *model, int type );
 
-/* @brief Get new view model.
+/* @brief
+ *
+ */
+void model_fread( view_model *model, int type );
+
+/* @brief Write current model to file.
  *
  */
 void model_rwrite( view_model *model, int type );

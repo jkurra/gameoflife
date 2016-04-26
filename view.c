@@ -45,12 +45,16 @@ void view_pref_init( pref_model *model, GtkBuilder *builder )
 	}
 	/* Set values for elements received from the model. */
 	GtkWidget *sp = GTK_WIDGET ( gtk_builder_get_object(builder, "row_spinbutton") );
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->max_x);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp), model->max_rows);
 	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "col_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->max_y);
 	GtkWidget*sp2 = GTK_WIDGET( gtk_builder_get_object(builder, "int_spinbutton") );
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->tick_t);
 
+/*
+	int tmp = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(sp));
+	g_print("rows in view : %d \n", tmp);
+*/
 	GtkWidget *cb = GTK_WIDGET ( gtk_builder_get_object(builder, "bg_colorbutton"));
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (cb), &model->bgrn_col);
 	GtkWidget *cb2 = GTK_WIDGET( gtk_builder_get_object(builder, "cell_colorbutton"));
@@ -100,7 +104,7 @@ void view_menu_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 gboolean view_timer_update( game_model *model )
 {
 	if(model) {
-		grid_next(model->max_x, model->max_y, model->grid, model->live_a, 2, model->live_d, 1);
+		grid_next(model->max_rows, model->max_y, model->grid, model->live_a, 2, model->live_d, 1);
 		gtk_widget_queue_draw( model->main_frame );
 	}
 	return TRUE;
@@ -121,7 +125,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 	view_model *model = (view_model*)data;
 
 	if(model) {
-		int max_x = model->game->max_x,
+		int max_x = model->game->max_rows,
 			max_y = model->game->max_y,
 			cur_x = model->game->startAtCellX,
 			cur_y = model->game->startAtCellY;
@@ -133,8 +137,8 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 		/* Draw background */
 		view_draw_rectangle(cr, &model->game->bgrn_col, 0, 0, maxx, maxy);
 		float x_start = 5.0, y_start = 5.0;
-		for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
-			for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
+		for(cur_y=model->game->startAtCellY; cur_y<max_x; cur_y++) {
+			for(cur_x=model->game->startAtCellX; cur_x<max_y; cur_x++) {
 				int state = -1;
 				if(x_start > maxx) {
 					break;
@@ -142,7 +146,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 				if(y_start > maxy) {
 					break;
 				}
-				state = model->game->grid[cur_y][cur_x];
+				state = model->game->grid[cur_x][cur_y];
 				if(state == 1) {
 					view_draw_rectangle(cr, &model->game->cell_col, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
 				}

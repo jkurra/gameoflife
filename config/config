@@ -1,1 +1,8 @@
-{"gridLength":"500","gridHeight":"500","tickInterval":"100","gridVisible":"1","backgroundColor":"rgb(0,0,0)","cellColor":"rgb(245,121,0)"}
+{
+   "gridRows":"250",
+   "gridCols":"180",
+   "tickInterval":"110",
+   "gridVisible":"1",
+   "backgroundColor":"rgb(0,0,0)",
+   "cellColor":"rgb(237,212,0)"
+}

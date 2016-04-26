@@ -1,29 +1,32 @@
 #include "grid.h"
 
-int **grid_new( int x, int y )
+int **grid_new( int rows, int cols )
 {
-    int **arr = (int**)calloc(y, sizeof(int*));
-    for(int i=0; i<y; i++) {
-        arr[i] = (int*)calloc(x, sizeof(int*));
+    //g_print("new grid %d : %d\n", x, y);
+    int **arr = (int**)calloc(rows, sizeof(int*));
+    for(int i=0; i<cols; i++) {
+        arr[i] = (int*)calloc(cols, sizeof(int*));
     }
 
     return arr;
 }
 
-void grid_free( int y, int **arr )
+void grid_free( int rows, int **arr )
 {
     if(arr) {
-       for(int i=0; i<y; i++) { free(arr[i]); }
+       for(int i=0; i<rows; i++) {
+           free(arr[i]);
+       }
        free(arr);
     }
     //arr = NULL;
 }
 
-void grid_rand( int x, int y, int **arr )
+void grid_rand( int rows, int cols, int **arr )
 {
     if(arr) {
-        for(int i=0; i<y; i++) {
-            for(int k=0; k<x; k++) { arr[i][k] = rand()%2; }
+        for(int i=0; i<rows; i++) {
+            for(int k=0; k<cols; k++) { arr[k][i] = rand()%2; }
         }
     }
 }

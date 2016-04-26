@@ -27,7 +27,7 @@ typedef struct
 	GdkRGBA bgrn_col; /* Background color of the grid */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
-	int max_x, max_y; /* Maximum dimensions of the game grid */
+	int max_rows, max_y; /* Maximum dimensions of the game grid */
 	//int **grid;				/* Game board containing values */
 	int infinite;
 	int visible;
@@ -50,7 +50,7 @@ typedef struct
 	GdkRGBA bgrn_col; /* Background color of the grid */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
-	int max_x, max_y; /* Maximum dimensions of the game grid */
+	int max_rows, max_y; /* Maximum dimensions of the game grid */
 	int **grid;			/* Game board containing values */
 	int infinite;
 	int visible;
