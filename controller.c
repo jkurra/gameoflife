@@ -90,7 +90,7 @@ void on_int_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
-		model->game->commons->tick_t = gtk_spin_button_get_value_as_int(button);
+		model->game->commons->interval = gtk_spin_button_get_value_as_int(button);
 }
 
 G_MODULE_EXPORT
