@@ -20,6 +20,9 @@
  */
 int **grid_new( int rows, int cols );
 
+/** @brief Free dynamically allocated array.
+ *
+ */
 void grid_free( int rows, int **arr);
 
 /** @brief Initialize random values to each cell in a grid

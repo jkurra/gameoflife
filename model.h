@@ -26,7 +26,7 @@
  * @param pref_path Path to file containing settings.
  * @return Pointer to newly allocated view_model.
  */
-view_model *model_view_new( int type, const char *pref_path );
+view_model *model_view_new( int type, char *pref_path );
 
 /* @brief Get new view model.
  *
@@ -43,7 +43,12 @@ menu_model *model_menu_new();
  */
 pref_model *model_pref_new();
 
-/* @brief Free given view model.
+/* @brief Get new view model.
+ *
+ */
+commons_model *model_commons_new();
+
+/* @brief Free given model.
  *
  */
 void model_view_free( view_model *model );
@@ -63,6 +68,33 @@ void model_menu_free( menu_model *model );
  */
 void model_pref_free( pref_model *model );
 
+/* @brief Free given view model.
+ *
+ */
+void model_commons_free( commons_model *model );
+
+void model_attach_timer( view_model *model, GSourceFunc update_function, int interval );
+
+void model_remove_timer( view_model *model, int timer_id );
+
+/* @brief Update
+ *
+ */
+void model_update( view_model *model, int type );
+
+/* @brief Get new view model.
+ *
+ */
+void model_game_setup( game_model *model, const char *pref_path );
+
+/* @brief Get new view model.
+ *
+ */
+void model_pref_setup( pref_model *model, const char *pref_path );
+
+
+/* TODO: these actually belong to view */
+
 /** @brief Initialize values current model.
  *
  * Initializes view using view_model, which contains type value. Type value is
@@ -76,7 +108,7 @@ void model_pref_free( pref_model *model );
  *
  * @param model Contains data needed to initialize view.
  */
-void model_init_view( view_model *model );
+void model_init_view( view_model *model, int type );
 
 /** @brief Draw current model.
  *
@@ -102,32 +134,5 @@ void model_draw_view( view_model *model );
  * @param model Contains view to be closed.
  */
 void model_close_view( view_model *model );
-
-/* @brief Get new view model.
- *  TODO: update from view, not from file for clarity
- */
-void model_update( view_model *model, int type );
-
-/* @brief
- *
- */
-void model_fread( view_model *model, int type );
-
-/* @brief Write current model to file.
- *
- */
-void model_rwrite( view_model *model, int type );
-
-/* @brief Get new view model.
- *
- */
-void model_game_setup( game_model *model, const char *pref_path );
-
-/* @brief Get new view model.
- *
- */
-void model_pref_setup( pref_model *model, const char *pref_path );
-
-void model_game_save( game_model *model, const char *pref_path );
 
 #endif /* MODEL_H_ */

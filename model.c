@@ -1,18 +1,27 @@
 #include "model.h"
 
-view_model *model_view_new( int type, const char *pref_path )
+view_model *model_view_new( int type, char *pref_path )
 {
-	/* Allocate space for new view_model */
+	/* Allocate space for new view_model and add base values */
 	view_model *model = (view_model*)malloc(sizeof(view_model));
 	model->type = type;
 	model->pref_path = pref_path;
 	/* Initialize model variables and GTK parts initialization*/
+	/* TODO: refactor this to be part of view */
 	gtk_init(NULL, NULL);
 	model->builder = gtk_builder_new();
+
 	/* Initialize views_included in model */
 	model->menu = model_menu_new();
 	model->game = model_game_new();
-	model->pref = model_game_new();
+	model->pref = model_pref_new();
+
+	commons_model *commons = model_commons_new(); /* Initialize common values  */
+	if(model->pref_path) {
+		jsm_read_commons(commons, pref_path); /* Read common values from file. */
+		model->game->commons = commons;
+		model->pref->commons = commons;
+	} else { printf("No Settings file provided. \n" ); }
 
 	return model;
 }
@@ -29,73 +38,112 @@ game_model *model_game_new()
 	/* Allocate space for the model */
 	game_model *game = (game_model*)malloc(sizeof(game_model));
 	/* Initialize null values for all variables */
-	game->grid 	 = NULL;
-	game->live_a = NULL;
-	game->live_d = NULL;
-	/*
-		Most integer values must be > 0 so they are set to -1
-		This way it is easy to check if values are usable later.
-	*/
-	game->timerid = -1;
-	game->max_rows   = -1;
-	game->max_y   = -1;
-
-	game->infinite = -1;
-	game->visible  = -1;
-	game->cell_s 	= -1;		/* Size of each cell in the screen. */
-	game->zoom   	= -1; 	/* How big or small cells appear on the screen.	*/
-	game->tick_t  	= -1;
-	game->timerid 	= -1;	/* Id of the widget containing update timer. */
 	game->startAtCellX = 0; /* From which column to start drawing */
 	game->startAtCellY = 0; /* From which row to start drawing */
-
+	game->grid 	  = NULL;
+	game->commons = NULL;	/* common values must be externally set, otherwise
+							   they are always NULL. */
 	return game;
 }
 
 pref_model *model_pref_new()
 {
 	pref_model *pref = (pref_model*)malloc(sizeof(pref_model));
+	pref->commons = NULL;
+
 	return pref;
+}
+
+commons_model *model_commons_new()
+{
+	commons_model *commons = (commons_model*)malloc(sizeof(commons_model));
+
+	commons->rows = -1;
+	commons->cols = -1;
+	commons->timerid = -1;
+	commons->infinite = -1;
+	commons->visible  = -1;
+	commons->cell_s   = -1;		/* Size of each cell in the screen. */
+	commons->zoom     = -1; 	/* How big or small cells appear on the screen.	*/
+	commons->interval = -1;
+	commons->timerid  = -1;		/* Id of the widget containing update timer. */
+	commons->live_a = NULL;
+	commons->live_d = NULL;
+
+	return commons;
 }
 
 void model_view_free( view_model *model )
 {
 	if(model) {
 		g_object_unref(G_OBJECT(model->builder));
+
 		model_menu_free(model->menu);
 		model_game_free(model->game);
 		model_pref_free(model->pref);
+		model_commons_free(model->game->commons);
 		free(model->pref_path);
 		free(model);
-	} else { printf("ERROR: Unable to free view_model, NULL model. \n", time(NULL)); }
+	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
+}
+
+void model_commons_free( commons_model *model )
+{
+	if(model) {
+		printf("Model view free called, NULL model. \n");
+
+		if(model->live_a) {
+			free(model->live_a);
+		}
+		if(model->live_d) {
+			free(model->live_d);
+		}
+		free(model);
+	}
 }
 
 void model_menu_free( menu_model *model )
 {
-	if(model) {
+	if(model) {printf("Model menu free called, NULL model. \n");
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
 
 void model_game_free( game_model *model )
 {
-	if(model) {
-		grid_free(model->max_y, model->grid);
-		free(model->live_a);
-		free(model->live_d);
+	if(model) {printf("Model game free called. \n");
+		grid_free(model->commons->rows, model->grid);
 		free(model);
 	} else { printf("ERROR: Unable to free game_model, NULL model. \n"); }
 }
 
 void model_pref_free( pref_model *model)
 {
-	if(model) {
+	if(model) {printf("Model pref free called, NULL model. \n");
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
 
-void model_init_view( view_model *model )
+void model_attach_timer(view_model *model, GSourceFunc update_function, int interval )
 {
+	switch(model->type) {
+		case GAME:
+			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model);
+			break;
+		default:
+			break;
+	}
+}
+
+void model_remove_timer( view_model *model, int timer_id )
+{
+	g_source_remove(timer_id);
+	model->game->commons->timerid = -1;
+}
+
+void model_init_view( view_model *model, int type )
+{	/* TODO: refactor this to be part of view */
+	model->type = type; /* Change current view type. */
 	if(model) {
 		switch(model->type) {
 			case MENU:
@@ -105,11 +153,13 @@ void model_init_view( view_model *model )
 				break;
 			case GAME:
 				printf("MODEL [INIT] : game\n");
+				model_game_setup(model->game, model->pref_path);
 				view_game_init(model->game, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
 			case PREF:
 				printf("MODEL [INIT] : pref\n");
+				model_pref_setup(model->pref, model->pref_path);
 				view_pref_init(model->pref, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
@@ -121,7 +171,7 @@ void model_init_view( view_model *model )
 }
 
 void model_draw_view( view_model *model )
-{
+{	/* TODO: refactor this to be part of view */
 	if(model) {
 		switch(model->type) {
 			case MENU:
@@ -140,7 +190,7 @@ void model_draw_view( view_model *model )
 }
 
 void model_close_view( view_model *model )
-{
+{	/* TODO: refactor this to be part of view */
 	if(model) {
 		gtk_main_quit();
 		switch(model->type) {
@@ -183,165 +233,25 @@ void model_update( view_model *model, int type )
 	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
 }
 
-void model_fread( view_model *model, int type )
-{
-	if(model) {
-		switch( type ) {
-			case MENU:
-				printf("MODEL [READ] : menu\n");
-				break;
-			case GAME:
-				printf("MODEL [READ] : game\n");
-				model_game_setup(model->game, model->pref_path);
-				break;
-			case PREF:
-				printf("MODEL [READ] : pref\n");
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [READ] : ERROR! Received null pointer to model\n"); }
-}
 
-void model_rwrite( view_model *model, int type )
-{
-	if(model) {
-		switch( type ) {
-			case MENU:
-				printf("MODEL [WRITE] : menu\n");
-				break;
-			case GAME:
-				printf("MODEL [WRITE] : game\n");
-				model_game_save(model->game, model->pref_path);
-				break;
-			case PREF:
-				printf("MODEL [WRITE] : pref\n");
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
-}
-
-void model_game_save( game_model *model, const char *pref_path )
-{
-	/*
-		Used json keys will be:
-		"gridRows"
-		"gridCols"
-		"tickInterval"
-		"gridVisible"
-		"backgroundColor"
-		"cellColor"
-	*/
-	char *json = NULL;
-	char x_size[10], y_size[10];
-	char t_time[10];
-	char vis[10];
-
-	sprintf(x_size, "%d", model->max_rows);
-	sprintf(y_size, "%d", model->max_y);
-	sprintf(t_time, "%d", model->tick_t);
-	sprintf(vis, "%d", model->visible);
-
-	gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
-	gchar *cell = gdk_rgba_to_string(&model->cell_col);
-
-	char *strings[6];
-	strings[0] = jsm_jval("gridRows", &x_size, 1);
-	strings[1] = jsm_jval("gridCols", &y_size, 1);
-	strings[2] = jsm_jval("tickInterval", &t_time, 1);
-	strings[3] = jsm_jval("gridVisible", &vis, 1);
-	strings[4] = jsm_jval("backgroundColor", bgrn, 1);
-	strings[5] = jsm_jval("cellColor", cell, 0);
-
-	char *rst = jsm_create_object(6, strings, 3);
-
-	for(int i=0; i<6; i++) {
-		free(strings[i]);
-	}
-
-	free(bgrn);
-	free(cell);
-
-	jsm_write(rst, pref_path);
-	free(rst);
-}
 
 void model_game_setup( game_model *model, const char *pref_path )
 {
-	if(model) { /* Free current grid if allocated */
-		char *json = jsm_read(pref_path);
-		//g_print("free grid : %d\n", model->max_rows);
-		//grid_free(model->max_rows, model->grid);
-		free(model->live_a);
-		free(model->live_d);
-
-		char *bgCol, *frCol, *infi; /* free these */
-		/* populate values for model */
-		model->max_y    = jsm_atoi(json, "gridCols");
-		model->max_rows = jsm_atoi(json, "gridRows");
-		model->tick_t   = jsm_atoi(json, "tickInterval");
-		model->visible  = jsm_atoi(json, "gridVisible");
-
-		g_print("changed rows : %d\n", model->max_rows);
-		/* TODO: static modifiers for now */
-		model->cell_s = 10.0;
-		model->zoom   = 1.0;
-		bgCol = jsm_json_val(json, "backgroundColor", 3);
-		frCol = jsm_json_val(json, "cellColor", 3);
-		/* parse colors to model  */
-		/*model->bgrn_col = jsm_ctoa(bgCol);
-		model->cell_col = jsm_ctoa(frCol);*/
-		gdk_rgba_parse(&model->bgrn_col, bgCol);
-		gdk_rgba_parse(&model->cell_col, frCol);
-
-		/* Free dynamically allocated values */
-		int *live_a1 = (int*)calloc(2, sizeof(int));
-		int *live_d1 = (int*)calloc(1, sizeof(int));
-		live_a1[0] = 3;
-		live_a1[1] = 2;
-		live_d1[0] = 3;
-		model->live_a = live_a1;
-		model->live_d = live_d1;
-		//g_print("rules %d %d: %d\n", model->live_a[0], model->live_a[1], model->live_d[0]);
-		free(bgCol);
-		free(frCol);
-		free(json);
-		//g_print("prefsetup\n");
-		/* Initialize new grid and give random values */
-		model->grid = grid_new(model->max_rows, model->max_y);
-		grid_rand(model->max_rows, model->max_y, model->grid);
-
-		if(model->tick_t < 100) {
-			g_print("WARNING: update value too small setting to : 100ms.\n");
-			model->tick_t = 100;
+	if(model) {
+		jsm_read_commons(model->commons, pref_path);
+		if(model->grid) { /* Free current grid if allocated */
+			grid_free(model->c_rows, model->grid);
 		}
+		model->grid = grid_new(model->commons->rows, model->commons->cols);
+		grid_rand(model->commons->rows, model->commons->cols, model->grid);
+		model->c_rows = model->commons->rows;
+		model->c_cols = model->commons->cols;
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 
 void model_pref_setup( pref_model *model, const char *pref_path )
 {
 	if(model) {
-		char *json = jsm_read(pref_path);
-
-		char *bgCol, *frCol, *infi; /* free these */
-		/* populate values for model */
-		model->max_y   = jsm_atoi(json, "gridCols");
-		model->max_rows   = jsm_atoi(json, "gridRows");
-		model->tick_t  = jsm_atoi(json, "tickInterval");
-		model->visible = jsm_atoi(json, "gridVisible");
-		/* TODO: static modifiers for now */
-		model->cell_s = 10.0;
-		model->zoom   = 1.0;
-		bgCol = jsm_json_val(json, "backgroundColor", 3);
-		frCol = jsm_json_val(json, "cellColor", 3);
-		/* parse colors to model  */
-		gdk_rgba_parse(&model->bgrn_col, bgCol);
-		gdk_rgba_parse(&model->cell_col, frCol);
-		/* Free dynamically allocated values */
-		free(bgCol);
-		free(frCol);
-		free(json);
+		jsm_read_commons(model->commons, pref_path);
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }

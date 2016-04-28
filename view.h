@@ -9,12 +9,39 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 
+/* @brief A model containing application wide universal values.
+ * 	Makes using single model for values that may need to be set in different
+ *  views possible. This should simplify error handling and prevent data loss.
+ *
+ */
+typedef struct
+{
+	GdkRGBA bgrn_col; /* Background color of the grid */
+	GdkRGBA cell_col; /* Color of each cell in grid */
+
+	int rows, cols; /* Maximum dimensions of the game grid */
+	int infinite;
+	int visible;
+
+	float cell_s;		/* Size of each cell in the screen. */
+	float zoom; 		/* How big or small cells appear on the screen.	*/
+	int interval;
+
+	int timerid;	/* Id of the widget containing update timer. */
+
+	/* RULES */
+	int *live_a;
+	int *live_d;
+
+} commons_model;
+
 /*
  *
  */
 typedef struct
 {
 	GtkWidget *main_frame;
+	commons_model *commons; /* Common values for this model. May be NULL */
 } menu_model;
 
 /*
@@ -23,20 +50,8 @@ typedef struct
 typedef struct
 {
 	GtkWidget *main_frame;
+	commons_model *commons; /* Common values for this model. May be NULL */
 
-	GdkRGBA bgrn_col; /* Background color of the grid */
-	GdkRGBA cell_col; /* Color of each cell in grid */
-
-	int max_rows, max_y; /* Maximum dimensions of the game grid */
-	//int **grid;				/* Game board containing values */
-	int infinite;
-	int visible;
-
-	float cell_s;		/* Size of each cell in the screen. */
-	float zoom; 		/* How big or small cells appear on the screen.	*/
-	int tick_t;
-
-	int timerid;
 } pref_model;
 
 /*
@@ -46,27 +61,13 @@ typedef struct
 {
 	GtkWidget *main_frame; /* Main widget containing elements of the view */
 	GtkWidget *game_area;
+	commons_model *commons; /* Common values for this model. May be NULL */
 
-	GdkRGBA bgrn_col; /* Background color of the grid */
-	GdkRGBA cell_col; /* Color of each cell in grid */
-
-	int max_rows, max_y; /* Maximum dimensions of the game grid */
+	int  c_rows, c_cols; /* Current row/column count */
 	int **grid;			/* Game board containing values */
-	int infinite;
-	int visible;
-
-	float cell_s;		/* Size of each cell in the screen. */
-	float zoom; 		/* How big or small cells appear on the screen.	*/
-	int tick_t;
-
-	int timerid;	/* Id of the widget containing update timer. */
 
 	int startAtCellX; /* From which column to start drawing */
 	int startAtCellY; /* From which row to start drawing */
-
-	/* RULES */
-	int *live_a;
-	int *live_d;
 
 } game_model;
 
@@ -81,7 +82,7 @@ typedef struct
 	game_model *game;
 	pref_model *pref;
 
-	char **pref_path;
+	char *pref_path;
 	GtkBuilder *builder;
 } view_model;
 
