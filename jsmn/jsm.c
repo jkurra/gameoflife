@@ -1,219 +1,267 @@
 #include "jsm.h"
 
-jsmrtn_t jsm_default_model ( view_model *model )
+char *jsm_keypair( char *key, char *value, int comma )
 {
-	int rtn = JSM_OK;
+	char *rtn = NULL;
 
-	if(!model) {
-		rtn = JSM_NULL;
-	}
-	else {
-		FILE *fp;
-		fp = fopen(model->pref_path, "w");
-		if (fp == NULL) {
-			rtn = JSM_ERROR_FREAD;
-			printf("Couldn't open file for writing.\n");
-			//exit(0);
-		}
-		fprintf(fp, "{\n");
-		fprintf(fp, "   \"X_SIZE\": \"200\",\n");
-		fprintf(fp, "   \"Y_SIZE\": \"200\",\n");
-		fprintf(fp, "   \"TICK_TIME\": \"200\"\n");
-		fprintf(fp, "}");
+	int klen = strlen(key),
+		vlen = strlen(value);
 
-		fclose(fp);
+	int size = klen+vlen+6;
+
+	if(comma) {
+		size++;
 	}
+	rtn = calloc(sizeof(char), size+1);
+	//strcat(rtn, len);
+	strcat(rtn, "\"");
+	strcat(rtn, key);
+	strcat(rtn, "\"");
+	strcat(rtn, ":");
+	strcat(rtn, "\"");
+	strcat(rtn, value);
+	strcat(rtn, "\"");
+	if(comma){
+		strcat(rtn, ",");
+	}
+	rtn[size] = '\0';
 	return rtn;
 }
 
-jsmrtn_t jsm_update_model ( view_model *model )
+char *jsm_jtok( char *json, int start, int end )
 {
-	int rtn = JSM_OK;
+	char *rtn = NULL;
+	int i=0, k=0, 		/* index for the result array */
+		size=end-start; 	/* size of the string */
 
-	if(!model) {
-		rtn = JSM_NULL;
-	}
-	else {
-		printf("JSM [SAVE] :%s\n", model->pref_path);
-		printf("JSM [SAVE] :%d\n", model->game->grid_x);
-		printf("JSM [SAVE] :%d\n", model->game->grid_y);
-		printf("JSM [SAVE] :%s\n", gdk_rgba_to_string (&model->game->backGround));
-		printf("JSM [SAVE] :%s\n", gdk_rgba_to_string (&model->game->cellColor));
-
-		FILE *fp;
-		fp = fopen(model->pref_path, "w");
-		if (fp == NULL) {
-			rtn = JSM_ERROR_FREAD;
-			printf("Couldn't open file for writing.\n");
-			//exit(0);
+	if(json) {
+		rtn = (char*)calloc(size+1, sizeof(char*));
+		rtn[size] = '\0';
+		for(i=start; i<end; i++, k++) {
+			rtn[k] = json[i];
 		}
-
-		fprintf(fp, "{\n");
-		fprintf(fp, "   \"X_SIZE\": \"%d\",\n", 	 model->game->grid_x);
-		fprintf(fp, "   \"Y_SIZE\": \"%d\",\n", 	 model->game->grid_y);
-		fprintf(fp, "   \"TICK_TIME\": \"%d\",\n",  model->game->tick_t);
-		fprintf(fp, "   \"bgColor\": \"%s\",\n",  gdk_rgba_to_string (&model->game->backGround));
-		fprintf(fp, "   \"frColor\": \"%s\"\n",  gdk_rgba_to_string (&model->game->cellColor));
-		fprintf(fp, "   \"gridVis\": \"%d\"\n",  model->game->visible);
-		fprintf(fp, "}");
-
-		fclose(fp);
-		printf("done.\n");
 	}
 
 	return rtn;
 }
 
-jsmrtn_t jsm_read_model( view_model *model )
+char *jsm_jobj(  int indent,  int size, char *array[size] )
 {
-	int rtn = JSM_NULL;
-	char **json;
-
-	if( model ) {
-		rtn = jsm_read_file(&json, model->pref_path);
+	int objectsize = 0;
+	char *obj= NULL;
+	//g_print("value size: %s\n", array[0]);
+	for(int i=0; i<size; i++) {
+		objectsize += strlen(array[i])+indent+2;
 	}
 
-	if(rtn == JSM_OK) { /* file read successfully */
-		char *tick_time[30], *x_size[30], *y_size[30], *bgCol[30], *frCol[30],*infi[30], *visi[30];
-
-		rtn = jsm_val( tick_time, json, "TICK_TIME" );
-		rtn = jsm_val( x_size, json, "X_SIZE" );
-		rtn = jsm_val( y_size, json, "Y_SIZE" );
-		rtn = jsm_val( bgCol,  json, "bgColor" );
-		rtn = jsm_val( frCol,  json, "frColor" );
-		rtn = jsm_val( visi,  json, "gridVis" );
-
-		int x = atoi( x_size ); /* TODO  check if cast was succesfull */
-		int y = atoi( y_size) ;
-		int visible = atoi(visi) ;
-		int time = atoi(tick_time);
-
-		/* populate values for model */
-		model->game->grid_x = x;
-		model->game->grid_y = y;
-		model->game->tick_t = time;
-
-		/* parse colors to model  */
-		gdk_rgba_parse( &model->game->backGround, bgCol );
-		gdk_rgba_parse( &model->game->cellColor , frCol );
-
-		/* static modifiers for now */
-		model->game->cell_s = 10;
-		model->game->zoom   = 1;
-		model->game->tick_t = 100;
-		model->game->visible = visible;
-		model->game->grid = grid_new( x, y );
-		grid_rand(x, y, model->game->grid);
-		//grid_print(x, y, model->game->grid);
-		/* set drawing start point at beginning of grid */
-		model->game->startAtCellX = 0;
-		model->game->startAtCellY = 0;
-	}
-
-	return rtn;
-}
-
-jsmrtn_t jsm_read_file(char **json, const char *file)
-{
-
-	int rtn = JSM_OK;
-	printf("JSM [OPEN] :%s:...", file);
-
-	FILE *fptr = fopen(file, "r");
-
-	if( fptr != 0) {
-		printf("done.\n");
-		fseek( fptr , 0L , SEEK_END);
-		long flen = ftell( fptr ); /* how many characters in file */
-        rewind( fptr );
-
-		char **buffer = calloc( sizeof(char), flen+1 );
-		if(!buffer) {
-			printf("JSM [ERROR] : Unable to allocate memory.", file);
-			rtn = JSM_ERROR_ALLOC;
+	obj = calloc(sizeof(char), objectsize+1);
+	strcat(obj, "{\n");
+	for(int i=0; i<size; i++) {
+		for(int k=0; k<indent; k++) {
+			strcat(obj, " ");
 		}
-		else {
-			fread( buffer, flen, 1 , fptr);
-		}
-    fclose(fptr); /* close filestream */
-		(*json) = buffer;
+		strcat(obj,array[i]);
+		strcat(obj, "\n");
 	}
-	else {
-		printf("failed.\n");
-		rtn = JSM_ERROR_FREAD;
-	}
+	strcat(obj, "}\n");
 
-	return rtn;
+	return obj;
 }
 
-jsmrtn_t jsm_write_file(char *json, const char *file)
+char *jsm_jval( char *json, char *key, jsmntype_t type )
 {
-	int i=0, r = JSM_OK;
-	printf("trying to open file : %s\n", file);
-
-	FILE *fp = fopen(file, "rw");
-	fwrite ( json , sizeof(char), sizeof(json) , fp );
-	fclose(fp);
-
-	return r;
-}
-
-jsmrtn_t jsm_val(char *rtn3, const char *json, const char *key)
-{
-	int rtn = JSM_OK;
-	printf("JSM [PARSE] : %s : ", key);
-	/* Calculate lenght for the full json */
-	if( !key || !json ) {
-		rtn = JSM_NULL;
-	}
-
-	if(rtn == JSM_OK) {
-		int i=0, l=strlen(json);
-		/* Parse all elements into an array */
+	char *rtn = NULL;
+	/* Initialize parser and read json tokens */
+	if(json) {
 		jsmn_parser parser;
-		jsmntok_t 	tokens[256];
+		jsmntok_t tokens[256];
 		jsmn_init(&parser);
-		jsmn_parse(&parser, json, l, tokens, 256);
-		int size = tokens->size; /* number of found json elements */
-	  //printf("size : %s.", json);
-		for(i=0; i<size; i++) {
-			jsmntok_t *tmp_t = &tokens[i];
-			int size = tmp_t->end-tmp_t->start;
-		  if(tmp_t->type == JSMN_STRING) { /* Value is string */
-				char nn[size];
-				jsm_obj(nn, json, tmp_t->start, tmp_t->end);
-				if(strcmp(nn, key) == 0) {
-					jsmntok_t *tmp_t2 = &tokens[i+1];
-					/*if(tmp_t2->type == JSMN_PRIMITIVE) { /* Value is primitive */
-					//		printf("Object values must be strings or primitives.");
-					//}*/
-					jsmntok_t *tmp1 = &tokens[i+1];// next value is the data
-					int tmp1_size = tmp1->end-tmp1->start;
-					char nn1[tmp1_size];
-					jsm_obj( nn1, json, tmp1->start, tmp1->end );
-					jsm_obj( rtn3, json, tmp1->start, tmp1->end ); /* add to return data */
+		jsmn_parse(&parser, json, strlen(json), tokens, 256);
+
+		for(int i=0; i<tokens->size; i++) { /* Find tokens that match both key and type */
+			if(tokens[i].type == type ) {
+				char *tkn = jsm_jtok(json, tokens[i].start, tokens[i].end);
+				if(tkn != NULL && strcmp(tkn, key) == 0) {
+					rtn = jsm_jtok(json, tokens[i+1].start, tokens[i+1].end);
 				}
+				free(tkn);
 			}
 		}
-		printf("%s done.\n", rtn3);
 	}
 
 	return rtn;
 }
 
-jsmrtn_t jsm_obj(char *result, const char *full_json, int start, int end)
+char *jsm_fread( const char *file )
 {
-	int rtn = JSM_OK;
-	if(!full_json) {
-		rtn = JSM_NULL;
-	}
-	else {
-		int i=0, k=0, 		/* index for the result array */
-			s=end-start; 	/* size of the string */
-		result[s] = '\0';
-		for(i=start; i<end; i++, k++)
-			result[k] = full_json[i];
+	char *json = NULL;
+	if(file) {
+		FILE *src = fopen(file, "r");
+		if(src) {
+			printf("JSM [READ] : File opened.\n");
+			fseek(src , 0L , SEEK_END);
+			long flen = ftell(src);
+			rewind(src);
+			json = calloc(sizeof(char), flen+1);
+			if(json) {
+				size_t res = fread(json, 1, flen , src);
+				json[res] = '\0';
+			} else { printf("JSM [ERROR] : Unable to allocate memory.\n"); }
+			fclose(src);
+		}
 	}
 
+	return json;
+}
+
+int jsm_fwrite( char *json, const char *file )
+{
+	int rtn = 1;
+	if(json && file) {
+		FILE *src = fopen(file, "w");
+		if(src) {
+			fputs(json, src);
+			fclose(src);
+		}
+	}
+
+	return rtn;
+}
+
+void jsm_read_commons( commons_model *model, const char *pref_path )
+{
+	if(model) {
+		char *json = jsm_fread(pref_path);
+
+		free(model->live_a);
+		free(model->live_d);
+
+		char *bgCol, *frCol; /* free these */
+		/* populate values for model */
+		model->cols    = jsm_atoi(json, "gridCols");
+		model->rows    = jsm_atoi(json, "gridRows");
+		model->interval  = jsm_atoi(json, "tickInterval");
+		model->visible = jsm_atoi(json, "gridVisible");
+
+		/* TODO: static modifiers for now */
+		model->cell_s = 10.0;
+		model->zoom   = 1.0;
+		bgCol = jsm_jval(json, "backgroundColor", 3);
+		frCol = jsm_jval(json, "cellColor", 3);
+		/* parse colors to model  */
+		gdk_rgba_parse(&model->bgrn_col, bgCol);
+		gdk_rgba_parse(&model->cell_col, frCol);
+
+		/* Free dynamically allocated values */
+		int *live_a1 = (int*)calloc(2, sizeof(int));
+		int *live_d1 = (int*)calloc(1, sizeof(int));
+		live_a1[0] = 3;
+		live_a1[1] = 2;
+		live_d1[0] = 3;
+		model->live_a = live_a1;
+		model->live_d = live_d1;
+
+		free(bgCol);
+		free(frCol);
+		free(json);
+		/* Initialize new grid and give random values */
+		if(model->interval < 100) {
+			g_print("WARNING: update value too small setting to : 100ms.\n");
+			model->interval = 100;
+		}
+	}
+}
+
+void jsm_write_commons( commons_model *model, const char *pref_path  )
+{
+	/*
+		Used json keys will be:
+		"gridRows"
+		"gridCols"
+		"tickInterval"
+		"gridVisible"
+		"backgroundColor"
+		"cellColor"
+	*/
+	if(model) {
+		char *rows  = (char*)calloc(10, sizeof(char*));
+		char *cols = (char*)calloc(10, sizeof(char*));
+		char *t_time = (char*)calloc(10, sizeof(char*));
+		char *vis = (char*)calloc(10, sizeof(char*));
+
+		sprintf(rows, "%d",   model->rows);
+		sprintf(cols, "%d",   model->cols);
+		sprintf(t_time, "%d", model->interval);
+		sprintf(vis, "%d",    model->visible);
+
+		gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
+		gchar *cell = gdk_rgba_to_string(&model->cell_col);
+
+		char *strings[6];
+		strings[0] = jsm_keypair("gridRows", rows, 1);
+		strings[1] = jsm_keypair("gridCols", cols, 1);
+		strings[2] = jsm_keypair("tickInterval", t_time, 1);
+		strings[3] = jsm_keypair("gridVisible", vis, 1);
+		strings[4] = jsm_keypair("backgroundColor", bgrn, 1);
+		strings[5] = jsm_keypair("cellColor", cell, 0);
+
+		free(bgrn);
+		free(cell);
+		char *json = jsm_jobj(3, 6, strings);
+
+		jsm_fwrite(json, pref_path);
+		free(json);
+		for(int i=0; i<6; i++) {
+			free(strings[i]);
+		}
+	} else {}
+}
+
+
+
+int jsm_jint(char *json, char *key)
+{
+	int rtn = -1;
+
+	char *tmp_str = jsm_jval( json, key, 3 );
+	if(tmp_str) {
+		rtn = atoi(tmp_str);
+		free(tmp_str);
+	}
+
+	return rtn;
+}
+
+
+GdkRGBA *jsm_ctoa( char *color )
+{
+	GdkRGBA *bgCol;
+	gdk_rgba_parse(bgCol, color);
+	return bgCol;
+}
+
+char *jsm_atoc( GdkRGBA *color )
+{
+	char *bgCol;
+	bgCol = gdk_rgba_to_string(color);
+	return bgCol;
+}
+
+char *jsm_itoa( int value )
+{
+	char *rtn;
+	sprintf(rtn, "%d", value);
+	//g_print("x_size = %s, i=%d\n", rtn, value);
+	return rtn;
+}
+
+int jsm_atoi( const char *json, const char* key )
+{
+	int rtn = -1;
+	char *str = jsm_jval( json, key, 3 );
+	if(rtn) {
+		rtn = atoi(str);
+		free(str);
+	}
 	return rtn;
 }

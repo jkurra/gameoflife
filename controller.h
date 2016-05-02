@@ -18,4 +18,6 @@
  */
 void controller_model( view_model *model, int type );
 
+void controller_view_values( view_model *model, GtkBuilder *builder );
+
 #endif /* CONTROLLER_H_ */

@@ -8,50 +8,60 @@
 #include "../view.h"
 #include "jsmn.h"
 
-typedef enum {
-	/* Success */
-	JSM_OK = 1,
-	/* NULL pointer error */
-	JSM_NULL = -3,
-	/* File read failed */
-	JSM_ERROR_FREAD = -1,
-	/* Memory allocation failed */
-	JSM_ERROR_ALLOC = -2
-} jsmrtn_t;
+/* Json functions */
 
-/*
- * Updates cdefault values to file, creates if not exist
+/* @brief Construct a json key-value pair.
+ *
  */
-jsmrtn_t jsm_default_model( view_model *model );
+char *jsm_keypair( char *value, char *key, int comma );
 
-/*
- * Updates current to a settings file.
+/* @brief Construct json object from valuepair array.
+ *
  */
-jsmrtn_t jsm_update_model( view_model *model );
+char *jsm_jobj( int indent,  int size, char *array[size] );
 
-/*
- * Reads current values of model from a settings file.
+/* @brief Read token from json string.
+ *
  */
-jsmrtn_t jsm_read_model( view_model *model );
+char *jsm_jtok( char *json, int start, int end );
+
+/* @brief Read value based on given key from json.
+ *
+ */
+char *jsm_jval( char *json, char *key, jsmntype_t type );
+
+/* File IO functions */
 
 /*
  * Read content of a file to a string.
  */
-jsmrtn_t jsm_read_file( char **json, const char *file );
+char *jsm_fread( const char *file );
 
 /*
  * Write content of a json string into a file.
  */
-jsmrtn_t jsm_write_file( char *json, const char *file );
+int jsm_fwrite( char *json, const char *file );
 
 /*
- *
+ * Write content of a json string into a file.
  */
-jsmrtn_t jsm_val( char *rtn, const char *json, const char *key );
+void jsm_read_commons( commons_model *model, const char *pref_path );
 
 /*
+ * Write content of a json string into a file.
+ */
+void jsm_write_commons( commons_model *model, const char *pref_path );
+
+/* Value cast functions */
+
+/* @brief Cast integer into string
  *
  */
-jsmrtn_t jsm_obj( char *result, const char *full_json, int start, int end );
+char *jsm_itoa( int value );
+
+/* @brief Cast value from json to Integer.
+ *
+ */
+int jsm_atoi( const char *json, const char *key );
 
 #endif /* __JSM_H_ */

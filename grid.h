@@ -18,7 +18,12 @@
  * @param y   desired amount of rows in the array.
  * @return pointer to  created two-dimensional array
  */
-int **grid_new( int x, int y );
+int **grid_new( int rows, int cols );
+
+/** @brief Free dynamically allocated array.
+ *
+ */
+void grid_free( int rows, int **arr);
 
 /** @brief Initialize random values to each cell in a grid
  *
@@ -35,7 +40,7 @@ int **grid_new( int x, int y );
  * @param y   amount of rows in the array.
  * @param arr array to be initalized.
  */
-void grid_rand( int x, int y, int **arr );
+void grid_rand( int rows, int cols, int **arr );
 
 /** @brief Update grid to next values.
  *
@@ -52,7 +57,7 @@ void grid_rand( int x, int y, int **arr );
  * @param live_a rules to apply when cell is currently alive.
  * @param live_d rules to apply when cell is currently dead.
  */
-void grid_next( int x, int y, int **arr, int *live_a, int *live_d );
+void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, int dead_s );
 
 /** @brief Update grid to previous values.
  *

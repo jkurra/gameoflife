@@ -1,4 +1,4 @@
-CC=gcc
+CC = gcc -g
 CFLAGS= -Wall
 
 INCDIR = ./jsmn
@@ -12,10 +12,10 @@ subsystem:
 	cd jsmn && $(MAKE) $(CFLAGS)
 
 gameoflife: $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o gameoflife ${PKGCONFIG}
+	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -o gameoflife
 
 %.o : %.c
-	$(CC) $(PKGCONFIG) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(PKGCONFIG) -c   $<
 
 clean:
 	rm -rf *o subsystem gameoflife

@@ -1,8 +1,8 @@
 {
-   "X_SIZE": "110",
-   "Y_SIZE": "120",
-   "TICK_TIME": "100",
-   "bgColor": "rgb(0,0,0)",
-   "frColor": "rgb(239,41,41)"
-   "gridVis": "1"
+   "gridRows":"1000",
+   "gridCols":"1000",
+   "tickInterval":"100",
+   "gridVisible":"1",
+   "backgroundColor":"rgb(0,0,0)",
+   "cellColor":"rgb(206,92,0)"
 }
