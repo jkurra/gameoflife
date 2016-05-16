@@ -1,5 +1,32 @@
 #include "view.h"
 
+void view_init( view_model *model, int type )
+{
+	model->type = type; /* Change current view type. */
+	if(model) {
+		switch(model->type) {
+			case MENU:
+				printf("MODEL [INIT] : menu\n");
+				view_menu_init(model->menu, model->builder);
+				gtk_builder_connect_signals(model->builder, model);
+				break;
+			case GAME:
+				printf("MODEL [INIT] : game\n");
+				view_game_init(model->game, model->builder);
+				gtk_builder_connect_signals(model->builder, model);
+				break;
+			case PREF:
+				printf("MODEL [INIT] : pref\n");
+				view_pref_init(model->pref, model->builder);
+				gtk_builder_connect_signals(model->builder, model);
+				break;
+			default:
+				break;
+		}
+		gtk_main();
+	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
+}
+
 void view_menu_init( menu_model *model, GtkBuilder *builder)
 {
 	GError	*error = NULL;

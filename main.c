@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     /* Create new main model for our user interface */
     view_model *main_model = model_view_new(MENU, result);
     /* Initialize view free when user quit */
-    model_init_view(main_model, MENU); /* Init menu and start main GTK loop */
+    view_init(main_model, MENU); /* Init menu and start main GTK loop */
     model_view_free(main_model); /* User quit. */
 
     return 0;

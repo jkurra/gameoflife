@@ -41,7 +41,11 @@ void controller_model( view_model *model, int type )
 				break;
 		}
 		model_close_view(model);	/* Close currently selected view */
-		model_init_view(model, type); 	/* Initialize new view */
+
+		model_update(model, GAME);
+		model_update(model, PREF);
+		
+		view_init(model, type); 	/* Initialize new view */
 	} else { printf("CONTROL [ERROR] : Received null model pointer.\n"); }
 }
 

@@ -1,14 +1,17 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -c
 
 OBJECTS = jsmn.o jsm.o
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0`
 
-all: jsmn.o jsm.o
-	$(CC) $(CFLAGS) -g jsmn.o jsm.o
+all: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS)
 
-%.o : %.c
-	$(CC) $(CFLAGS) -c $< ${PKGCONFIG}
+jsmn.o: jsmn.c jsmn.h
+	$(CC) $(CFLAGS) jsmn.c
+
+jsm.o: jsm.c jsm.h
+	$(CC) $(CFLAGS) $(PKGCONFIG) jsm.c
 
 clean:
-	rm -rf *o
+	rm -rf *o ~*

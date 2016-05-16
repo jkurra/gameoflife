@@ -95,21 +95,6 @@ void model_pref_setup( pref_model *model, const char *pref_path );
 
 /* TODO: these actually belong to view */
 
-/** @brief Initialize values current model.
- *
- * Initializes view using view_model, which contains type value. Type value is
- * used to determine which model is to be initialized. Therefore it must be set
- * before calling this function, otherwise behaviour may be unexpected. It is
- * also good to notice that this function doesn't free views that may be
- * initialized, so that must be taken care of before calling this function to
- * avoid double assingments of widgets. This function is meant to be used when
- * it is necessary to initialize view using view_model. This way all necessary
- * data is present when values are assigned.
- *
- * @param model Contains data needed to initialize view.
- */
-void model_init_view( view_model *model, int type );
-
 /** @brief Draw current model.
  *
  * Adds selected view to gtk-widget draw queue. Gives quick way of updating the

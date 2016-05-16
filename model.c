@@ -141,35 +141,6 @@ void model_remove_timer( view_model *model, int timer_id )
 	model->game->commons->timerid = -1;
 }
 
-void model_init_view( view_model *model, int type )
-{	/* TODO: refactor this to be part of view */
-	model->type = type; /* Change current view type. */
-	if(model) {
-		switch(model->type) {
-			case MENU:
-				printf("MODEL [INIT] : menu\n");
-				view_menu_init(model->menu, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case GAME:
-				printf("MODEL [INIT] : game\n");
-				model_game_setup(model->game, model->pref_path);
-				view_game_init(model->game, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case PREF:
-				printf("MODEL [INIT] : pref\n");
-				model_pref_setup(model->pref, model->pref_path);
-				view_pref_init(model->pref, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			default:
-				break;
-		}
-		gtk_main();
-	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
-}
-
 void model_draw_view( view_model *model )
 {	/* TODO: refactor this to be part of view */
 	if(model) {

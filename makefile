@@ -15,7 +15,8 @@ gameoflife: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -o gameoflife
 
 %.o : %.c
-	$(CC) $(CFLAGS) $(PKGCONFIG) -c   $<
+	$(CC) $(CFLAGS) $(PKGCONFIG) -c $<
 
 clean:
-	rm -rf *o subsystem gameoflife
+	rm -rf *o *~ gameoflife
+	cd jsmn && $(MAKE) clean
