@@ -37,7 +37,7 @@ void grid_next( int rows, int cols, int **grid, int *live_a, int live_s, int *li
     for(i=0; i<rows; i++) {
         for(k=0; k<cols; k++) {
             int nbrs = 0;
-            nbrs = grid_nbrs( i, k, rows, cols, grid );
+            nbrs = grid_nbrs(i, k, rows, cols, grid);
             int life = 0;
             life = cell_next( grid[i][k], nbrs, live_a, live_s, live_d, dead_s );//cell_next_turn(grid[i][k], nbrs);
             tmp_grid[i][k] = life;

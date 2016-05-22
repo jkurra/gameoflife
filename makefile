@@ -1,22 +1,24 @@
 CC = gcc -g
-CFLAGS= -Wall
-
-INCDIR = ./jsmn
+CFLAGS = -Wall
 
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 gmodule-2.0`
-OBJECTS   = cell.o grid.o model.o view.o controller.o main.o jsmn/jsmn.o jsmn/jsm.o
+OBJECTS   = mvc/model.o mvc/view.o mvc/controller.o main.o \
+			mvc/jsmn/jsmn.o mvc/jsmn/jsm.o \
+			board/cell.o board/grid.o
 
 all: subsystem gameoflife
 
 subsystem:
-	cd jsmn && $(MAKE) $(CFLAGS)
+	cd board && $(MAKE)
+	cd mvc && $(MAKE)
 
 gameoflife: $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -o gameoflife
+	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -o bin/gameoflife
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(PKGCONFIG) -c $<
 
 clean:
 	rm -rf *o *~ gameoflife
-	cd jsmn && $(MAKE) clean
+	cd board && $(MAKE) clean
+	cd mvc  && $(MAKE) clean

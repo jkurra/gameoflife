@@ -1,13 +1,14 @@
 #ifndef VIEW_H_INCLUDED
 #define VIEW_H_INCLUDED
 
-#include "grid.h"
+#include "../board/grid.h"
 
 #include <gtk/gtk.h>
 #include <GL/glut.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
+#include <string.h>
 
 /* Types of views that may be used */
 #define MENU  0
@@ -15,7 +16,8 @@
 #define PREF  2
 
 /* @brief A model containing application wide universal values.
- * 	Makes using single model for values that may need to be set in different
+ *
+ *  Makes using single model for values that may need to be set in different
  *  views possible. This should simplify error handling and prevent data loss.
  *
  */
@@ -47,6 +49,7 @@ typedef struct
 {
 	GtkWidget *main_frame;
 	commons_model *commons; /* Common values for this model. May be NULL */
+
 } menu_model;
 
 /*
@@ -89,6 +92,8 @@ typedef struct
 
 	char *pref_path;
 	GtkBuilder *builder;
+	GtkCssProvider *provider;
+	
 } view_model;
 
 /** @brief Initialize values current model.

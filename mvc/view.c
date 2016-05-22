@@ -2,7 +2,25 @@
 
 void view_init( view_model *model, int type )
 {
+	/* Initialize model variables and GTK parts initialization*/
+	/* TODO: refactor this to be part of view */
+	gtk_init(NULL, NULL);
+	model->builder = gtk_builder_new();
+
 	model->type = type; /* Change current view type. */
+
+	GdkDisplay *display = gdk_display_get_default ();
+	GdkScreen  *screen = gdk_display_get_default_screen (display);
+	model->provider = gtk_css_provider_new ();
+	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gsize bytes_written, bytes_read;
+	const gchar* home = "glade-ui/style.css";
+	GError *error1 = 0;
+	gtk_css_provider_load_from_path (model->provider,
+									 g_filename_to_utf8(home, strlen(home),
+									 &bytes_read, &bytes_written, &error1),
+									 NULL);
+
 	if(model) {
 		switch(model->type) {
 			case MENU:
@@ -12,6 +30,7 @@ void view_init( view_model *model, int type )
 				break;
 			case GAME:
 				printf("MODEL [INIT] : game\n");
+
 				view_game_init(model->game, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
@@ -25,6 +44,48 @@ void view_init( view_model *model, int type )
 		}
 		gtk_main();
 	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
+}
+
+void view_draw( view_model *model )
+{
+	if(model) {
+		switch(model->type) {
+			case MENU:
+				gtk_widget_queue_draw(model->menu->main_frame);
+				break;
+			case GAME:
+				gtk_widget_queue_draw(model->game->main_frame);
+				break;
+			case PREF:
+				gtk_widget_queue_draw(model->pref->main_frame);
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [DRAW] : ERROR! Received null pointer to model\n"); }
+}
+
+void view_close( view_model *model )
+{
+	if(model) {
+		gtk_main_quit();
+		switch(model->type) {
+			case MENU:
+				printf("MODEL [CLOSE] : menu\n");
+				view_menu_close(model->menu);
+				break;
+			case GAME:
+				printf("MODEL [CLOSE] : game\n");
+				view_game_close(model->game);
+				break;
+			case PREF:
+				printf("MODEL [CLOSE] : pref\n");
+				view_pref_close(model->pref);
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
 }
 
 void view_menu_init( menu_model *model, GtkBuilder *builder)
@@ -47,7 +108,7 @@ void view_game_init( game_model *model, GtkBuilder *builder )
 	if(!builder) { g_print("builder unitialized"); }
 	if(!gtk_builder_add_from_file(builder, "glade-ui/gof_game.glade", &error)) {
 		g_warning("%s", error->message);
-	   g_free( error );
+		g_free( error );
 	}
 	if(!model) {
 		g_print("Null model");
@@ -164,7 +225,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 					view_draw_rectangle(cr, &model->game->commons->cell_col, x_start, y_start, model->game->commons->cell_s/model->game->commons->zoom, model->game->commons->cell_s/model->game->commons->zoom);
 				}
 				else if(state != 1 && model->game->commons->visible == 1)  {
-					int size = (model->game->commons->cell_s/model->game->commons->zoom)+1.5;
+					int size = (model->game->commons->cell_s/model->game->commons->zoom);
 					GdkRGBA *rgba;
 					rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
 					rgba->red   += 0.1;
@@ -182,53 +243,4 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			y_start += model->game->commons->cell_s/3.0;
 		}
 	} else { }
-
-/*
-
-	int maxx = gtk_widget_get_allocated_width(area),
-		maxy = gtk_widget_get_allocated_height(area);
-
-	view_draw_rectangle(cr, &model->game->bgrn_col, 0, 0, maxx, maxy);
-
-	float x_start=5.0, y_start=5.0;
-	for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
-		for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
-			int state = -1;
-			if(x_start > maxx) {
-				break;
-			}
-			if(y_start > maxy) {
-				break;
-			}
-			state = model->game->grid[cur_y][cur_x];
-			if(state == 1) {
-				view_draw_rectangle(cr, &model->game->cell_col, x_start, y_start, model->game->cell_s/model->game->zoom, model->game->cell_s/model->game->zoom);
-			}
-			else if(state != 1 && model->game->visible == 1)  {
-
-				int size = (model->game->cell_s/model->game->zoom)+1.5;
-				GdkRGBA *rgba;
-				rgba = gdk_rgba_copy(&model->game->bgrn_col);
-				rgba->red   += 0.1;
-				rgba->green += 0.1;
-				rgba->blue  += 0.1;
-				view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
-
-				cairo_rectangle(cr, x_start, y_start, (model->game->cell_s/model->game->zoom), (model->game->cell_s/model->game->zoom));
-				gdk_cairo_set_source_rgba(cr, rgba);
-				cairo_fill(cr);
-				gdk_rgba_free(rgba);
-				x_start += 0.5;
-				y_start += 0.5;
-			// x_start -= 0.1;
-				// y_start -= 0.1;
-			}
-
-			x_start += model->game->cell_s/model->game->zoom;
-			x_start += model->game->cell_s/3.0; // space between cells
-		}
-		x_start = 5.0;
-		y_start += model->game->cell_s/model->game->zoom;
-		y_start += model->game->cell_s/3.0;
-	}*/
 }

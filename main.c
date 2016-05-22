@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "model.h"
+#include "mvc/model.h"
 
 int main(int argc, char *argv[])
 {

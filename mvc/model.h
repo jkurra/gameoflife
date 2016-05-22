@@ -73,8 +73,14 @@ void model_pref_free( pref_model *model );
  */
 void model_commons_free( commons_model *model );
 
+/* @brief Attach update function id to timer
+ *
+ */
 void model_attach_timer( view_model *model, GSourceFunc update_function, int interval );
 
+/* @brief Remove timer
+ *
+ */
 void model_remove_timer( view_model *model, int timer_id );
 
 /* @brief Update
