@@ -40,8 +40,12 @@ void controller_model( view_model *model, int type )
 			default:
 				break;
 		}
-		model_close_view(model);	/* Close currently selected view */
-		model_init_view(model, type); 	/* Initialize new view */
+		view_close(model);	/* Close currently selected view */
+
+		model_update(model, GAME);
+		model_update(model, PREF);
+
+		view_init(model, type); 	/* Initialize new view */
 	} else { printf("CONTROL [ERROR] : Received null model pointer.\n"); }
 }
 
@@ -150,7 +154,7 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 	if(model)
 		g_print("rules1 %d %d: %d\n", model->game->commons->rows, model->game->commons->live_a[1], model->game->commons->live_d[0]);
 		grid_next(model->game->commons->rows, model->game->commons->cols, model->game->grid, model->game->commons->live_a,2, model->game->commons->live_d, 1);
-		model_draw_view(model);
+		view_draw(model);
 }
 
 /*
@@ -158,23 +162,27 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 */
 
 G_MODULE_EXPORT
-void on_pause_clicked( GtkButton *button, gpointer data )
+void on_start_pause_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model && model->game->commons->timerid != -1) {
-		//g_source_remove(model->game->timerid);
-		//model->game->timerid = -1;
-		g_print("pause pressed %d\n", model->game->commons->timerid);
-	}
-}
+	if(model) {
+		if( model->game->commons->timerid == -1) {
+			char *newlabel = "||";
+			GtkWidget *button = GTK_WIDGET ( gtk_builder_get_object(model->builder, "start_pause_button") );
+			gtk_button_set_label(GTK_BUTTON(button), newlabel);
 
-G_MODULE_EXPORT
-void on_resume_clicked( GtkButton *button, gpointer data )
-{
-	view_model *model = (view_model*)data;
-	if(model && model->game->commons->timerid == -1) {
-		//model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
-		g_print("resume pressed %d\n", model->game->commons->timerid);
+			model_attach_timer(model, model->game->commons->timerid);
+			g_print("start pressed %d\n", model->game->commons->timerid );
+
+		}
+		else {
+			char *newlabel = ">";
+			GtkWidget *button = GTK_WIDGET ( gtk_builder_get_object(model->builder, "start_pause_button") );
+			gtk_button_set_label(GTK_BUTTON(button), newlabel);
+
+			model_remove_timer( model, model->game->commons->timerid );
+			g_print("pause pressed %d\n", model->game->commons->timerid);
+		}
 	}
 }
 
@@ -194,36 +202,36 @@ G_MODULE_EXPORT
 void on_up_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellY >= 5)
-		model->game->startAtCellY-=5;
-		model_draw_view( model );
+	if(model->game->startAtCellX >= 5)
+		model->game->startAtCellX-=5;
+		view_draw( model );
 }
 
 G_MODULE_EXPORT
 void on_down_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellY < model->game->commons->cols)
-		model->game->startAtCellY += 5;
-		model_draw_view( model );
+	if(model->game->startAtCellX < model->game->commons->cols)
+		model->game->startAtCellX += 5;
+		view_draw( model );
 }
 
 G_MODULE_EXPORT
 void on_left_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellX >= 5)
-		model->game->startAtCellX -= 5;
-		model_draw_view( model );
+	if(model->game->startAtCellY >= 5)
+		model->game->startAtCellY -= 5;
+		view_draw( model );
 }
 
 G_MODULE_EXPORT
 void on_right_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellX < model->game->commons->rows)
-		model->game->startAtCellX += 5;
-		model_draw_view( model );
+	if(model->game->startAtCellY < model->game->commons->rows)
+		model->game->startAtCellY += 5;
+		view_draw( model );
 }
 
 G_MODULE_EXPORT
@@ -231,7 +239,7 @@ void on_zoom_in_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	model->game->commons->zoom = model->game->commons->zoom-0.2;
-	model_draw_view( model );
+	view_draw( model );
 }
 
 G_MODULE_EXPORT
@@ -239,5 +247,5 @@ void on_zoom_out_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	model->game->commons->zoom = model->game->commons->zoom+0.2;
-	model_draw_view( model );
+	view_draw( model );
 }

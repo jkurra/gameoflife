@@ -6,10 +6,6 @@ view_model *model_view_new( int type, char *pref_path )
 	view_model *model = (view_model*)malloc(sizeof(view_model));
 	model->type = type;
 	model->pref_path = pref_path;
-	/* Initialize model variables and GTK parts initialization*/
-	/* TODO: refactor this to be part of view */
-	gtk_init(NULL, NULL);
-	model->builder = gtk_builder_new();
 
 	/* Initialize views_included in model */
 	model->menu = model_menu_new();
@@ -124,94 +120,6 @@ void model_pref_free( pref_model *model)
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
 
-void model_attach_timer(view_model *model, GSourceFunc update_function, int interval )
-{
-	switch(model->type) {
-		case GAME:
-			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model);
-			break;
-		default:
-			break;
-	}
-}
-
-void model_remove_timer( view_model *model, int timer_id )
-{
-	g_source_remove(timer_id);
-	model->game->commons->timerid = -1;
-}
-
-void model_init_view( view_model *model, int type )
-{	/* TODO: refactor this to be part of view */
-	model->type = type; /* Change current view type. */
-	if(model) {
-		switch(model->type) {
-			case MENU:
-				printf("MODEL [INIT] : menu\n");
-				view_menu_init(model->menu, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case GAME:
-				printf("MODEL [INIT] : game\n");
-				model_game_setup(model->game, model->pref_path);
-				view_game_init(model->game, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case PREF:
-				printf("MODEL [INIT] : pref\n");
-				model_pref_setup(model->pref, model->pref_path);
-				view_pref_init(model->pref, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			default:
-				break;
-		}
-		gtk_main();
-	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
-}
-
-void model_draw_view( view_model *model )
-{	/* TODO: refactor this to be part of view */
-	if(model) {
-		switch(model->type) {
-			case MENU:
-				gtk_widget_queue_draw(model->menu->main_frame);
-				break;
-			case GAME:
-				gtk_widget_queue_draw(model->game->main_frame);
-				break;
-			case PREF:
-				gtk_widget_queue_draw(model->pref->main_frame);
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [DRAW] : ERROR! Received null pointer to model\n"); }
-}
-
-void model_close_view( view_model *model )
-{	/* TODO: refactor this to be part of view */
-	if(model) {
-		gtk_main_quit();
-		switch(model->type) {
-			case MENU:
-				printf("MODEL [CLOSE] : menu\n");
-				view_menu_close(model->menu);
-				break;
-			case GAME:
-				printf("MODEL [CLOSE] : game\n");
-				view_game_close(model->game);
-				break;
-			case PREF:
-				printf("MODEL [CLOSE] : pref\n");
-				view_pref_close(model->pref);
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
-}
-
 void model_update( view_model *model, int type )
 {	//TODO this should read current view values
 	if(model) {
@@ -233,8 +141,6 @@ void model_update( view_model *model, int type )
 	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
 }
 
-
-
 void model_game_setup( game_model *model, const char *pref_path )
 {
 	if(model) {
@@ -254,4 +160,21 @@ void model_pref_setup( pref_model *model, const char *pref_path )
 	if(model) {
 		jsm_read_commons(model->commons, pref_path);
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
+}
+
+void model_attach_timer(view_model *model, int interval )
+{
+	switch(model->type) {
+		case GAME:
+			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model->game);
+			break;
+		default:
+			break;
+	}
+}
+
+void model_remove_timer( view_model *model, int timer_id )
+{
+	g_source_remove(timer_id);
+	model->game->commons->timerid = -1;
 }

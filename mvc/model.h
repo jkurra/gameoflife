@@ -73,8 +73,14 @@ void model_pref_free( pref_model *model );
  */
 void model_commons_free( commons_model *model );
 
-void model_attach_timer( view_model *model, GSourceFunc update_function, int interval );
+/* @brief Attach update function id to timer
+ *
+ */
+void model_attach_timer( view_model *model, int interval );
 
+/* @brief Remove timer
+ *
+ */
 void model_remove_timer( view_model *model, int timer_id );
 
 /* @brief Update
@@ -94,21 +100,6 @@ void model_pref_setup( pref_model *model, const char *pref_path );
 
 
 /* TODO: these actually belong to view */
-
-/** @brief Initialize values current model.
- *
- * Initializes view using view_model, which contains type value. Type value is
- * used to determine which model is to be initialized. Therefore it must be set
- * before calling this function, otherwise behaviour may be unexpected. It is
- * also good to notice that this function doesn't free views that may be
- * initialized, so that must be taken care of before calling this function to
- * avoid double assingments of widgets. This function is meant to be used when
- * it is necessary to initialize view using view_model. This way all necessary
- * data is present when values are assigned.
- *
- * @param model Contains data needed to initialize view.
- */
-void model_init_view( view_model *model, int type );
 
 /** @brief Draw current model.
  *

@@ -67,11 +67,6 @@ void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, 
  */
 void grid_prev( int x, int y, int **arr, int *live_a, int *live_d );
 
-/** @brief Print two dimensional array to console.
- *
- */
-void grid_print( int x, int y, int **arr );
-
 /** @brief Count current neighbours for a cell.
  *
  * Each cell in the grid has 0-8 neighbours. This function calculates those
@@ -89,5 +84,9 @@ void grid_print( int x, int y, int **arr );
  */
 int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
 
+/** @brief Print two dimensional array to console.
+ *
+ */
+void grid_print( int x, int y, int **arr );
 
 #endif /* GRID_H_ */

@@ -10,7 +10,7 @@ int cell_next( int c_state, int nbrs, int live_a[], int live_s, int live_d[], in
         }
     }
     else {
-        for(i=0; i<dead_s ; i++) {
+        for(i=0; i<dead_s; i++) {
             if(nbrs == live_d[i]) { n_state = 1; }
         }
     }
