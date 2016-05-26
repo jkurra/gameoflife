@@ -162,11 +162,11 @@ void model_pref_setup( pref_model *model, const char *pref_path )
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 
-void model_attach_timer(view_model *model, GSourceFunc update_function, int interval )
+void model_attach_timer(view_model *model, int interval )
 {
 	switch(model->type) {
 		case GAME:
-			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model);
+			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model->game);
 			break;
 		default:
 			break;

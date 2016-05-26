@@ -2,7 +2,7 @@
    "gridRows":"104",
    "gridCols":"103",
    "tickInterval":"100",
-   "gridVisible":"1",
+   "gridVisible":"0",
    "backgroundColor":"rgb(85,87,83)",
    "cellColor":"rgb(245,121,0)"
 }

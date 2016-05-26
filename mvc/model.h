@@ -76,7 +76,7 @@ void model_commons_free( commons_model *model );
 /* @brief Attach update function id to timer
  *
  */
-void model_attach_timer( view_model *model, GSourceFunc update_function, int interval );
+void model_attach_timer( view_model *model, int interval );
 
 /* @brief Remove timer
  *

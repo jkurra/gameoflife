@@ -177,7 +177,8 @@ gboolean view_timer_update( game_model *model )
 {
 	if(model) {
 		grid_next(model->commons->rows, model->commons->cols, model->grid, model->commons->live_a, 2, model->commons->live_d, 1);
-		gtk_widget_queue_draw( model->main_frame );
+
+		gtk_widget_queue_draw( GTK_WIDGET(model->main_frame) );
 	}
 	return TRUE;
 }

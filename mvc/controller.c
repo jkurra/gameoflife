@@ -162,23 +162,27 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 */
 
 G_MODULE_EXPORT
-void on_pause_clicked( GtkButton *button, gpointer data )
+void on_start_pause_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model && model->game->commons->timerid != -1) {
-		//g_source_remove(model->game->timerid);
-		//model->game->timerid = -1;
-		g_print("pause pressed %d\n", model->game->commons->timerid);
-	}
-}
+	if(model) {
+		if( model->game->commons->timerid == -1) {
+			char *newlabel = "||";
+			GtkWidget *button = GTK_WIDGET ( gtk_builder_get_object(model->builder, "start_pause_button") );
+			gtk_button_set_label(GTK_BUTTON(button), newlabel);
 
-G_MODULE_EXPORT
-void on_resume_clicked( GtkButton *button, gpointer data )
-{
-	view_model *model = (view_model*)data;
-	if(model && model->game->commons->timerid == -1) {
-		//model->game->timerid = g_timeout_add( model->game->tick_t, (GSourceFunc) model_grid_update, model );
-		g_print("resume pressed %d\n", model->game->commons->timerid);
+			model_attach_timer(model, model->game->commons->timerid);
+			g_print("start pressed %d\n", model->game->commons->timerid );
+
+		}
+		else {
+			char *newlabel = ">";
+			GtkWidget *button = GTK_WIDGET ( gtk_builder_get_object(model->builder, "start_pause_button") );
+			gtk_button_set_label(GTK_BUTTON(button), newlabel);
+
+			model_remove_timer( model, model->game->commons->timerid );
+			g_print("pause pressed %d\n", model->game->commons->timerid);
+		}
 	}
 }
 
