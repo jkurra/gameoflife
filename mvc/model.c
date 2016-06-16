@@ -36,6 +36,7 @@ game_model *model_game_new()
 	/* Initialize null values for all variables */
 	game->startAtCellX = 0; /* From which column to start drawing */
 	game->startAtCellY = 0; /* From which row to start drawing */
+	game->c_step = 0;
 	game->grid 	  = NULL;
 	game->commons = NULL;	/* common values must be externally set, otherwise
 							   they are always NULL. */

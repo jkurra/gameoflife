@@ -3,18 +3,20 @@
 void view_init( view_model *model, int type )
 {
 	/* Initialize model variables and GTK parts initialization*/
-	/* TODO: refactor this to be part of view */
 	gtk_init(NULL, NULL);
 	model->builder = gtk_builder_new();
-
 	model->type = type; /* Change current view type. */
 
+	/*
+		Read css style from file. TODO: add style variable that may be changed
+		by the user.
+	*/
 	GdkDisplay *display = gdk_display_get_default ();
 	GdkScreen  *screen = gdk_display_get_default_screen (display);
 	model->provider = gtk_css_provider_new ();
 	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	gsize bytes_written, bytes_read;
-	const gchar* home = "glade-ui/style.css";
+	const gchar* home = "glade-ui/default/default.css";
 	GError *error1 = 0;
 	gtk_css_provider_load_from_path (model->provider,
 									 g_filename_to_utf8(home, strlen(home),
@@ -177,7 +179,7 @@ gboolean view_timer_update( game_model *model )
 {
 	if(model) {
 		grid_next(model->commons->rows, model->commons->cols, model->grid, model->commons->live_a, 2, model->commons->live_d, 1);
-
+		model->c_step++;
 		gtk_widget_queue_draw( GTK_WIDGET(model->main_frame) );
 	}
 	return TRUE;
@@ -201,8 +203,22 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 		int max_x = model->game->commons->rows,
 			max_y = model->game->commons->cols,
 			cur_x = model->game->startAtCellX,
-			cur_y = model->game->startAtCellY;
+			cur_y = model->game->startAtCellY,
+			interval = model->game->commons->interval,
+			step = model->game->c_step;
 
+		GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
+		GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
+
+		//gtk_label_set_value (GTK_LABEL (interval_label), interval);
+		char value[10];
+		char step_value[10];
+	//	sprintf(value, "%d", interval);
+	//	g_print("v : %d\n", interval);
+		sprintf(value, "%d", interval);
+		sprintf(step_value, "%d", step);
+		gtk_label_set_text (interval_label, value);
+		gtk_label_set_text (step_label, step_value);
 		/* Get currently drawn size of the widget */
 		GtkAllocation widget_alloc;
 		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);

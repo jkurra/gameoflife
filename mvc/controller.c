@@ -50,6 +50,34 @@ void controller_model( view_model *model, int type )
 }
 
 G_MODULE_EXPORT
+void on_reduce_interval_button_clicked( GtkButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	if(model) {
+		if(model->game->commons->interval-100 > 100) {
+			model->game->commons->interval -= 100;
+			/* Update time to use new values  */
+			model_remove_timer( model, model->game->commons->timerid );
+			model_attach_timer( model, model->game->commons->timerid );
+		}
+	}
+}
+
+G_MODULE_EXPORT
+void on_increase_interval_button_clicked( GtkButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	if(model) {
+		if(model->game->commons->interval-100 < 5000) {
+			model->game->commons->interval += 100;
+			/* Update time to use new values  */
+			model_remove_timer( model, model->game->commons->timerid );
+			model_attach_timer( model, model->game->commons->timerid );
+		}
+	}
+}
+
+G_MODULE_EXPORT
 void on_settingsbutton_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
@@ -154,6 +182,7 @@ void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 	if(model)
 		g_print("rules1 %d %d: %d\n", model->game->commons->rows, model->game->commons->live_a[1], model->game->commons->live_d[0]);
 		grid_next(model->game->commons->rows, model->game->commons->cols, model->game->grid, model->game->commons->live_a,2, model->game->commons->live_d, 1);
+		model->game->c_step++;
 		view_draw(model);
 }
 

@@ -73,7 +73,8 @@ typedef struct
 
 	int  c_rows, c_cols; /* Current row/column count */
 	int **grid;			/* Game board containing values */
-
+	int c_step;
+	
 	int startAtCellX; /* From which column to start drawing */
 	int startAtCellY; /* From which row to start drawing */
 
@@ -93,7 +94,7 @@ typedef struct
 	char *pref_path;
 	GtkBuilder *builder;
 	GtkCssProvider *provider;
-	
+
 } view_model;
 
 /** @brief Initialize values current model.
