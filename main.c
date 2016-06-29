@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include "manager/configmng.h"
 #include "mvc/model.h"
-
 int main(int argc, char *argv[])
 {
     /*
@@ -19,14 +18,23 @@ int main(int argc, char *argv[])
     char fname[15]  = "/config/config"; /* Add place for default config file */
     size_t lenght = strlen(cwd)+strlen(fname)+1;
     char *result = malloc(lenght);
+    char *co = malloc(lenght);
 
     strcpy( result, cwd );
     strcat( result, fname );
+    /* prepare config file selection, for testing */
+    strcpy( co, cwd );
+    strcat( co, "/config" );
+
+    config *conf = config_new(co);
+    config_select(conf, "config.json");
+
     /* Create new main model for our user interface */
-    view_model *main_model = model_view_new(MENU, result);
+    view_model *main_model = model_view_new(MENU, conf->path_sel);//config_path(conf));
     /* Initialize view free when user quit */
     view_init(main_model, MENU); /* Init menu and start main GTK loop */
     model_view_free(main_model); /* User quit. */
+    config_free(conf);
 
     return 0;
 }

@@ -54,7 +54,8 @@ pref_model *model_pref_new()
 commons_model *model_commons_new()
 {
 	commons_model *commons = (commons_model*)malloc(sizeof(commons_model));
-
+	commons->theme_path = NULL;
+	
 	commons->rows = -1;
 	commons->cols = -1;
 	commons->timerid = -1;

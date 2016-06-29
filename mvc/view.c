@@ -2,11 +2,11 @@
 
 void view_init( view_model *model, int type )
 {
+
 	/* Initialize model variables and GTK parts initialization*/
 	gtk_init(NULL, NULL);
 	model->builder = gtk_builder_new();
 	model->type = type; /* Change current view type. */
-
 	/*
 		Read css style from file. TODO: add style variable that may be changed
 		by the user.
@@ -14,9 +14,11 @@ void view_init( view_model *model, int type )
 	GdkDisplay *display = gdk_display_get_default ();
 	GdkScreen  *screen = gdk_display_get_default_screen (display);
 	model->provider = gtk_css_provider_new ();
+
 	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	gsize bytes_written, bytes_read;
-	const gchar* home = "glade-ui/default/default.css";
+	const gchar* home = model->game->commons->theme_path;
+
 	GError *error1 = 0;
 	gtk_css_provider_load_from_path (model->provider,
 									 g_filename_to_utf8(home, strlen(home),
@@ -32,7 +34,6 @@ void view_init( view_model *model, int type )
 				break;
 			case GAME:
 				printf("MODEL [INIT] : game\n");
-
 				view_game_init(model->game, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;

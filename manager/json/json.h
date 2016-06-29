@@ -15,6 +15,38 @@
 
 /* Json functions */
 
+/** @brief Pull single token from json string.
+ *
+ */
+char *json_token( char *json, int start, int end );
+
+/** @brief Pull json value from object.
+ *
+ */
+char *json_value( char *json, char *key, jsmntype_t type );
+
+/** @brief Construct a json key-value pair as a c-string.
+ *
+ */
+char *json_keypair( char *value, char *key, int comma );
+
+/** @brief Constuct a full json object based on key-value pairs.
+ *
+ */
+char *json_object( int indent,  int size, char *array[size] );
+
+/** @brief Write a given json string to a physical file.
+ *
+ */
+void json_write( char *json, const char *file );
+
+/** @brief Read contents of a file to a string.
+ *
+ */
+char *json_read( const char *file );
+
+
+
 /** @brief Construct a json key-value pair.
  *
  */

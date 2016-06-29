@@ -1,0 +1,9 @@
+{
+   "gridRows":"500",
+   "gridCols":"500",
+   "tickInterval":"103",
+   "gridVisible":"0",
+   "backgroundColor":"rgb(46,52,54)",
+   "cellColor":"rgb(196,160,0)",
+   "defaultTheme":"glade-ui/default/default.css"
+}
