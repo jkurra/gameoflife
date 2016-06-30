@@ -218,8 +218,8 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 	//	g_print("v : %d\n", interval);
 		sprintf(value, "%d", interval);
 		sprintf(step_value, "%d", step);
-		gtk_label_set_text (interval_label, value);
-		gtk_label_set_text (step_label, step_value);
+		gtk_label_set_text (GTK_LABEL(interval_label), value);
+		gtk_label_set_text (GTK_LABEL(step_label), step_value);
 		/* Get currently drawn size of the widget */
 		GtkAllocation widget_alloc;
 		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);

@@ -1,11 +1,12 @@
-#ifndef CONFIGMNG_H_INCLUDED
-#define CONFIGMNG_H_INCLUDED
+#ifndef CONFIG_H_INCLUDED
+#define CONFIG_H_INCLUDED
 
 #include <dirent.h>
 #include <string.h>
 
 #include "../mvc/view.h"
 #include "file.h"
+#include "json/json.h"
 
 /** @brief Configuration structure for manipulating configurations.
  *
@@ -41,7 +42,9 @@ typedef struct
 
 /** @brief Initialize new configuration from path.
  *
- *  Must be deallocated with config_free.
+ * Allocates space for a new configuration and initializes it with NULL values.
+ * Path is assigned so that config_update may be called.
+ * Must be deallocated with config_free.
  *
  */
 config *config_new( char *path );
@@ -49,24 +52,22 @@ config *config_new( char *path );
 /** @brief Free current configuration and its parts.
  *
  */
-void config_free( config *c);
+void config_free( config *c );
 
 /** @brief Select a configuration from current directory.
  *
  */
 void config_select( config *c, const char *name );
 
-/** @brief Update file list in current directory.
- *
- *
-void config_update( config *c );
+
+void config_write( commons_model *model, config *c);
 
 /**
  *
  */
 char *config_path( config *c );
 void config_update( config *c, const char *path );
-char *config_list( config *conf );
+void config_list( config *conf );
 void config_read( commons_model *model, config *c );
 
-#endif /* CONFIGMNG_H_INCLUDED */
+#endif /* CONFIG_H_INCLUDED */

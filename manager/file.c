@@ -29,3 +29,36 @@ int file_count( const char *d_path, int mode )
 
     return count;
 }
+
+void file_write( char *str, const char *file )
+{
+	if(str && file) {
+		FILE *src = fopen(file, "w");
+		if(src) {
+			fputs(str, src);
+			fclose(src);
+		}
+	}
+}
+
+char *file_read( const char *file )
+{
+    char *json = NULL;
+	if(file) {
+		FILE *src = fopen(file, "r");
+		if(src) {
+			printf("JSM [READ] : File opened : %s\n", file);
+			fseek(src , 0L , SEEK_END);
+			long flen = ftell(src);
+			rewind(src);
+			json = calloc(sizeof(char), flen+1);
+			if(json) {
+				size_t res = fread(json, 1, flen , src);
+				json[res] = '\0';
+			} else { printf("JSM [ERROR] : Unable to allocate memory.\n"); }
+			fclose(src);
+		}
+	}
+
+	return json;
+}

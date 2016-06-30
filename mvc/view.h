@@ -41,6 +41,7 @@ typedef struct
 	int *live_d;
 
 	char *theme_path;
+	char *config_path;
 	
 } commons_model;
 
@@ -93,7 +94,7 @@ typedef struct
 	game_model *game;
 	pref_model *pref;
 
-	char *pref_path;
+	//char *pref_path;
 	GtkBuilder *builder;
 	GtkCssProvider *provider;
 

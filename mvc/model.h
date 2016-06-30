@@ -6,7 +6,8 @@
 #include <time.h>
 
 #include "view.h"
-#include "jsmn/jsm.h"
+//#include "jsmn/jsm.h"
+#include "../manager/config.h"
 
 /* Types of views that may be used */
 #define MENU  0

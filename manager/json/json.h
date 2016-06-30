@@ -10,7 +10,7 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 
-#include "../view.h"
+#include "../../mvc/view.h"
 #include "jsmn.h"
 
 /* Json functions */
@@ -47,26 +47,6 @@ char *json_read( const char *file );
 
 
 
-/** @brief Construct a json key-value pair.
- *
- */
-char *jsm_keypair( char *value, char *key, int comma );
-
-/** @brief Construct json object from valuepair array.
- *
- */
-char *jsm_jobj( int indent,  int size, char *array[size] );
-
-/* @brief Read token from json string.
- *
- */
-char *jsm_jtok( char *json, int start, int end );
-
-/* @brief Read value based on given key from json.
- *
- */
-char *jsm_jval( char *json, char *key, jsmntype_t type );
-
 /* File IO functions */
 
 /*
@@ -99,6 +79,6 @@ char *jsm_itoa( int value );
 /* @brief Cast value from json to Integer.
  *
  */
-int jsm_atoi( const char *json, const char *key );
+int jsm_atoi( const char *json, char *key );
 
 #endif /* __JSM_H_ */

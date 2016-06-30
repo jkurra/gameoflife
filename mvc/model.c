@@ -5,19 +5,23 @@ view_model *model_view_new( int type, char *pref_path )
 	/* Allocate space for new view_model and add base values */
 	view_model *model = (view_model*)malloc(sizeof(view_model));
 	model->type = type;
-	model->pref_path = pref_path;
-
 	/* Initialize views_included in model */
 	model->menu = model_menu_new();
 	model->game = model_game_new();
 	model->pref = model_pref_new();
 
 	commons_model *commons = model_commons_new(); /* Initialize common values  */
-	if(model->pref_path) {
-		jsm_read_commons(commons, pref_path); /* Read common values from file. */
-		model->game->commons = commons;
-		model->pref->commons = commons;
-	} else { printf("No Settings file provided. \n" ); }
+	//printf("using path %s\n", pref_path);
+	//if(model->game->commons->config_path) {
+		//jsm_read_commons(commons, commons->config_path); /* Read common values from file. */
+	model->game->commons = commons;
+	model->pref->commons = commons;
+
+	model->game->commons->config_path = pref_path;
+	//jsm_read_commons(commons, commons->config_path); /* Read common values from file. */
+	config_read(commons, NULL);
+	//			printf("using path %s\n", pref_path);
+	//} else { printf("No Settings file provided. \n" ); }
 
 	return model;
 }
@@ -55,7 +59,7 @@ commons_model *model_commons_new()
 {
 	commons_model *commons = (commons_model*)malloc(sizeof(commons_model));
 	commons->theme_path = NULL;
-	
+
 	commons->rows = -1;
 	commons->cols = -1;
 	commons->timerid = -1;
@@ -68,6 +72,7 @@ commons_model *model_commons_new()
 	commons->live_a = NULL;
 	commons->live_d = NULL;
 
+	commons->config_path = NULL;
 	return commons;
 }
 
@@ -80,7 +85,7 @@ void model_view_free( view_model *model )
 		model_game_free(model->game);
 		model_pref_free(model->pref);
 		model_commons_free(model->game->commons);
-		free(model->pref_path);
+		free(model->game->commons->config_path);
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
@@ -88,7 +93,7 @@ void model_view_free( view_model *model )
 void model_commons_free( commons_model *model )
 {
 	if(model) {
-		printf("Model view free called, NULL model. \n");
+		//printf("Model view free called, NULL model. \n");
 
 		if(model->live_a) {
 			free(model->live_a);
@@ -102,14 +107,14 @@ void model_commons_free( commons_model *model )
 
 void model_menu_free( menu_model *model )
 {
-	if(model) {printf("Model menu free called, NULL model. \n");
+	if(model) {//printf("Model menu free called, NULL model. \n");
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
 
 void model_game_free( game_model *model )
 {
-	if(model) {printf("Model game free called. \n");
+	if(model) {//printf("Model game free called. \n");
 		grid_free(model->commons->rows, model->grid);
 		free(model);
 	} else { printf("ERROR: Unable to free game_model, NULL model. \n"); }
@@ -117,7 +122,7 @@ void model_game_free( game_model *model )
 
 void model_pref_free( pref_model *model)
 {
-	if(model) {printf("Model pref free called, NULL model. \n");
+	if(model) {//printf("Model pref free called, NULL model. \n");
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
@@ -131,11 +136,11 @@ void model_update( view_model *model, int type )
 				break;
 			case GAME:
 				printf("MODEL [UPDATE] : game\n");
-				model_game_setup(model->game, model->pref_path);
+				model_game_setup(model->game, model->game->commons->config_path);
 				break;
 			case PREF:
 				printf("MODEL [UPDATE] : pref\n");
-				model_pref_setup(model->pref, model->pref_path);
+				model_pref_setup(model->pref, model->game->commons->config_path);
 				break;
 			default:
 				break;
@@ -146,7 +151,8 @@ void model_update( view_model *model, int type )
 void model_game_setup( game_model *model, const char *pref_path )
 {
 	if(model) {
-		jsm_read_commons(model->commons, pref_path);
+		//jsm_read_commons(model->commons, pref_path);
+		config_read(model->commons, NULL);
 		if(model->grid) { /* Free current grid if allocated */
 			grid_free(model->c_rows, model->grid);
 		}
@@ -160,7 +166,8 @@ void model_game_setup( game_model *model, const char *pref_path )
 void model_pref_setup( pref_model *model, const char *pref_path )
 {
 	if(model) {
-		jsm_read_commons(model->commons, pref_path);
+		config_read(model->commons, NULL);
+		//jsm_read_commons(model->commons, pref_path);
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 

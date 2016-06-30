@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "jsmn/jsm.h"
 
 void controller_clean_menu( view_model *model )
 {
@@ -20,7 +19,8 @@ void controller_clean_pref( view_model *model )
 	NOTICE that values are already changed to model at this point
 	*/
 	if(model){
-		jsm_write_commons(model->game->commons, model->pref_path);
+		config_write(model->game->commons, NULL);
+		//jsm_write_commons(model->game->commons, model->game->commons->config_path);
 	} else {}
 }
 

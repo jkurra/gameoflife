@@ -3,8 +3,8 @@ CFLAGS = -Wall
 
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 gmodule-2.0`
 OBJECTS   = mvc/model.o mvc/view.o mvc/controller.o main.o \
-			mvc/jsmn/jsmn.o mvc/jsmn/jsm.o \
-			board/cell.o board/grid.o manager/configmng.o manager/file.o
+			manager/json/jsmn.o manager/json/json.o \
+			board/cell.o board/grid.o manager/config.o manager/theme.o manager/file.o
 
 all: subsystem gameoflife
 
