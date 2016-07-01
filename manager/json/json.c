@@ -12,8 +12,8 @@ char *json_keypair( char *key, char *value, int comma )
 	if(comma) {
 		size++;
 	}
-	rtn = calloc(sizeof(char), size+1);
-
+	rtn = (char*)calloc(sizeof(char), size+1);
+	/* Construct key-value pair */
 	strcat(rtn, "\"");
 	strcat(rtn, key);
 	strcat(rtn, "\"");
@@ -21,6 +21,7 @@ char *json_keypair( char *key, char *value, int comma )
 	strcat(rtn, "\"");
 	strcat(rtn, value);
 	strcat(rtn, "\"");
+	/* If requested, add comma at the end of the string. */
 	if(comma){
 		strcat(rtn, ",");
 	}
@@ -48,13 +49,13 @@ char *json_tok( const char *json, int start, int end )
 char *json_obj(  int indent,  int size, char *array[size] )
 {
 	int objectsize = 0;
-	char *obj= NULL;
+	char *obj = NULL;
 	//g_print("value size: %s\n", array[0]);
 	for(int i=0; i<size; i++) {
 		objectsize += strlen(array[i])+indent+2;
 	}
 
-	obj = calloc(sizeof(char), objectsize+1);
+	obj = (char*)calloc(sizeof(char), objectsize+1);
 	strcat(obj, "{\n");
 	for(int i=0; i<size; i++) {
 		for(int k=0; k<indent; k++) {

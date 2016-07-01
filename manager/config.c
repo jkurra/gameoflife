@@ -17,6 +17,8 @@ config *config_new( char *path )
         conf->d_list = NULL;
         /* Add all files to configuration file list */
         config_list(conf);
+        printf("[CONFIG] initialized configuration : %s\n", conf->path_dir );
+
     } else { printf("NULL path requested for configuration \n"); }
 
     return conf;
@@ -81,7 +83,16 @@ void config_select( config *c, const char *name )
         }
     } if(found == 0) { g_print("Configuration with name : %s was not found.", name); }
 
-    g_print("selected configuration : %s\n", c->name_sel);
+    g_print("[CONFIG] selected configuration : %s\n", c->name_sel);
+}
+
+void d_list_free(config *conf)
+{
+    if(conf->d_list) {
+        for(int i=0; i<conf->d_size; i++) {
+            free(conf->d_list[i]);
+        } free(conf->d_list);
+    }   
 }
 
 void config_list( config *conf )

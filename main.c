@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     } else { perror("getcwd() error"); }
     char fname[15]  = "/config/config"; /* Add place for default config file */
     size_t lenght = strlen(cwd)+strlen(fname)+1;
-    char *result = malloc(lenght);
+    char *result = (char*)malloc(sizeof(char)*lenght);
     char *co = (char*)malloc(sizeof(char)*lenght+8);
     char *th = (char*)malloc(sizeof(char)*lenght+19);
 

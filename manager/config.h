@@ -42,10 +42,12 @@ typedef struct
 
 /** @brief Initialize new configuration from path.
  *
- * Allocates space for a new configuration and initializes it with NULL values.
- * Path is assigned so that config_update may be called.
- * Must be deallocated with config_free.
+ *  Allocates space for a new configuration and initializes it with NULL values.
+ *  Path is assigned so that config_update may be called.
+ *  Must be deallocated with config_free.
  *
+ * @param path  Path to be used as root directory of the configuration.
+ * @return      Fresh dynamically allocated configuration.
  */
 config *config_new( char *path );
 
@@ -56,6 +58,12 @@ void config_free( config *c );
 
 /** @brief Select a configuration from current directory.
  *
+ *  This function is used for changing the configuration easily and safely. Each
+ *  time select() is called, old selection is freed and new allocated. This removes
+ *  need for manipulating data in structure directly.
+ *
+ * @param c     configuration to be used for change.
+ * @param name  Configuration name to be used.
  */
 void config_select( config *c, const char *name );
 
