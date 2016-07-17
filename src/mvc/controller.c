@@ -216,6 +216,18 @@ void on_start_pause_clicked( GtkButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
+void on_themebox_changed(GtkComboBoxText *widget, gpointer data) {
+	view_model *model = (view_model*)data;
+	//g_print(" is selected %s \n",  	gtk_combo_box_text_get_active_text(widget));
+	if(model) {
+		theme_select(model->game->commons->themes, gtk_combo_box_text_get_active_text(widget));
+		controller_model( model, PREF );
+
+	}
+
+}
+
+G_MODULE_EXPORT
 void on_next_clicked( GtkButton *button, gpointer data )
 {
 

@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "file.h"
+
 typedef struct
 {
    char *sel_path;

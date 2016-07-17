@@ -3,9 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "manager/theme.h"
-#include "manager/config.h"
-#include "mvc/model.h"
+#include "src/manager/theme.h"
+#include "src/manager/config.h"
+#include "src/mvc/model.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,26 +20,28 @@ int main(int argc, char *argv[])
     } else { perror("getcwd() error"); }
     char fname[15]  = "/config/config"; /* Add place for default config file */
     size_t lenght = strlen(cwd)+strlen(fname)+1;
+
     char *result = (char*)malloc(sizeof(char)*lenght);
-    char *co = (char*)malloc(sizeof(char)*lenght+8);
+    char *co = (char*)malloc(sizeof(char)*lenght+28);
     char *th = (char*)malloc(sizeof(char)*lenght+19);
 
     strcpy( result, cwd );
     strcat( result, fname );
     /* prepare config file selection, for testing */
     strcpy( co, cwd );
-    strcat( co, "/config" );
+    strcat( co, "/user-var/config" );
 
     strcpy( th, cwd );
-    strcat( th, "/glade-ui/default/" );
+    strcat( th, "/user-var/themes" );
 
     config *conf = config_new(co);
     config_select(conf, "config.json");
 
-    theme *thm = theme_new(th);
-    theme_select(thm, "default.css");
     /* Create new main model for our user interface */
-    view_model *main_model = model_view_new(MENU, conf->path_sel);//config_path(conf));
+    view_model *main_model = model_view_new(MENU, conf);
+
+    main_model->game->commons->themes = theme_new(th);
+    theme_select(main_model->game->commons->themes, "default");
     /* Initialize view free when user quit */
     view_init(main_model, MENU); /* Init menu and start main GTK loop */
     model_view_free(main_model); /* User quit. */

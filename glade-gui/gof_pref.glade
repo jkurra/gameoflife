@@ -185,9 +185,10 @@
             <property name="margin_bottom">10</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkComboBox" id="themebox">
+              <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="label" translatable="yes">General settings</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -203,10 +204,16 @@
                 <property name="margin_bottom">5</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
+                  <object class="GtkComboBoxText" id="themebox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="changed" handler="on_themebox_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
                 </child>
               </object>
               <packing>

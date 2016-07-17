@@ -2,16 +2,16 @@ CC = gcc -g
 CFLAGS = -Wall
 
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 gmodule-2.0`
-OBJECTS   = mvc/model.o mvc/view.o mvc/controller.o main.o \
-			manager/json/jsmn.o manager/json/json.o \
-			board/cell.o board/grid.o manager/config.o manager/theme.o manager/file.o
+OBJECTS   = src/mvc/model.o src/mvc/view.o src/mvc/controller.o main.o \
+			src/manager/json/jsmn.o src/manager/json/json.o \
+			src/data/cell.o src/data/grid.o src/manager/config.o src/manager/theme.o src/manager/file.o
 
 all: subsystem gameoflife
 
 subsystem:
-	cd board && $(MAKE)
-	cd mvc && $(MAKE)
-	cd manager && $(MAKE)
+	cd src/data && $(MAKE)
+	cd src/mvc && $(MAKE)
+	cd src/manager && $(MAKE)
 
 gameoflife: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -o bin/gameoflife
@@ -21,6 +21,6 @@ gameoflife: $(OBJECTS)
 
 clean:
 	rm -rf *o *~ gameoflife
-	cd board && $(MAKE) clean
-	cd mvc  && $(MAKE) clean
-	cd manager && $(MAKE) clean
+	cd src/data && $(MAKE) clean
+	cd src/mvc && $(MAKE) clean
+	cd src/manager && $(MAKE) clean

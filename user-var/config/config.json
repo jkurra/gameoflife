@@ -4,6 +4,6 @@
    "tickInterval":"103",
    "gridVisible":"1",
    "backgroundColor":"rgb(46,52,54)",
-   "cellColor":"rgb(164,0,0)",
-   "defaultTheme":"glade-ui/default/default.css"
+   "cellColor":"rgb(245,121,0)",
+   "defaultTheme":"/home/jkurra/Workspace/GitHub/gameoflife/glade-gui/default/default.css"
 }

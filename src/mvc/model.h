@@ -4,15 +4,17 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
+#include <gtk/gtk.h>
+
 
 #include "view.h"
-//#include "jsmn/jsm.h"
-#include "../manager/config.h"
 
 /* Types of views that may be used */
 #define MENU  0
 #define GAME  1
 #define PREF  2
+
+
 
 /* @brief Initializes new view_model
  *
@@ -27,7 +29,7 @@
  * @param pref_path Path to file containing settings.
  * @return Pointer to newly allocated view_model.
  */
-view_model *model_view_new( int type, char *pref_path );
+view_model *model_view_new( int type, config *conf );
 
 /* @brief Get new view model.
  *

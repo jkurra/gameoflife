@@ -1,5 +1,5 @@
 #include "view.h"
-
+#include "model.h"
 void view_init( view_model *model, int type )
 {
 
@@ -17,9 +17,10 @@ void view_init( view_model *model, int type )
 
 	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	gsize bytes_written, bytes_read;
-	const gchar* home = model->game->commons->theme_path;
+	const gchar* home = model->game->commons->themes->sel_path;
 
 	GError *error1 = 0;
+	g_print("open file :%s", home);
 	gtk_css_provider_load_from_path (model->provider,
 									 g_filename_to_utf8(home, strlen(home),
 									 &bytes_read, &bytes_written, &error1),
@@ -28,17 +29,17 @@ void view_init( view_model *model, int type )
 	if(model) {
 		switch(model->type) {
 			case MENU:
-				printf("MODEL [INIT] : menu\n");
+				//printf("MODEL [INIT] : menu\n");
 				view_menu_init(model->menu, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
 			case GAME:
-				printf("MODEL [INIT] : game\n");
+				//printf("MODEL [INIT] : game\n");
 				view_game_init(model->game, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
 			case PREF:
-				printf("MODEL [INIT] : pref\n");
+				//printf("MODEL [INIT] : pref\n");
 				view_pref_init(model->pref, model->builder);
 				gtk_builder_connect_signals(model->builder, model);
 				break;
@@ -74,15 +75,15 @@ void view_close( view_model *model )
 		gtk_main_quit();
 		switch(model->type) {
 			case MENU:
-				printf("MODEL [CLOSE] : menu\n");
+				//printf("MODEL [CLOSE] : menu\n");
 				view_menu_close(model->menu);
 				break;
 			case GAME:
-				printf("MODEL [CLOSE] : game\n");
+				//printf("MODEL [CLOSE] : game\n");
 				view_game_close(model->game);
 				break;
 			case PREF:
-				printf("MODEL [CLOSE] : pref\n");
+				//printf("MODEL [CLOSE] : pref\n");
 				view_pref_close(model->pref);
 				break;
 			default:
@@ -95,7 +96,7 @@ void view_menu_init( menu_model *model, GtkBuilder *builder)
 {
 	GError	*error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if(!gtk_builder_add_from_file(builder, "glade-ui/gof_menu.glade", &error)) {
+	if(!gtk_builder_add_from_file(builder, "glade-gui/gof_menu.glade", &error)) {
 		g_warning("%s", error->message);
     	g_free(error);
 	}
@@ -109,7 +110,7 @@ void view_game_init( game_model *model, GtkBuilder *builder )
 {
 	GError  *error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if(!gtk_builder_add_from_file(builder, "glade-ui/gof_game.glade", &error)) {
+	if(!gtk_builder_add_from_file(builder, "glade-gui/gof_game.glade", &error)) {
 		g_warning("%s", error->message);
 		g_free( error );
 	}
@@ -127,7 +128,7 @@ void view_pref_init( pref_model *model, GtkBuilder *builder )
 {
 	GError *error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if( !gtk_builder_add_from_file(builder, "glade-ui/gof_pref.glade", &error)) {
+	if( !gtk_builder_add_from_file(builder, "glade-gui/gof_pref.glade", &error)) {
 		g_warning("%s", error->message);
 		g_free(error);
 	}
@@ -145,6 +146,25 @@ void view_pref_init( pref_model *model, GtkBuilder *builder )
 	GtkWidget *switchVis = GTK_WIDGET( gtk_builder_get_object(builder, "switch2"));
 	gtk_switch_set_state (GTK_SWITCH(switchVis),model->commons->visible);
 	model->main_frame = GTK_WIDGET( gtk_builder_get_object(builder, "main_frame" ));
+
+	//GtkListStore *liststore;
+    GtkWidget *combo;
+    GtkCellRenderer *column;
+
+//    liststore = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+
+	char **dir_list = model->commons->themes->dir_list;
+    int    dir_size = model->commons->themes->dir_size;
+
+	combo = GTK_WIDGET( gtk_builder_get_object(builder, "themebox" ));
+	int active = -1;
+	for(int i=0; i<dir_size; i++) {
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo),  dir_list[i]);
+		if(strcmp (dir_list[i], model->commons->themes->sel_name) == 0) {
+			active = i;
+		}
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), active);
 
   	gtk_widget_show( model->main_frame );
 }

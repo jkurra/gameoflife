@@ -6,9 +6,23 @@ int file_count( const char *d_path, int mode )
 
 
     switch (mode) {
-        case 1: /* count directories and files */
+        case 1: /* count directories and files */ {
+            DIR *dir;
+            if((dir = opendir(d_path)) != NULL) {
+                struct dirent *ent;
+                while ((ent = readdir(dir)) != NULL) {
 
-            break;
+                    if (ent->d_type == DT_DIR) {
+                        if(strcmp (ent->d_name, "..") == 0||strcmp (ent->d_name, ".") == 0) {
+                            // skip
+                        }else {
+                            count++;
+                        }
+                    }
+                }
+                closedir (dir);
+            }
+            break;}
         case 2: /* Count files */ {
             DIR *dir;
             if((dir = opendir(d_path)) != NULL) {
@@ -48,6 +62,7 @@ char *file_read( const char *file )
 		FILE *src = fopen(file, "r");
 		if(src) {
 			printf("JSM [READ] : File opened : %s\n", file);
+
 			fseek(src , 0L , SEEK_END);
 			long flen = ftell(src);
 			rewind(src);
@@ -57,6 +72,7 @@ char *file_read( const char *file )
 				json[res] = '\0';
 			} else { printf("JSM [ERROR] : Unable to allocate memory.\n"); }
 			fclose(src);
+            g_print("JSM [READ] : done.\n");
 		}
 	}
 

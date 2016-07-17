@@ -1,5 +1,6 @@
 #include "json.h"
 
+
 char *json_keypair( char *key, char *value, int comma )
 {
 	char *rtn = NULL;
@@ -36,7 +37,7 @@ char *json_tok( const char *json, int start, int end )
 		size=end-start; 	/* size of the string */
 
 	if(json) {
-		rtn = (char*)calloc(size+1, sizeof(char*));
+		rtn = (char*)calloc(size+2, sizeof(char));
 		rtn[size] = '\0';
 		for(i=start; i<end; i++, k++) {
 			rtn[k] = json[i];
@@ -89,7 +90,7 @@ char *json_val( const char *json, char *key, jsmntype_t type )
 			}
 		}
 	}
-
+	//printf("return value %s\n", rtn);
 	return rtn;
 }
 

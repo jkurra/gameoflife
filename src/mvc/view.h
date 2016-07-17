@@ -1,7 +1,8 @@
 #ifndef VIEW_H_INCLUDED
 #define VIEW_H_INCLUDED
 
-#include "../board/grid.h"
+#include "../manager/theme.h"
+#include "../manager/config.h"
 
 #include <gtk/gtk.h>
 #include <GL/glut.h>
@@ -40,9 +41,10 @@ typedef struct
 	int *live_a;
 	int *live_d;
 
-	char *theme_path;
+	//char *theme_path;
 	char *config_path;
-	
+	config *conf;
+	theme *themes;
 } commons_model;
 
 /*
@@ -94,12 +96,12 @@ typedef struct
 	game_model *game;
 	pref_model *pref;
 
-	//char *pref_path;
+	commons_model *commons;
+
 	GtkBuilder *builder;
 	GtkCssProvider *provider;
 
 } view_model;
-
 /** @brief Initialize values current model.
  *
  * Initializes view using view_model, which contains type value. Type value is

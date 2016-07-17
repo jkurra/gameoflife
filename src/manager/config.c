@@ -1,5 +1,7 @@
 #include "config.h"
 
+#include "../mvc/view.h"
+
 config *config_new( char *path )
 {
     /* Allocate space for the configuration structure. */
@@ -18,6 +20,10 @@ config *config_new( char *path )
         /* Add all files to configuration file list */
         config_list(conf);
         printf("[CONFIG] initialized configuration : %s\n", conf->path_dir );
+        for(int i=0; i<conf->d_size; i++) {
+            printf("[CONFIG] %d: %s\n",i, conf->d_list[i] );
+        }
+        printf("+------------------------------------+\n" );
 
     } else { printf("NULL path requested for configuration \n"); }
 
@@ -63,16 +69,11 @@ void config_select( config *c, const char *name )
     int found = 0;
     for(int i=0; i<c->d_size; i++) {
         if(strcmp (c->d_list[i], name) == 0) {
-            if(c->name_sel) {
-                printf("freeing %s\n", c->name_sel);
-                free(c->name_sel);
-            }
             if(c->path_sel) {
-                printf("freeing %s\n", c->path_sel );
                 free(c->path_sel);
             }
             int lenght = strlen(c->d_list[i]);
-            int p_len = strlen(c->d_list[i])+strlen(c->path_dir)+1;
+            //int p_len = strlen(c->d_list[i])+strlen(c->path_dir)+1;
             c->name_sel = (char*)malloc(sizeof(char)*lenght+1);
             c->path_sel = (char*)malloc(sizeof(char)*lenght+1);
 
@@ -81,9 +82,14 @@ void config_select( config *c, const char *name )
             found = 1;
             break;
         }
-    } if(found == 0) { g_print("Configuration with name : %s was not found.", name); }
+    } if(found == 0) { g_print("[CONFIG] Configuration with name : %s was not found.\n", name); }
+    printf("[CONFIG] selected configuration : %s\n", c->name_sel);
+    /*for(int i=0; i<c->d_size; i++) {
+        printf("[CONFIG] %d: %s\n",i, c->d_list[i] );
+    }
+    printf("+------------------------------------+\n" );
+    g_print("[CONFIG] selected configuration : %s\n", c->name_sel);*/
 
-    g_print("[CONFIG] selected configuration : %s\n", c->name_sel);
 }
 
 void d_list_free(config *conf)
@@ -92,7 +98,7 @@ void d_list_free(config *conf)
         for(int i=0; i<conf->d_size; i++) {
             free(conf->d_list[i]);
         } free(conf->d_list);
-    }   
+    }
 }
 
 void config_list( config *conf )
@@ -120,7 +126,7 @@ void config_list( config *conf )
 void config_write( commons_model *model, config *c)
 {
     if(model) {
-        char *rows  = (char*)calloc(10, sizeof(char*));
+        char *rows = (char*)calloc(10, sizeof(char*));
         char *cols = (char*)calloc(10, sizeof(char*));
         char *t_time = (char*)calloc(10, sizeof(char*));
         char *vis = (char*)calloc(10, sizeof(char*));
@@ -141,10 +147,11 @@ void config_write( commons_model *model, config *c)
         strings[3] = json_keypair("gridVisible", vis, 1);
         strings[4] = json_keypair("backgroundColor", bgrn, 1);
         strings[5] = json_keypair("cellColor", cell, 1);
-        strings[6] = json_keypair("defaultTheme", model->theme_path, 0);
+        strings[6] = json_keypair("defaultTheme", model->themes->sel_path, 0);
 
         free(bgrn);
         free(cell);
+
         char *json = json_obj(3, 7, strings);
 
         file_write(json, model->config_path);
@@ -162,33 +169,42 @@ void config_read( commons_model *model, config *c )
     free(model->live_a);
     free(model->live_d);
 
-    char *bg_col, *fr_col; /* free these */
+//    char *bg_col, *fr_col; /* free these */
     /* populate values for model*/
+
+    //printf("testing%s\n", "ss");
     model->cols     = jsm_atoi(json, "gridCols");
     model->rows     = jsm_atoi(json, "gridRows");
     model->interval = jsm_atoi(json, "tickInterval");
     model->visible  = jsm_atoi(json, "gridVisible");
-    model->theme_path = json_val(json, "defaultTheme", 3);
+    if(model->themes) {
+        theme_select(model->themes, json_val(json, "defaultTheme", 3));
+    }
+
     /* TODO: static modifiers for now*/
     model->cell_s = 10.0;
     model->zoom   = 1.0;
-    bg_col = json_val(json, "backgroundColor", 3);
-    fr_col = json_val(json, "cellColor", 3);
+    char *bg_col = json_val(json, "backgroundColor", 3);
+    char *fr_col = json_val(json, "cellColor", 3);
+
     /* parse colors to model*/
     gdk_rgba_parse(&model->bgrn_col, bg_col);
     gdk_rgba_parse(&model->cell_col, fr_col);
 
+    //printf("testing%s\n", "ss");
     /* Free dynamically allocated values*/
     int *live_a1 = (int*)calloc(2, sizeof(int));
     int *live_d1 = (int*)calloc(1, sizeof(int));
 
+    //printf("testing%s\n", "ss");
     live_a1[0] = 3;
     live_a1[1] = 2;
     live_d1[0] = 3;
 
+    //printf("testing%s\n", "ss");
     model->live_a = live_a1;
     model->live_d = live_d1;
-
+    //printf("testing%s\n", "ss");
     free(bg_col);
     free(fr_col);
     free(json);

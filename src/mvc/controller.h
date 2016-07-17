@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_H_INCLUDED
 #define CONTROLLER_H_INCLUDED
 
-#include "model.h"
+#include "view.h"
 
 /** @brief Change current model.
  *

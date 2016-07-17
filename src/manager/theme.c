@@ -14,19 +14,26 @@ theme *theme_new( char *path )
         th->dir_list = NULL;
         th->dir_size = -1;
         theme_list(th);
+        printf("[THEME] initialized theme : %s\n", th->dir_path );
+        for(int i=0; i<th->dir_size; i++) {
+            printf("[THEME] %d: %s\n",i, th->dir_list[i] );
+        }
+        printf("+------------------------------------+\n" );
     }
     return th;
 }
 
 char *theme_path( theme *c )
 {
-    size_t lenght = strlen(c->dir_path)+strlen(c->sel_name)+2;
+    size_t lenght = strlen(c->dir_path)+strlen(c->sel_name)+strlen(c->sel_name)+3+4;
     char *result = (char*)malloc(sizeof(char)*lenght);
 
     strcpy( result, c->dir_path);
     strcat( result, "/" );
     strcat( result, c->sel_name );
-
+    strcat( result, "/" );
+    strcat( result, c->sel_name );
+    strcat( result, ".css");
     return result;
 }
 
@@ -38,11 +45,13 @@ void theme_select( theme *c, char *name )
      */
     //g_print("selected configuration : %s\n", c->dir_path);
     int found = 0;
+        printf("[THEME] trying to select theme: %d\n", c->dir_size);
     for(int i=0; i<c->dir_size; i++) {
+        printf("%s : %s\n", c->dir_list[i], name);
         if(strcmp (c->dir_list[i], name) == 0) {
-            g_print("%s : %s\n", c->dir_list[i], name);
-            if(c->sel_name) {
-                free(c->sel_name);
+            printf("%s : %s\n", c->dir_list[i], name);
+            if(c->sel_path) {
+                free(c->sel_path);
             }
             int lenght = strlen(c->dir_list[i]);
             c->sel_name = (char*)malloc(sizeof(char)*lenght+1);
@@ -51,26 +60,28 @@ void theme_select( theme *c, char *name )
             found = 1;
             break;
         }
-    } if(found == 0) { g_print("Configuration with name : %s was not found.", name); }
-
-    //g_print("selected configuration : %s\n", c->sel_name);
+    } if(found == 0) { printf("[THEME] theme directory with name : %s was not found. \n", name); }
+    printf("[THEME] selected theme : %s\n", c->sel_path);
 }
 
 void theme_list( theme *t )
 {
-    t->dir_size = file_count(t->dir_path, 2);
-    t->dir_list = (char**)malloc(sizeof(char*)*t->dir_size+1);
+    t->dir_size = file_count(t->dir_path, 1);
+    t->dir_list = (char**)malloc(sizeof(char*)*t->dir_size);
     /* Add all files to configuration file list */
     DIR *dir = NULL;
     int i=0;
     if((dir = opendir(t->dir_path)) != NULL) {
         struct dirent *ent;
         while ((ent = readdir(dir)) != NULL) {
-            if (ent->d_type == DT_REG) {
+            if(strcmp (ent->d_name, "..") == 0||strcmp (ent->d_name, ".") == 0) {
+                // skip
+            }
+            else if (ent->d_type == DT_DIR) {
                 int len = strlen(ent->d_name);
                 t->dir_list[i] = (char*)malloc(sizeof(char)*len+1);
                 t->dir_list[i] = strdup(ent->d_name);
-                g_print("dir: %s\n", t->dir_list[i]);
+            //    printf("dir: %s\n", t->dir_list[i]);
                 i++;
             }
         }

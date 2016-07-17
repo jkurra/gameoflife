@@ -10,7 +10,6 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 
-#include "../../mvc/view.h"
 #include "jsmn.h"
 
 /* Json functions */
@@ -23,7 +22,7 @@ char *json_token( char *json, int start, int end );
 /** @brief Pull json value from object.
  *
  */
-char *json_value( char *json, char *key, jsmntype_t type );
+char *json_val( const char *json, char *key, jsmntype_t type );
 
 /** @brief Construct a json key-value pair as a c-string.
  *
@@ -45,7 +44,7 @@ void json_write( char *json, const char *file );
  */
 char *json_read( const char *file );
 
-
+char *json_obj(  int indent,  int size, char *array[size] );
 
 /* File IO functions */
 
@@ -59,15 +58,7 @@ char *jsm_fread( const char *file );
  */
 int jsm_fwrite( char *json, const char *file );
 
-/*
- * Write content of a json string into a file.
- */
-void jsm_read_commons( commons_model *model, const char *pref_path );
 
-/*
- * Write content of a json string into a file.
- */
-void jsm_write_commons( commons_model *model, const char *pref_path );
 
 /* Value cast functions */
 

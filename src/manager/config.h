@@ -3,8 +3,6 @@
 
 #include <dirent.h>
 #include <string.h>
-
-#include "../mvc/view.h"
 #include "file.h"
 #include "json/json.h"
 
@@ -68,7 +66,7 @@ void config_free( config *c );
 void config_select( config *c, const char *name );
 
 
-void config_write( commons_model *model, config *c);
+//void config_write( commons_model *model, config *c);
 
 /**
  *
@@ -76,6 +74,4 @@ void config_write( commons_model *model, config *c);
 char *config_path( config *c );
 void config_update( config *c, const char *path );
 void config_list( config *conf );
-void config_read( commons_model *model, config *c );
-
 #endif /* CONFIG_H_INCLUDED */
