@@ -6,15 +6,12 @@
 #include <time.h>
 #include <gtk/gtk.h>
 
-
 #include "view.h"
 
 /* Types of views that may be used */
 #define MENU  0
 #define GAME  1
 #define PREF  2
-
-
 
 /* @brief Initializes new view_model
  *
@@ -100,33 +97,5 @@ void model_game_setup( game_model *model, const char *pref_path );
  *
  */
 void model_pref_setup( pref_model *model, const char *pref_path );
-
-
-/* TODO: these actually belong to view */
-
-/** @brief Draw current model.
- *
- * Adds selected view to gtk-widget draw queue. Gives quick way of updating the
- * view without having to select which view needs to be drawn. As long as
- * view_model contains correct view and type, it can automatically select right
- * update function.
- *
- * @param model Contains view to be updated.
- */
-void model_draw_view( view_model *model );
-
-/** @brief Close current model.
- *
- * unrefs and calls destroy on currently active views main widget. Notice that
- * type must point to correct widget type or it may try to release incorrect
- * view. Make sure to call this before changing widget type and calling init_view.
- * Purpose of this function is to provide quick way of freeing view. However since
- * view_model contains multiple sub-views it is up to user to make sure that
- * correct view is selected. In future more checks may be assigned to avoid
- * mistakes.
- *
- * @param model Contains view to be closed.
- */
-void model_close_view( view_model *model );
 
 #endif /* MODEL_H_ */

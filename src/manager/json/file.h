@@ -3,8 +3,8 @@
 
 #include <dirent.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /** @brief Count files in directory.
  *  Used to return count of files inside a directory. Counts files and/or directories,

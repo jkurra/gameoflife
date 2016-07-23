@@ -5,16 +5,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "file.h"
+#include "json/file.h"
 
+/** @brief
+ *
+ */
 typedef struct
 {
-   char *sel_path;
-   char *sel_name;
-   char *dir_path;
+    char *sel_path;
+    char *sel_name;
+    char *dir_path;
 
-   char **dir_list;
-   int    dir_size;
+    char **dir_list;
+    int    dir_size;
+
 } theme;
 
 theme *theme_new( char *path );

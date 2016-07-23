@@ -16,5 +16,5 @@ key-value pairs are as follows "key" : "datatype"
   Background color in game screen [appearance]
 * "col_cell" : "string"
   Color of the cells in the game screen [appearance]
-* "theme_pth" : "string"
-  Path to css theme file. Affects visual appearance of every window.
+* "theme" : "string"
+  Name of the css theme file (filename without extension). Affects visual appearance of every window.

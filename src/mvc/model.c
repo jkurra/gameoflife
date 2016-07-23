@@ -18,8 +18,7 @@ view_model *model_view_new( int type, config *conf )
 	model->commons = commons;
 	model->game->commons = commons;
 	model->pref->commons = commons;
-
-	model->commons->config_path = conf->path_sel;
+	model->commons->conf = conf;
 	/* Read values from file to commons */
 	config_read(commons, NULL);
 
@@ -71,10 +70,10 @@ commons_model *model_commons_new()
 	commons->live_a = NULL;
 	commons->live_d = NULL;
 
-	commons->config_path = NULL;
+	//commons->config_path = NULL;
 	//commons->theme_path = NULL;
 	commons->themes = NULL;
-
+	commons->conf = NULL;
 	return commons;
 }
 
@@ -87,8 +86,7 @@ void model_view_free( view_model *model )
 		model_game_free(model->game);
 		model_pref_free(model->pref);
 		model_commons_free(model->game->commons);
-
-		free(model->game->commons->config_path);
+		//free(model->game->commons->config_path);
 		free(model);
 	} else { printf("ERROR: Unable to free view_model, NULL model. \n"); }
 }
@@ -136,10 +134,10 @@ void model_update( view_model *model, int type )
 			case MENU:
 				break;
 			case GAME:
-				model_game_setup(model->game, model->game->commons->config_path);
+				model_game_setup(model->game, "");
 				break;
 			case PREF:
-				model_pref_setup(model->pref, model->game->commons->config_path);
+				model_pref_setup(model->pref, "");
 				break;
 			default:
 				break;
@@ -155,7 +153,6 @@ void model_game_setup( game_model *model, const char *pref_path )
 			grid_free(model->c_rows, model->grid);
 		}
 		model->grid = grid_new(model->commons->rows, model->commons->cols);
-		grid_rand(model->commons->rows, model->commons->cols, model->grid);
 		model->c_rows = model->commons->rows;
 		model->c_cols = model->commons->cols;
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }

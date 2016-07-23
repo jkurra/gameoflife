@@ -4,7 +4,6 @@ int file_count( const char *d_path, int mode )
 {
     int count = 0;
 
-
     switch (mode) {
         case 1: /* count directories and files */ {
             DIR *dir;
@@ -22,7 +21,8 @@ int file_count( const char *d_path, int mode )
                 }
                 closedir (dir);
             }
-            break;}
+            break;
+        }
         case 2: /* Count files */ {
             DIR *dir;
             if((dir = opendir(d_path)) != NULL) {
@@ -34,7 +34,8 @@ int file_count( const char *d_path, int mode )
                 }
                 closedir (dir);
             }
-            break;}
+            break;
+        }
         case 3: /* Count directories */
             break;
         default:
@@ -51,7 +52,7 @@ void file_write( char *str, const char *file )
 		if(src) {
 			fputs(str, src);
 			fclose(src);
-		}
+		} else { printf("[FILE] Unable to open : %s\n", file); }
 	}
 }
 
@@ -62,7 +63,6 @@ char *file_read( const char *file )
 		FILE *src = fopen(file, "r");
 		if(src) {
 			printf("JSM [READ] : File opened : %s\n", file);
-
 			fseek(src , 0L , SEEK_END);
 			long flen = ftell(src);
 			rewind(src);

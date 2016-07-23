@@ -102,6 +102,61 @@ void on_menu_button_clicked( GtkButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
+void on_randomize_button_clicked(GtkButton *button, gpointer data)
+{g_print("Rand pressed \n");
+	view_model *model = (view_model*)data;
+	if(model)
+		grid_rand(model->commons->rows, model->commons->cols, model->game->grid);
+		gtk_widget_queue_draw( GTK_WIDGET(model->game->main_frame) );
+		//controller_model(model, MENU);
+}
+
+G_MODULE_EXPORT
+void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data )
+{	g_print("Cols pressed %d\n", gtk_spin_button_get_value_as_int(button));
+	view_model *model = (view_model*)data;
+	if(model){
+		int tmp_cols =-1;
+
+
+		//model->c_rows = model->commons->rows;
+		//	model->c_cols = model->commons->cols;
+
+		tmp_cols = model->game->c_cols;
+		model->game->commons->cols = gtk_spin_button_get_value_as_int(button);
+		model->game->grid = grid_resize(model->game->grid, model->game->c_rows, tmp_cols, model->game->commons->rows, model->game->commons->cols);
+		model->game->c_rows = model->commons->rows;
+		model->game->c_cols = model->commons->cols;
+		config_write( model->game->commons, model->commons->conf);
+		gtk_widget_queue_draw( GTK_WIDGET(model->game->main_frame) );
+
+	}
+ 	//	controller_model( model, GAME );
+}
+
+G_MODULE_EXPORT
+void on_grid_rows_spinButton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+	g_print("Rows pressed %d\n", gtk_spin_button_get_value_as_int(button));
+	view_model *model = (view_model*)data;
+	if(model){
+		int tmp_rows=-1;
+
+		tmp_rows = model->game->c_rows;
+		model->game->commons->rows = gtk_spin_button_get_value_as_int(button);
+		model->game->grid = grid_resize(model->game->grid, tmp_rows, model->game->c_cols, model->game->commons->rows, model->game->commons->cols);
+		model->game->c_rows = model->commons->rows;
+		model->game->c_cols = model->commons->cols;
+		config_write( model->game->commons, model->commons->conf);
+
+		gtk_widget_queue_draw( GTK_WIDGET(model->game->main_frame) );
+
+	}
+	 //	controller_model( model, GAME );
+}
+
+
+G_MODULE_EXPORT
 void on_row_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
@@ -217,8 +272,9 @@ void on_start_pause_clicked( GtkButton *button, gpointer data )
 
 G_MODULE_EXPORT
 void on_themebox_changed(GtkComboBoxText *widget, gpointer data) {
+	//g_print(" themebox chaned \n");
 	view_model *model = (view_model*)data;
-	//g_print(" is selected %s \n",  	gtk_combo_box_text_get_active_text(widget));
+	g_print(" test is selected %s \n", gtk_combo_box_text_get_active_text(widget));
 	if(model) {
 		theme_select(model->game->commons->themes, gtk_combo_box_text_get_active_text(widget));
 		controller_model( model, PREF );

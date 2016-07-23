@@ -14,11 +14,16 @@ theme *theme_new( char *path )
         th->dir_list = NULL;
         th->dir_size = -1;
         theme_list(th);
+        if(th->dir_size > 0) {
+            theme_select(th, th->dir_list[0]);
+        } else { printf("[THEME] No theme folders were found. \n" );}
+        /*
         printf("[THEME] initialized theme : %s\n", th->dir_path );
         for(int i=0; i<th->dir_size; i++) {
             printf("[THEME] %d: %s\n",i, th->dir_list[i] );
         }
         printf("+------------------------------------+\n" );
+        */
     }
     return th;
 }
@@ -43,25 +48,27 @@ void theme_select( theme *c, char *name )
      * For example directory named default would contain file named default.css
      * which is used as theme file.
      */
-    //g_print("selected configuration : %s\n", c->dir_path);
-    int found = 0;
-        printf("[THEME] trying to select theme: %d\n", c->dir_size);
-    for(int i=0; i<c->dir_size; i++) {
-        printf("%s : %s\n", c->dir_list[i], name);
-        if(strcmp (c->dir_list[i], name) == 0) {
+    if(c) {
+        //g_print("selected configuration : %s\n", c->dir_path);
+        int found = 0;
+        //printf("[THEME] trying to select theme: %s\n",name);
+        for(int i=0; i<c->dir_size; i++) {
             printf("%s : %s\n", c->dir_list[i], name);
-            if(c->sel_path) {
-                free(c->sel_path);
+            if(strcmp (c->dir_list[i], name) == 0) {
+                //printf("%s : %s\n", c->dir_list[i], name);
+                if(c->sel_path) {
+                    free(c->sel_path);
+                }
+                int lenght = strlen(c->dir_list[i]);
+                c->sel_name = (char*)malloc(sizeof(char)*lenght+1);
+                c->sel_name = c->dir_list[i];
+                c->sel_path = theme_path(c);
+                found = 1;
+                break;
             }
-            int lenght = strlen(c->dir_list[i]);
-            c->sel_name = (char*)malloc(sizeof(char)*lenght+1);
-            c->sel_name = c->dir_list[i];
-            c->sel_path = theme_path(c);
-            found = 1;
-            break;
-        }
-    } if(found == 0) { printf("[THEME] theme directory with name : %s was not found. \n", name); }
-    printf("[THEME] selected theme : %s\n", c->sel_path);
+        } if(found == 0) { printf("[THEME] theme directory with name : %s was not found. \n", name); }
+        printf("[THEME] selected theme : %s\n", c->sel_path);
+    } else { printf("[THEME] NULL theme received. \n");}
 }
 
 void theme_list( theme *t )

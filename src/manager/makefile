@@ -8,8 +8,8 @@ all: subsystem manager
 subsystem:
 	cd json && $(MAKE)
 
-manager: config.c theme.c file.c
-	$(CC) $(CFLAGS) $(PKGCONFIG) config.c theme.c file.c
+manager: config.c theme.c
+	$(CC) $(CFLAGS) $(PKGCONFIG) config.c theme.c
 
 clean:
 	rm -rf *o ~* all

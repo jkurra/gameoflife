@@ -28,7 +28,7 @@
 int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
 
 /** @brief Checks state of the cell in next turn.
- *
+ * NOT YET IMPLEMENTED
  * Based on current state of the cell, it is possible to peek future state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not

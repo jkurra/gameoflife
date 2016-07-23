@@ -41,10 +41,8 @@ typedef struct
 	int *live_a;
 	int *live_d;
 
-	//char *theme_path;
-	char *config_path;
 	config *conf;
-	theme *themes;
+	theme  *themes;
 } commons_model;
 
 /*
@@ -102,6 +100,7 @@ typedef struct
 	GtkCssProvider *provider;
 
 } view_model;
+
 /** @brief Initialize values current model.
  *
  * Initializes view using view_model, which contains type value. Type value is

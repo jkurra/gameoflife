@@ -1,14 +1,14 @@
 #ifndef __JSM_H_
 #define __JSM_H_
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <gtk/gtk.h>
 #include <GL/glut.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
+#include <gtk/gtk.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "jsmn.h"
 

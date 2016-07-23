@@ -17,37 +17,39 @@ void view_init( view_model *model, int type )
 
 	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	gsize bytes_written, bytes_read;
-	const gchar* home = model->game->commons->themes->sel_path;
+	if(model->game->commons->themes->sel_path) {
+		const gchar* home = model->game->commons->themes->sel_path;
 
-	GError *error1 = 0;
-	g_print("open file :%s", home);
-	gtk_css_provider_load_from_path (model->provider,
-									 g_filename_to_utf8(home, strlen(home),
-									 &bytes_read, &bytes_written, &error1),
-									 NULL);
+		GError *error1 = 0;
+		g_print("open file :%s", home);
+		gtk_css_provider_load_from_path (model->provider,
+										 g_filename_to_utf8(home, strlen(home),
+										 &bytes_read, &bytes_written, &error1),
+										 NULL);
 
-	if(model) {
-		switch(model->type) {
-			case MENU:
-				//printf("MODEL [INIT] : menu\n");
-				view_menu_init(model->menu, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case GAME:
-				//printf("MODEL [INIT] : game\n");
-				view_game_init(model->game, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			case PREF:
-				//printf("MODEL [INIT] : pref\n");
-				view_pref_init(model->pref, model->builder);
-				gtk_builder_connect_signals(model->builder, model);
-				break;
-			default:
-				break;
-		}
-		gtk_main();
-	} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
+		if(model) {
+			switch(model->type) {
+				case MENU:
+					//printf("MODEL [INIT] : menu\n");
+					view_menu_init(model->menu, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				case GAME:
+					//printf("MODEL [INIT] : game\n");
+					view_game_init(model->game, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				case PREF:
+					//printf("MODEL [INIT] : pref\n");
+					view_pref_init(model->pref, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				default:
+					break;
+			}
+			gtk_main();
+		} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
+	}else {printf("Unable to open view, no themes available.\n" );}
 }
 
 void view_draw( view_model *model )
@@ -96,7 +98,7 @@ void view_menu_init( menu_model *model, GtkBuilder *builder)
 {
 	GError	*error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if(!gtk_builder_add_from_file(builder, "glade-gui/gof_menu.glade", &error)) {
+	if(!gtk_builder_add_from_file(builder, "gui/gof_menu.glade", &error)) {
 		g_warning("%s", error->message);
     	g_free(error);
 	}
@@ -110,16 +112,21 @@ void view_game_init( game_model *model, GtkBuilder *builder )
 {
 	GError  *error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if(!gtk_builder_add_from_file(builder, "glade-gui/gof_game.glade", &error)) {
+	if(!gtk_builder_add_from_file(builder, "gui/gof_game.glade", &error)) {
 		g_warning("%s", error->message);
 		g_free( error );
 	}
 	if(!model) {
 		g_print("Null model");
 	}
-	model->commons->timerid = g_timeout_add(model->commons->interval, (GSourceFunc) view_timer_update, model);
+	//model->commons->timerid = g_timeout_add(model->commons->interval, (GSourceFunc) view_timer_update, model);
 	model->main_frame = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
 	model->game_area  = GTK_WIDGET(gtk_builder_get_object(builder, "drawingarea1"));
+
+	GtkWidget *sp1 = GTK_WIDGET ( gtk_builder_get_object(builder, "gridRowsspinButton") );
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp1), model->commons->rows);
+	GtkWidget *sp2 = GTK_WIDGET ( gtk_builder_get_object(builder, "gridColsspinButton") );
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->commons->cols);
 
 	gtk_widget_show(model->main_frame);
 }
@@ -128,7 +135,7 @@ void view_pref_init( pref_model *model, GtkBuilder *builder )
 {
 	GError *error = NULL;
 	if(!builder) { g_print("builder unitialized"); }
-	if( !gtk_builder_add_from_file(builder, "glade-gui/gof_pref.glade", &error)) {
+	if( !gtk_builder_add_from_file(builder, "gui/gof_pref.glade", &error)) {
 		g_warning("%s", error->message);
 		g_free(error);
 	}
@@ -227,7 +234,7 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			cur_y = model->game->startAtCellY,
 			interval = model->game->commons->interval,
 			step = model->game->c_step;
-
+		//	g_print("draw game rows:%d, cols:%d\n", max_x, max_y);
 		GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
 		GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
 

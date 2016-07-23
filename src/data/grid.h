@@ -8,17 +8,28 @@
 
 /** @brief Initalizes grid with 0 values.
  *
- * Takes in two dimensional grid, with it's desired constraint values and
- * allocates it to those values. Each cell is set to 0, representing death.
+ * Takes in desired constraint values of two dimensional grid and allocates new
+ * grid with those values. Each cell is set to 0, representing death.
  * If allocation of the array fails, error value is returned. This function is
  * intended to be used when modifying array size is necessary. However all
  * existing values in parameter array, are lost in reallocation.
  *
- * @param x   desired amount of columns in the array.
- * @param y   desired amount of rows in the array.
+ * @param x   Desired amount of columns in the array.
+ * @param y   Desired amount of rows in the array.
  * @return pointer to  created two-dimensional array
  */
 int **grid_new( int rows, int cols );
+
+/** @brief Resizes grid with given dimensions.
+ *
+ * Takes in two dimensional grid, with it's new desired constraint values and
+ * allocates it to those values. Each new cell is set to 0, representing death.
+ *
+ * @param grid pointer to grid.
+ * @param x   Desired amount of columns in the array.
+ * @param y   Desired amount of rows in the array.
+ */
+ int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols );
 
 /** @brief Free dynamically allocated array.
  *

@@ -2,32 +2,64 @@
 
 int **grid_new( int rows, int cols )
 {
-    //g_print("new grid %d : %d\n", rows, cols);
+    g_print("new grid %d : %d\n", rows, cols);
     int **arr = (int**)calloc(rows, sizeof(int*));
     for(int i=0; i<rows; i++) {
-        arr[i] = (int*)calloc(cols, sizeof(int*));
+        arr[i] = (int*)calloc(cols, sizeof(int));
     }
     return arr;
 }
 
+int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols )
+{
+    //printf("resize called...o_rows%d, ocols:%d, rows:%d, cols:%d\n", old_rows, old_cols, rows, cols);
+    int **tmp_grid = grid_new(old_rows, old_cols);
+    /* Create tmp grid of existing grid. */
+    for(int i=0; i<old_rows; i++) {
+        for(int k=0; k<old_cols; k++) {
+            tmp_grid[i][k] = grid[i][k];
+
+        }
+    }
+    grid_free(old_rows, grid);
+    grid = grid_new(rows, cols);
+    for(int i=0; i<old_rows; i++) {
+        if(i>=rows) {break;}
+        for(int k=0; k<old_cols; k++) {
+            if(k>=cols) {break;}
+            grid[i][k] = tmp_grid[i][k];
+        }
+    }
+
+    grid_free( old_rows, tmp_grid);
+    //printf("done.\n");
+    return grid;
+}
+
+
 void grid_free( int rows, int **arr )
 {
+    g_print("free called %d", rows);
     if(arr) {
        for(int i=0; i<rows; i++) {
+          // printf("[%d]\n", arr[i][0] );
            free(arr[i]);
        }
        free(arr);
     }
-    //arr = NULL;
+
 }
 
 void grid_rand( int rows, int cols, int **arr )
 {
+    printf("rand called...rows:%d, cols:%d\n", rows, cols);
     if(arr) {
         for(int i=0; i<rows; i++){
             for(int k=0; k<rows; k++) { arr[i][k] = rand()%2; }
         }
     }
+
+    //return arr;
 }
 
 void grid_next( int rows, int cols, int **grid, int *live_a, int live_s, int *live_d, int dead_s )
