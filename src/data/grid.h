@@ -28,6 +28,7 @@ int **grid_new( int rows, int cols );
  * @param grid pointer to grid.
  * @param x   Desired amount of columns in the array.
  * @param y   Desired amount of rows in the array.
+ * @return pointer to reallocated grid.
  */
  int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols );
 

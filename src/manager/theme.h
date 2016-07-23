@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "json/file.h"
+#include "log.h"
 
 /** @brief
  *
@@ -28,6 +29,7 @@ void theme_free( theme *t );
 void theme_update( theme *t );
 
 void theme_select( theme *t, char *name );
+
 void theme_list( theme *t );
 
 void thememng_select( const char * name );

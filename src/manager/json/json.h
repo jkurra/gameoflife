@@ -11,8 +11,7 @@
 #include <stdio.h>
 
 #include "jsmn.h"
-
-/* Json functions */
+#include "../log.h"
 
 /** @brief Pull single token from json string.
  *

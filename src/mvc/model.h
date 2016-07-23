@@ -7,6 +7,7 @@
 #include <gtk/gtk.h>
 
 #include "view.h"
+#include "../data/grid.h"
 
 /* Types of views that may be used */
 #define MENU  0

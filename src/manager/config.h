@@ -6,6 +6,7 @@
 
 #include "json/json.h"
 #include "json/file.h"
+#include "log.h"
 
 /** @brief Configuration structure for manipulating configurations.
  *
@@ -50,6 +51,7 @@ typedef struct
  * @return      Fresh dynamically allocated configuration.
  */
 config *config_new( char *path );
+
 
 /** @brief Free current configuration and its parts.
  *

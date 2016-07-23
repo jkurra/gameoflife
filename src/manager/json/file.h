@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "../log.h"
+
 /** @brief Count files in directory.
  *  Used to return count of files inside a directory. Counts files and/or directories,
  *  but ignores symlinks, etc. Mode is used to return files or directories or

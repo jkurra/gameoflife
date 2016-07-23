@@ -268,7 +268,6 @@
                                 <property name="valign">center</property>
                                 <property name="margin_left">5</property>
                                 <property name="orientation">vertical</property>
-                                <property name="spacing">3</property>
                                 <property name="homogeneous">True</property>
                                 <child>
                                   <object class="GtkButton" id="button9">

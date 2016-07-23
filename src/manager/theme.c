@@ -14,16 +14,11 @@ theme *theme_new( char *path )
         th->dir_list = NULL;
         th->dir_size = -1;
         theme_list(th);
+        printf("[%s] Found %d valid themes.\n", log_timestamp(), th->dir_size);
         if(th->dir_size > 0) {
             theme_select(th, th->dir_list[0]);
-        } else { printf("[THEME] No theme folders were found. \n" );}
-        /*
-        printf("[THEME] initialized theme : %s\n", th->dir_path );
-        for(int i=0; i<th->dir_size; i++) {
-            printf("[THEME] %d: %s\n",i, th->dir_list[i] );
-        }
-        printf("+------------------------------------+\n" );
-        */
+        } else {  printf("[%s] No themes available, using plain GTK-style.\n", log_timestamp());}
+
     }
     return th;
 }
@@ -53,7 +48,7 @@ void theme_select( theme *c, char *name )
         int found = 0;
         //printf("[THEME] trying to select theme: %s\n",name);
         for(int i=0; i<c->dir_size; i++) {
-            printf("%s : %s\n", c->dir_list[i], name);
+            //printf("%s : %s\n", c->dir_list[i], name);
             if(strcmp (c->dir_list[i], name) == 0) {
                 //printf("%s : %s\n", c->dir_list[i], name);
                 if(c->sel_path) {
@@ -66,9 +61,10 @@ void theme_select( theme *c, char *name )
                 found = 1;
                 break;
             }
-        } if(found == 0) { printf("[THEME] theme directory with name : %s was not found. \n", name); }
-        printf("[THEME] selected theme : %s\n", c->sel_path);
-    } else { printf("[THEME] NULL theme received. \n");}
+        } if(found == 0) { printf("[%s] Theme directory with name \"%s\" \n", log_timestamp(), name); }
+        printf("[%s] Selected theme named \"%s\" \n", log_timestamp(),c->sel_name);
+
+    } else {  printf("[%s] Theme received NULL pointer. \n", log_timestamp());}
 }
 
 void theme_list( theme *t )

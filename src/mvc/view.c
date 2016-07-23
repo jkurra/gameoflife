@@ -21,7 +21,7 @@ void view_init( view_model *model, int type )
 		const gchar* home = model->game->commons->themes->sel_path;
 
 		GError *error1 = 0;
-		g_print("open file :%s", home);
+		//g_print("open file :%s", home);
 		gtk_css_provider_load_from_path (model->provider,
 										 g_filename_to_utf8(home, strlen(home),
 										 &bytes_read, &bytes_written, &error1),
@@ -156,7 +156,7 @@ void view_pref_init( pref_model *model, GtkBuilder *builder )
 
 	//GtkListStore *liststore;
     GtkWidget *combo;
-    GtkCellRenderer *column;
+    //GtkCellRenderer *column;
 
 //    liststore = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
 
@@ -234,15 +234,12 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			cur_y = model->game->startAtCellY,
 			interval = model->game->commons->interval,
 			step = model->game->c_step;
-		//	g_print("draw game rows:%d, cols:%d\n", max_x, max_y);
+
 		GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
 		GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
 
-		//gtk_label_set_value (GTK_LABEL (interval_label), interval);
 		char value[10];
 		char step_value[10];
-	//	sprintf(value, "%d", interval);
-	//	g_print("v : %d\n", interval);
 		sprintf(value, "%d", interval);
 		sprintf(step_value, "%d", step);
 		gtk_label_set_text (GTK_LABEL(interval_label), value);

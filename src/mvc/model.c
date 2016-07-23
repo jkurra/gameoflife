@@ -70,8 +70,6 @@ commons_model *model_commons_new()
 	commons->live_a = NULL;
 	commons->live_d = NULL;
 
-	//commons->config_path = NULL;
-	//commons->theme_path = NULL;
 	commons->themes = NULL;
 	commons->conf = NULL;
 	return commons;

@@ -5,6 +5,7 @@
 
 #include "src/manager/theme.h"
 #include "src/manager/config.h"
+#include "src/manager/log.h"
 #include "src/mvc/model.h"
 
 int main(int argc, char *argv[])
@@ -14,10 +15,11 @@ int main(int argc, char *argv[])
         TODO: file should be allocated and freed with dedicated functions.
               Now it is freed in model.
      */
-    char cwd[1024];
-    if(getcwd(cwd, sizeof(cwd)) != 0) {
-        fprintf(stdout, "Current working dir: %s\n", cwd);
-    } else { perror("getcwd() error"); }
+     char cwd[1024];
+     if(getcwd(cwd, sizeof(cwd)) != 0) {
+         printf("[%s] Startup - dir : %s\n",log_timestamp(), cwd);
+         //fprintf(stdout, "Current working dir: %s\n", cwd);
+     } else { perror("getcwd() error"); }
     char fname[15]  = "/config/config"; /* Add place for default config file */
     size_t lenght = strlen(cwd) + strlen(fname)+1;
 
@@ -29,10 +31,10 @@ int main(int argc, char *argv[])
     strcat( result, fname );
     /* prepare config file selection, for testing */
     strcpy( co, cwd );
-    strcat( co, "/user-var/config" );
+    strcat( co, "/usr/config" );
 
     strcpy( th, cwd );
-    strcat( th, "/user-var/themes" );
+    strcat( th, "/usr/themes" );
 
     config *conf = config_new(co);
     config_select(conf, "config.json");
@@ -41,7 +43,8 @@ int main(int argc, char *argv[])
     view_model *main_model = model_view_new(MENU, conf);
 
     main_model->game->commons->themes = theme_new(th);
-    theme_select(main_model->game->commons->themes, "default");
+        config_read(main_model->commons, NULL);
+    //theme_select(main_model->game->commons->themes, "default");
     /* Initialize view free when user quit */
     view_init(main_model, MENU); /* Init menu and start main GTK loop */
     model_view_free(main_model); /* User quit. */

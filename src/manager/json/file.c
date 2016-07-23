@@ -52,7 +52,7 @@ void file_write( char *str, const char *file )
 		if(src) {
 			fputs(str, src);
 			fclose(src);
-		} else { printf("[FILE] Unable to open : %s\n", file); }
+		} else { printf("[%s] Unable to open file \"%s\"", log_timestamp(), file); }
 	}
 }
 
@@ -62,7 +62,7 @@ char *file_read( const char *file )
 	if(file) {
 		FILE *src = fopen(file, "r");
 		if(src) {
-			printf("JSM [READ] : File opened : %s\n", file);
+			//printf("JSM [READ] : File opened : %s\n", file);
 			fseek(src , 0L , SEEK_END);
 			long flen = ftell(src);
 			rewind(src);
@@ -70,10 +70,9 @@ char *file_read( const char *file )
 			if(json) {
 				size_t res = fread(json, 1, flen , src);
 				json[res] = '\0';
-			} else { printf("JSM [ERROR] : Unable to allocate memory.\n"); }
+			} else { printf("[%s] Memory allocation failed when reading file.", log_timestamp()); }
 			fclose(src);
-            g_print("JSM [READ] : done.\n");
-		}
+		} else { printf("[%s] Unable to open file \"%s\"", log_timestamp(), file); }
 	}
 
 	return json;

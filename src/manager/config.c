@@ -19,13 +19,9 @@ config *config_new( char *path )
         conf->dir_list = NULL;
         /* Add all files to configuration file list */
         config_list(conf);
-        printf("[CONFIG] initialized configuration : %s\n", conf->dir_path );
-        for(int i=0; i<conf->dir_size; i++) {
-            printf("[CONFIG] %d: %s\n",i, conf->dir_list[i] );
-        }
-        printf("+------------------------------------+\n" );
+        printf("[%s] Config intialized, %d files found.\n", log_timestamp(), conf->dir_size);
 
-    } else { printf("NULL path requested for configuration \n"); }
+    } else { printf("[%s] NULL path requested for configuration \n", log_timestamp()); }
 
     return conf;
 }
@@ -82,8 +78,10 @@ void config_select( config *c, const char *name )
                 break;
             }
         } if(found == 0) { g_print("[CONFIG] Configuration with name : %s was not found.\n", name); }
-        printf("[CONFIG] selected configuration : %s\n", c->sel_name);
-    } else { printf("[CONFIG] NULL pointer for configuration %s\n" );}
+
+        printf("[%s] Config selected : %s\n", log_timestamp(), c->sel_name);
+        //printf("[CONFIG] selected configuration : %s\n", c->sel_name);
+    } else { printf("[%s] Config Received NULL pointer.\n", log_timestamp());}
 
 }
 
@@ -170,8 +168,10 @@ void config_read( commons_model *model, config *c )
     model->interval = jsm_atoi(json, "tickInterval");
     model->visible  = jsm_atoi(json, "gridVisible");
     if(model->themes) {
-        g_print("CONFIG: theme select->");
-        theme_select(model->themes, json_val(json, "defaultTheme", 3));
+        /* Only change theme if different from before */
+        if(strcmp (json_val(json, "defaultTheme", 3), model->themes->sel_name) != 0) {
+            theme_select(model->themes, json_val(json, "defaultTheme", 3));
+        } 
     }
 
     /* TODO: static modifiers for now */
