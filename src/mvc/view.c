@@ -235,15 +235,23 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			interval = model->game->commons->interval,
 			step = model->game->c_step;
 
-		GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
-		GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
+		GtkWidget *interval_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_spinbutton") );
+		GtkWidget *step_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "stepspinbutton") );
+		//gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->commons->cols);
 
+	//	GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
+	//	GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
+/*
 		char value[10];
 		char step_value[10];
 		sprintf(value, "%d", interval);
 		sprintf(step_value, "%d", step);
-		gtk_label_set_text (GTK_LABEL(interval_label), value);
-		gtk_label_set_text (GTK_LABEL(step_label), step_value);
+*/
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (interval_sp), interval);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_sp), step);
+
+		//gtk_label_set_text (GTK_LABEL(interval_label), value);
+		//gtk_label_set_text (GTK_LABEL(step_label), step_value);
 		/* Get currently drawn size of the widget */
 		GtkAllocation widget_alloc;
 		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);

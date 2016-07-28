@@ -126,6 +126,17 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 }
 
 G_MODULE_EXPORT
+void on_interval_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
+{
+	view_model *model = (view_model*)data;
+	if(model) {
+		if(model->game->commons->interval-100 < 5000) {
+			model->game->commons->interval =  gtk_spin_button_get_value_as_int(button);
+		}
+	}
+}
+
+G_MODULE_EXPORT
 void on_grid_rows_spinButton_value_changed ( GtkSpinButton *button, gpointer data )
 {	//g_print("Rows pressed %d\n", gtk_spin_button_get_value_as_int(button));
 	view_model *model = (view_model*)data;
