@@ -126,7 +126,7 @@ void view_init( view_model *model, int type );
  *
  * @param model Contains view to be updated.
  */
-void view_draw(view_model *model);
+void view_draw( view_model *model );
 
 /** @brief Close current model.
  *

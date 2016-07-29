@@ -1,11 +1,6 @@
 #ifndef __JSM_H_
 #define __JSM_H_
 
-#include <GL/glut.h>
-#include <GL/glu.h>
-#include <GL/glx.h>
-#include <GL/gl.h>
-#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -58,13 +53,8 @@ char *jsm_fread( const char *file );
 int jsm_fwrite( char *json, const char *file );
 
 
-
 /* Value cast functions */
 
-/* @brief Cast integer into string
- *
- */
-char *jsm_itoa( int value );
 
 /* @brief Cast value from json to Integer.
  *

@@ -71,7 +71,8 @@ commons_model *model_commons_new()
 	commons->live_d = NULL;
 
 	commons->themes = NULL;
-	commons->conf = NULL;
+	commons->conf   = NULL;
+
 	return commons;
 }
 

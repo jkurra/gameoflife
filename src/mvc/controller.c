@@ -132,6 +132,9 @@ void on_interval_spinbutton_value_changed ( GtkSpinButton *button, gpointer data
 	if(model) {
 		if(model->game->commons->interval-100 < 5000) {
 			model->game->commons->interval =  gtk_spin_button_get_value_as_int(button);
+			config_write(model->game->commons, model->commons->conf);
+			model_remove_timer( model, model->game->commons->timerid );
+			model_attach_timer( model, model->game->commons->timerid );
 		}
 	}
 }
@@ -296,9 +299,10 @@ G_MODULE_EXPORT
 void on_up_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellX >= 5)
-		model->game->startAtCellX-=5;
+	//if(model->game->startAtCellX >= 5){
+		model->game->startAtCellX-=1;
 		view_draw( model );
+	//}
 }
 
 G_MODULE_EXPORT
@@ -306,7 +310,7 @@ void on_down_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model->game->startAtCellX < model->game->commons->cols)
-		model->game->startAtCellX += 5;
+		model->game->startAtCellX += 1;
 		view_draw( model );
 }
 
@@ -314,9 +318,9 @@ G_MODULE_EXPORT
 void on_left_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellY >= 5)
-		model->game->startAtCellY -= 5;
-		view_draw( model );
+		//if(model->game->startAtCellY >= 5){
+		model->game->startAtCellY -= 1;
+		view_draw( model );//}
 }
 
 G_MODULE_EXPORT
@@ -324,7 +328,7 @@ void on_right_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model->game->startAtCellY < model->game->commons->rows)
-		model->game->startAtCellY += 5;
+		model->game->startAtCellY += 1;
 		view_draw( model );
 }
 

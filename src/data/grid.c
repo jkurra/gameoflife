@@ -51,7 +51,6 @@ void grid_free( int rows, int **arr )
 
 void grid_rand( int rows, int cols, int **arr )
 {
-    //printf("rand called...rows:%d, cols:%d\n", rows, cols);
     if(arr) {
         for(int i=0; i<rows; i++){
             for(int k=0; k<cols; k++) { /* Flip coin for each cell, value is 1 or 0 */

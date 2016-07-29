@@ -4,7 +4,6 @@
 #include <dirent.h>
 #include <string.h>
 
-#include "json/json.h"
 #include "json/file.h"
 #include "log.h"
 
@@ -58,11 +57,6 @@ config *config_new( char *path );
  */
 void config_free( config *c );
 
-/** @brief Free current configuration and its parts.
- *
- */
-void config_list( config *conf );
-
 /** @brief Select a configuration from current directory.
  *
  *  This function is used for changing the configuration easily and safely. Each
@@ -74,9 +68,16 @@ void config_list( config *conf );
  */
 void config_select( config *c, const char *name );
 
+/** @brief Free current configuration and its parts.
+ *
+ */
+void config_list( config *conf );
+
+
 /**
  *
  */
 char *config_path( config *c );
+
 
 #endif /* CONFIG_H_INCLUDED */

@@ -270,20 +270,27 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 				if(y_start > maxy) {
 					break;
 				}
-				state = model->game->grid[cur_x][cur_y];
-				if(state == 1) {
-					view_draw_rectangle(cr, &model->game->commons->cell_col, x_start, y_start, model->game->commons->cell_s/model->game->commons->zoom, model->game->commons->cell_s/model->game->commons->zoom);
-				}
-				else if(state != 1 && model->game->commons->visible == 1)  {
-					int size = (model->game->commons->cell_s/model->game->commons->zoom);
-					GdkRGBA *rgba;
-					rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
-					rgba->red   += 0.1;
-					rgba->green += 0.1;
-					rgba->blue  += 0.1;
-					view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
-					gdk_rgba_free(rgba);
-				}
+				if(cur_y >= 0 && cur_x >= 0) {
+					state = model->game->grid[cur_x][cur_y];
+					if(state == 1) {
+						view_draw_rectangle(cr, &model->game->commons->cell_col, x_start, y_start, model->game->commons->cell_s/model->game->commons->zoom, model->game->commons->cell_s/model->game->commons->zoom);
+					}
+					else if(state != 1 && model->game->commons->visible == 1)  {
+						/*if(y_start < 0 || x_start < 0) {
+							g_print("y:%d : x%d", y_start, x_start);
+						}
+						else {*/
+							int size = (model->game->commons->cell_s/model->game->commons->zoom);
+							GdkRGBA *rgba;
+							rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
+							rgba->red   += 0.1;
+							rgba->green += 0.1;
+							rgba->blue  += 0.1;
+							view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+							gdk_rgba_free(rgba);
+						//}
+					}
+				}// else { g_print("y:%d : x%d\n", cur_y, cur_x); }
 
 				x_start += model->game->commons->cell_s/model->game->commons->zoom;
 				x_start += model->game->commons->cell_s/3.0; // space between cells

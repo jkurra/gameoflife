@@ -119,10 +119,10 @@ void config_list( config *conf )
 void config_write( commons_model *model, config *c)
 {
     if(model) {
-        char *rows = (char*)calloc(10, sizeof(char*));
-        char *cols = (char*)calloc(10, sizeof(char*));
-        char *t_time = (char*)calloc(10, sizeof(char*));
-        char *vis = (char*)calloc(10, sizeof(char*));
+        char *rows =   (char*) calloc(10, sizeof(char*));
+        char *cols =   (char*) calloc(10, sizeof(char*));
+        char *t_time = (char*) calloc(10, sizeof(char*));
+        char *vis =    (char*) calloc(10, sizeof(char*));
 
         sprintf(rows, "%d",   model->rows);
         sprintf(cols, "%d",   model->cols);
@@ -167,11 +167,12 @@ void config_read( commons_model *model, config *c )
     model->rows     = jsm_atoi(json, "gridRows");
     model->interval = jsm_atoi(json, "tickInterval");
     model->visible  = jsm_atoi(json, "gridVisible");
+
     if(model->themes) {
         /* Only change theme if different from before */
         if(strcmp (json_val(json, "defaultTheme", 3), model->themes->sel_name) != 0) {
             theme_select(model->themes, json_val(json, "defaultTheme", 3));
-        } 
+        }
     }
 
     /* TODO: static modifiers for now */

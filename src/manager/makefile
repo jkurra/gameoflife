@@ -12,4 +12,5 @@ manager: config.c theme.c log.c
 	$(CC) $(CFLAGS) $(PKGCONFIG) config.c theme.c log.c
 
 clean:
+	cd json && $(MAKE) clean
 	rm -rf *o ~* all

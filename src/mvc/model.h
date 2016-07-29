@@ -99,4 +99,5 @@ void model_game_setup( game_model *model, const char *pref_path );
  */
 void model_pref_setup( pref_model *model, const char *pref_path );
 
+
 #endif /* MODEL_H_ */

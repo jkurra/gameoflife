@@ -124,7 +124,6 @@
     background-image: -gtk-gradient (linear, left top, left bottom, from(shade (grey, 0.85)));
 }
 
-
 GtkBox#step {
     border-radius: 2px;
     border-width: 2px 2px 2px 2px;

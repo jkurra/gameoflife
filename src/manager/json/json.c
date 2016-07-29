@@ -107,27 +107,8 @@ int jsm_jint(char *json, char *key)
 	return rtn;
 }
 
-GdkRGBA *jsm_ctoa( char *color )
-{
-	GdkRGBA *bgCol = NULL;
-	gdk_rgba_parse(bgCol, color);
-	return bgCol;
-}
 
-char *jsm_atoc( GdkRGBA *color )
-{
-	char *bgCol = NULL;
-	bgCol = gdk_rgba_to_string(color);
-	return bgCol;
-}
 
-char *jsm_itoa( int value )
-{
-	char *rtn = NULL;
-	sprintf(rtn, "%d", value);
-	//g_print("x_size = %s, i=%d\n", rtn, value);
-	return rtn;
-}
 
 int jsm_atoi( const char *json, char* key )
 {
