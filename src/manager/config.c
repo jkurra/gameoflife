@@ -21,7 +21,7 @@ config *config_new( char *path )
         config_list(conf);
         printf("[%s] Config intialized, %d files found.\n", log_timestamp(), conf->dir_size);
 
-    } else { printf("[%s] NULL path requested for configuration \n", log_timestamp()); }
+    } else { printf("[%s] NULL path provided for configuration \n", log_timestamp()); }
 
     return conf;
 }
