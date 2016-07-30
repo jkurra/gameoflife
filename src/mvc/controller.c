@@ -133,8 +133,10 @@ void on_interval_spinbutton_value_changed ( GtkSpinButton *button, gpointer data
 		if(model->game->commons->interval-100 < 5000) {
 			model->game->commons->interval =  gtk_spin_button_get_value_as_int(button);
 			config_write(model->game->commons, model->commons->conf);
-			model_remove_timer( model, model->game->commons->timerid );
-			model_attach_timer( model, model->game->commons->timerid );
+			if(model->game->commons->timerid != -1) { // Only update timer if game is running
+				model_remove_timer( model, model->game->commons->timerid );
+				model_attach_timer( model, model->game->commons->timerid );
+			}
 		}
 	}
 }
