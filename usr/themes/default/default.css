@@ -1,129 +1,69 @@
 
+
 .button {
-    box-shadow: none;
     border-radius: 4px;
     border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
+    border: 2px;
     color: white;
+    border-color: #5c5c5c;
+    border-style: solid;
+    background: darkgrey;
+}
 
-    background-image: -gtk-gradient (linear, left top, left bottom, from(grey));
+.button:focus {
+    background: grey;
+}
+
+.button:hover {
+    transition: 100ms linear;
+    background: grey;
+}
+
+.button#randomize_button {
+
+}
+
+.button#start_pause_button {
+    background-image: url('pause.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .button#plusbutton {
-
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: #5c5c5c;
-    border-style: solid;
-    background-color: grey;
     background-image: url('plus.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.button#plusbutton:hover {
-    transition: 300ms ease-in-out;
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: #333333;
-    background-color: darkgrey;
-}
-
-.button#plusbutton:active {
-    border-style: outset;
-    border-radius: 4px;
-    border-width: 1px 1px 1px 1px;
-    border-color: grey;
-    background-color: darkgrey;
-}
-
-
 .button#minusbutton {
-    border-radius: 4px;
-    border-width: 1px 1px 1px 1px;
-    border-color: darkgrey;
-    color: white;
-
-    background-color: grey;
     background-image: url('minus.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .button#upbutton {
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
-    color: white;
-    background-color: grey;
     background-image: url('arrow_up.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .button#downbutton {
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
-    color: white;
-    background-color: grey;
     background-image: url('arrow_down.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .button#rightbutton {
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
-    color: white;
-    background-color: grey;
     background-image: url('arrow_right.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .button#leftbutton {
-    border-radius: 4px;
-    border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
-    color: white;
-    background-color: grey;
     background-image: url('arrow_left.png');
     background-repeat: no-repeat;
     background-position: center;
 }
-
-.button#increasebutton {
-    border-radius: 2px;
-    border-width: 1px 1px 1px 1px;
-    border-color: darkgrey;
-    color: white;
-    background-color: grey;
-    background-image: url('plus.png');
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.button#reducebutton {
-    border-radius: 2px;
-    border-width: 1px 1px 1px 1px;
-    border-color: darkgrey;
-    color: white;
-
-    background-image: url('minus.png');
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.button:hover {
-    background-image: -gtk-gradient (linear, left top, left bottom, from(shade (grey, 1.06)));
-}
-
-.button:active {
-    background-image: -gtk-gradient (linear, left top, left bottom, from(shade (grey, 0.85)));
-}
-
 
 GtkBox#step {
     border-radius: 2px;

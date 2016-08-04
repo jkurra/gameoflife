@@ -58,7 +58,8 @@ void theme_update( theme *t );
  *
  */
 void theme_select( theme *t, char *name );
-/** @brief path to currently selected configuration.
+
+/** @brief Update available themes in directory.
  *
  */
 void theme_list( theme *t );

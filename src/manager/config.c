@@ -60,26 +60,31 @@ char *config_path( config *c )
     return result;
 }
 
-void config_select( config *c, const char *name )
+void config_select( config *conf, const char *name )
 {
-    if(c) {
+    if(conf) {
         int found = 0;
-        for(int i=0; i<c->dir_size; i++) {
-            if(strcmp (c->dir_list[i], name) == 0) {
-                if(c->sel_path) {
-                    free(c->sel_path);
+        for(int i=0; i<conf->dir_size; i++) {
+            if(strcmp (conf->dir_list[i], name) == 0) {
+                if(conf->sel_path) {
+                    free(conf->sel_path);
                 }
-                int lenght = strlen(c->dir_list[i]);
-                c->sel_name = (char*)malloc(sizeof(char)*lenght+1);
-                c->sel_path = (char*)malloc(sizeof(char)*lenght+1);
-                c->sel_name = c->dir_list[i];
-                c->sel_path = config_path(c);
+                if(conf->sel_path) {
+                    free(conf->sel_name);
+                }
+                int lenght = strlen(conf->dir_list[i]);
+
+                conf->sel_name = (char*)malloc(sizeof(char)*lenght+1);
+                conf->sel_path = (char*)malloc(sizeof(char)*lenght+1);
+                conf->sel_name = conf->dir_list[i];
+                conf->sel_path = config_path(conf);
+
                 found = 1;
                 break;
             }
         } if(found == 0) { g_print("[CONFIG] Configuration with name : %s was not found.\n", name); }
 
-        printf("[%s] Config selected : %s\n", log_timestamp(), c->sel_name);
+        printf("[%s] Config selected : %s\n", log_timestamp(), conf->sel_name);
         //printf("[CONFIG] selected configuration : %s\n", c->sel_name);
     } else { printf("[%s] Config Received NULL pointer.\n", log_timestamp());}
 

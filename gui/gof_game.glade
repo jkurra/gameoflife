@@ -116,7 +116,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="halign">center</property>
                                 <property name="margin_right">5</property>
-                                <property name="label" translatable="yes">Interval </property>
+                                <property name="label" translatable="yes">Interval (ms)</property>
                                 <property name="ellipsize">start</property>
                               </object>
                               <packing>
@@ -200,6 +200,7 @@
                             <property name="can_focus">False</property>
                             <property name="halign">center</property>
                             <property name="orientation">vertical</property>
+                            <property name="spacing">1</property>
                             <child>
                               <object class="GtkBox" id="box7">
                                 <property name="visible">True</property>
@@ -265,9 +266,12 @@
                             <child>
                               <object class="GtkButton" id="randomize_button">
                                 <property name="label" translatable="yes">Randomize</property>
+                                <property name="name">randomize_button</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="on_randomize_button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -279,9 +283,12 @@
                             <child>
                               <object class="GtkButton" id="button1">
                                 <property name="label" translatable="yes">Clear</property>
+                                <property name="name">clear_button</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <property name="focus_on_click">False</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

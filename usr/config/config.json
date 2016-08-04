@@ -1,6 +1,6 @@
 {
    "gridRows":"100",
-   "gridCols":"100",
+   "gridCols":"70",
    "tickInterval":"100",
    "gridVisible":"1",
    "backgroundColor":"rgb(46,52,54)",

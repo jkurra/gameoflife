@@ -53,7 +53,7 @@ typedef struct
      *
      *  Count of files within directory. Used to quickly determine size of dir_list
      *  since it is not possible in c. Must be updated each time dir_list is
-     *  updated. 
+     *  updated.
      */
     int    dir_size;
 
