@@ -6,7 +6,7 @@ theme *theme_new( char *path )
     theme *th = (theme*)malloc(sizeof(theme));
 
     if(path) {
-        /* Asign initial values for theme member variables */
+        /* Assing initial values for theme member variables */
         th->dir_path = path;
         th->sel_path = NULL;
         th->sel_name = NULL;

@@ -169,7 +169,7 @@ void model_attach_timer(view_model *model, int interval )
 	switch(model->type) {
 		case GAME:
 			model->game->commons->timerid = g_timeout_add(model->game->commons->interval, (GSourceFunc) view_timer_update, model->game);
-			printf("Attach timer for game: %d\n", model->game->commons->timerid );
+			printf("[%s] Attached timer, id:%d, interval: %d \n", log_timestamp(), model->game->commons->timerid, model->game->commons->interval );
 			break;
 		default:
 			break;

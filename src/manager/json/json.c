@@ -1,6 +1,5 @@
 #include "json.h"
 
-
 char *json_keypair( char *key, char *value, int comma )
 {
 	char *rtn = NULL;
@@ -94,7 +93,7 @@ char *json_val( const char *json, char *key, jsmntype_t type )
 	return rtn;
 }
 
-int jsm_jint(char *json, char *key)
+int json_jint(char *json, char *key)
 {
 	int rtn = -1;
 
@@ -107,10 +106,7 @@ int jsm_jint(char *json, char *key)
 	return rtn;
 }
 
-
-
-
-int jsm_atoi( const char *json, char* key )
+int json_atoi( const char *json, char* key )
 {
 	int rtn = -1;
 	char *str = json_val( json, key, 3 );

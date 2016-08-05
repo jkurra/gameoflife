@@ -168,10 +168,10 @@ void config_read( commons_model *model, config *c )
     free(model->live_d);
 
     /* populate values for model*/
-    model->cols     = jsm_atoi(json, "gridCols");
-    model->rows     = jsm_atoi(json, "gridRows");
-    model->interval = jsm_atoi(json, "tickInterval");
-    model->visible  = jsm_atoi(json, "gridVisible");
+    model->cols     = json_atoi(json, "gridCols");
+    model->rows     = json_atoi(json, "gridRows");
+    model->interval = json_atoi(json, "tickInterval");
+    model->visible  = json_atoi(json, "gridVisible");
 
     if(model->themes) {
         /* Only change theme if different from before */

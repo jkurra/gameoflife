@@ -1,5 +1,4 @@
 
-
 .button {
     border-radius: 4px;
     border-width: 2px 2px 2px 2px;
@@ -17,16 +16,6 @@
 .button:hover {
     transition: 100ms linear;
     background: grey;
-}
-
-.button#randomize_button {
-
-}
-
-.button#start_pause_button {
-    background-image: url('pause.png');
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .button#plusbutton {
@@ -56,12 +45,14 @@
 .button#rightbutton {
     background-image: url('arrow_right.png');
     background-repeat: no-repeat;
+    background-size: auto;
     background-position: center;
 }
 
 .button#leftbutton {
     background-image: url('arrow_left.png');
     background-repeat: no-repeat;
+    background-size: auto;
     background-position: center;
 }
 
