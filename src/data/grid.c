@@ -60,6 +60,19 @@ void grid_rand( int rows, int cols, int **arr )
     }
 }
 
+void grid_switch_cell(int **grid, int x, int y)
+{
+    if(grid) {
+        if(grid[y][x] == 1) {
+            g_print("switch cell to 0");
+            grid[y][x] = 0;
+        } else {
+            g_print("switch cell to 1");
+            grid[y][x] = 1;
+        }
+    }
+}
+
 void grid_next( int rows, int cols, int **grid, int *live_a, int live_s, int *live_d, int dead_s )
 {
     int **tmp_grid = grid_new(rows, cols);

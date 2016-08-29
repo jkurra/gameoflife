@@ -126,6 +126,28 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 }
 
 G_MODULE_EXPORT
+void on_drawingarea1_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	int posx = get_x_position( widget, data, event->x);
+	int posy = get_y_position( widget, data, event->y);
+	g_print("button pressed on game : x:%d, y:%d.\n", posx, posy);
+	if(posx >= 0 && posy >= 0) {
+		view_model *model = (view_model*)data;
+		grid_switch_cell( model->game->grid, posx, posy );
+		gtk_widget_queue_draw(GTK_WIDGET(model->game->main_frame));
+	}else {
+		g_print("positions out of range.\n");
+	}
+}
+
+G_MODULE_EXPORT
+void on_drawingarea1_button_release_event(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+
+	//g_print("button released on game.\n");
+}
+
+G_MODULE_EXPORT
 void on_interval_spinbutton_value_changed ( GtkSpinButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;

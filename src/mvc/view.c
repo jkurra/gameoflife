@@ -222,6 +222,90 @@ void view_draw_rectangle( cairo_t *cairo, GdkRGBA *color, int start_x, int start
 	} else { }
 }
 
+int get_x_position( GtkDrawingArea *area, gpointer data, float x )
+{
+	int pos = -1;
+	view_model *model = (view_model*)data;
+//g_print("pos1 x:%f\n",x);
+	GtkAllocation widget_alloc;
+	gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
+	int maxx = widget_alloc.width,
+		maxy = widget_alloc.height;
+
+	int max_x = model->game->commons->rows,
+		max_y = model->game->commons->cols,
+		cur_x =0,
+		cur_y = model->game->startAtCellY,
+		interval = model->game->commons->interval,
+		step = model->game->c_step;
+
+
+	float x_start = 5.0, y_start = 5.0;
+	int x_cell = 0;
+	//g_print("g:%d", max_x);
+	float x_max = 0;
+	float x_min = 0;
+	for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
+		x_max = x_start+(model->game->commons->cell_s/model->game->commons->zoom);
+		x_min = x_start;
+		g_print("button pressed on game1 : x_min:%f, x_max:%f, x:%f\n", x_min, x_max, x);//g_print("pos x1:%d,\n",x_cell);
+		if(x>x_min && x<x_max) {
+			pos = x_cell;
+			g_print("pos x:%d,\n",x_cell);
+			break;
+		}else {
+			x_cell++;
+		//cur_x = x_cell;
+			x_start += model->game->commons->cell_s/model->game->commons->zoom;
+			x_start += model->game->commons->cell_s/3.0; // space between cells
+		}
+		//g_print("button pressed on game1 : x_min:%f, x_max:%f\n", x_min, x_max);
+	}
+	//g_print("button pressed on game1 : x:%d.\n", pos);
+	return pos;
+}
+
+int get_y_position( GtkDrawingArea *area, gpointer data, float y )
+{
+	int pos = -1;
+	view_model *model = (view_model*)data;
+//g_print("pos1 x:%f\n",x);
+	GtkAllocation widget_alloc;
+	gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
+	int maxx = widget_alloc.width,
+		maxy = widget_alloc.height;
+
+	int max_x = model->game->commons->rows,
+		max_y = model->game->commons->cols,
+		cur_x =0,
+		cur_y = model->game->startAtCellY,
+		interval = model->game->commons->interval,
+		step = model->game->c_step;
+
+
+	float x_start = 5.0, y_start = 5.0;
+	int x_cell = 0;
+	//g_print("g:%d", max_x);
+	float x_max = 0;
+	float x_min = 0;
+	for(cur_x=model->game->startAtCellY; cur_x<max_x; cur_x++) {
+		x_max = x_start+(model->game->commons->cell_s/model->game->commons->zoom);
+		x_min = x_start;
+		if(y>x_min && y<x_max) {
+			pos = x_cell;
+			//g_print("pos x:%f,\n",y);
+			break;
+		}
+		x_cell++;
+		//cur_x = x_cell;
+		x_start += model->game->commons->cell_s/model->game->commons->zoom;
+		x_start += model->game->commons->cell_s/3.0; // space between cells
+		//g_print("button pressed on game1 : x_min:%f, x_max:%f\n", x_min, x_max);
+	}
+	//g_print("button pressed on game1 : x:%d.\n", pos);
+	return pos;
+}
+
 G_MODULE_EXPORT
 void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 {
@@ -237,21 +321,13 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 
 		GtkWidget *interval_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_spinbutton") );
 		GtkWidget *step_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "stepspinbutton") );
-		//gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->commons->cols);
-
-	//	GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
-	//	GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
-/*
-		char value[10];
-		char step_value[10];
-		sprintf(value, "%d", interval);
-		sprintf(step_value, "%d", step);
-*/
+		//  gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->commons->cols);
+		//	GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
+		//	GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (interval_sp), interval);
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_sp), step);
-
-		//gtk_label_set_text (GTK_LABEL(interval_label), value);
-		//gtk_label_set_text (GTK_LABEL(step_label), step_value);
+		//  gtk_label_set_text (GTK_LABEL(interval_label), value);
+		//  gtk_label_set_text (GTK_LABEL(step_label), step_value);
 		/* Get currently drawn size of the widget */
 		GtkAllocation widget_alloc;
 		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);

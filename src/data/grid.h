@@ -6,6 +6,8 @@
 
 #include "cell.h"
 
+void grid_switch_cell(int **grid, int x, int y);
+
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new

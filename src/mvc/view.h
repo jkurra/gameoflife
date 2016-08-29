@@ -101,6 +101,9 @@ typedef struct
 
 } view_model;
 
+int get_x_position( GtkDrawingArea *area, gpointer data, float x );
+int get_y_position( GtkDrawingArea *area, gpointer data, float y );
+
 /** @brief Initialize values current model.
  *
  * Initializes view using view_model, which contains type value. Type value is
