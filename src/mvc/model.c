@@ -60,7 +60,7 @@ commons_model *model_commons_new()
 
 	commons->rows = -1;
 	commons->cols = -1;
-	commons->timerid = -1;
+	commons->timerid  = -1;
 	commons->infinite = -1;
 	commons->visible  = -1;
 	commons->cell_s   = -1;		/* Size of each cell in the screen. */

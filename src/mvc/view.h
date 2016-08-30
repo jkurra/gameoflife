@@ -51,6 +51,8 @@ typedef struct
 typedef struct
 {
 	GtkWidget *main_frame;
+	GtkWidget *game_area;
+	
 	commons_model *commons; /* Common values for this model. May be NULL */
 
 } menu_model;
@@ -100,9 +102,6 @@ typedef struct
 	GtkCssProvider *provider;
 
 } view_model;
-
-int get_x_position( GtkDrawingArea *area, gpointer data, float x );
-int get_y_position( GtkDrawingArea *area, gpointer data, float y );
 
 /** @brief Initialize values current model.
  *
@@ -177,7 +176,6 @@ void view_game_close( game_model *model );
  */
 void view_pref_close( pref_model *model );
 
-GtkAllocation *view_widget_pos( GtkWidget *widget );
 
 gboolean view_timer_update( game_model *model );
 

@@ -104,6 +104,7 @@ void view_menu_init( menu_model *model, GtkBuilder *builder)
 	}
 
 	model->main_frame = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
+	model->game_area = GTK_WIDGET(gtk_builder_get_object(builder, "menuBackground"));
 
   	gtk_widget_show(model->main_frame);
 }
@@ -222,88 +223,58 @@ void view_draw_rectangle( cairo_t *cairo, GdkRGBA *color, int start_x, int start
 	} else { }
 }
 
-int get_x_position( GtkDrawingArea *area, gpointer data, float x )
+G_MODULE_EXPORT
+void view_menu_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 {
-	int pos = -1;
 	view_model *model = (view_model*)data;
-//g_print("pos1 x:%f\n",x);
-	GtkAllocation widget_alloc;
-	gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
-	int maxx = widget_alloc.width,
-		maxy = widget_alloc.height;
 
-	int max_x = model->game->commons->rows,
-		max_y = model->game->commons->cols,
-		cur_x =0,
-		cur_y = model->game->startAtCellY,
-		interval = model->game->commons->interval,
-		step = model->game->c_step;
+	if(model) {
+		int max_x = model->game->commons->rows,
+			max_y = model->game->commons->cols,
+			cur_x = model->game->startAtCellX,
+			cur_y = model->game->startAtCellY,
+			interval = model->game->commons->interval,
+			step = model->game->c_step;
 
+		/* Get currently drawn size of the widget */
+		GtkAllocation widget_alloc;
+		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
+		int maxx = widget_alloc.width,
+			maxy = widget_alloc.height;
+		/* Draw background */
+		view_draw_rectangle(cr, &model->game->commons->bgrn_col, 0, 0, maxx, maxy);
+		float x_start = 2.0, y_start = 2.0;
+		float space = 3.0;
+		for(cur_x=0; cur_x<max_x; cur_x++) {
+			for(cur_y=0; cur_y<max_y; cur_y++) {
 
-	float x_start = 5.0, y_start = 5.0;
-	int x_cell = 0;
-	//g_print("g:%d", max_x);
-	float x_max = 0;
-	float x_min = 0;
-	for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
-		x_max = x_start+(model->game->commons->cell_s/model->game->commons->zoom);
-		x_min = x_start;
-		g_print("button pressed on game1 : x_min:%f, x_max:%f, x:%f\n", x_min, x_max, x);//g_print("pos x1:%d,\n",x_cell);
-		if(x>x_min && x<x_max) {
-			pos = x_cell;
-			g_print("pos x:%d,\n",x_cell);
-			break;
-		}else {
-			x_cell++;
-		//cur_x = x_cell;
-			x_start += model->game->commons->cell_s/model->game->commons->zoom;
-			x_start += model->game->commons->cell_s/3.0; // space between cells
+				int state = -1;
+				if(x_start > maxx) {
+					break;
+				}
+				if(y_start > maxy) {
+					break;
+				}
+				if(cur_y >= 0 && cur_x >= 0) {
+					int size = (model->game->commons->cell_s/model->game->commons->zoom);
+					GdkRGBA *rgba;
+					rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
+					rgba->red   += 0.1;
+					rgba->green += 0.1;
+					rgba->blue  += 0.1;
+					view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+					//GameArea_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+					gdk_rgba_free(rgba);
+				}
+
+				x_start += model->game->commons->cell_s/model->game->commons->zoom;
+				x_start +=space; // space between cells
+			}
+			x_start = 2.0;
+			y_start += model->game->commons->cell_s/model->game->commons->zoom;
+			y_start += space;
 		}
-		//g_print("button pressed on game1 : x_min:%f, x_max:%f\n", x_min, x_max);
-	}
-	//g_print("button pressed on game1 : x:%d.\n", pos);
-	return pos;
-}
-
-int get_y_position( GtkDrawingArea *area, gpointer data, float y )
-{
-	int pos = -1;
-	view_model *model = (view_model*)data;
-//g_print("pos1 x:%f\n",x);
-	GtkAllocation widget_alloc;
-	gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
-	int maxx = widget_alloc.width,
-		maxy = widget_alloc.height;
-
-	int max_x = model->game->commons->rows,
-		max_y = model->game->commons->cols,
-		cur_x =0,
-		cur_y = model->game->startAtCellY,
-		interval = model->game->commons->interval,
-		step = model->game->c_step;
-
-
-	float x_start = 5.0, y_start = 5.0;
-	int x_cell = 0;
-	//g_print("g:%d", max_x);
-	float x_max = 0;
-	float x_min = 0;
-	for(cur_x=model->game->startAtCellY; cur_x<max_x; cur_x++) {
-		x_max = x_start+(model->game->commons->cell_s/model->game->commons->zoom);
-		x_min = x_start;
-		if(y>x_min && y<x_max) {
-			pos = x_cell;
-			//g_print("pos x:%f,\n",y);
-			break;
-		}
-		x_cell++;
-		//cur_x = x_cell;
-		x_start += model->game->commons->cell_s/model->game->commons->zoom;
-		x_start += model->game->commons->cell_s/3.0; // space between cells
-		//g_print("button pressed on game1 : x_min:%f, x_max:%f\n", x_min, x_max);
-	}
-	//g_print("button pressed on game1 : x:%d.\n", pos);
-	return pos;
+	} else { }
 }
 
 G_MODULE_EXPORT
@@ -321,13 +292,10 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 
 		GtkWidget *interval_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_spinbutton") );
 		GtkWidget *step_sp = GTK_WIDGET ( gtk_builder_get_object(model->builder, "stepspinbutton") );
-		//  gtk_spin_button_set_value (GTK_SPIN_BUTTON (sp2), model->commons->cols);
-		//	GtkWidget *interval_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "interval_label") );
-		//	GtkWidget *step_label = GTK_WIDGET ( gtk_builder_get_object(model->builder, "step_label") );
+
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (interval_sp), interval);
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_sp), step);
-		//  gtk_label_set_text (GTK_LABEL(interval_label), value);
-		//  gtk_label_set_text (GTK_LABEL(step_label), step_value);
+
 		/* Get currently drawn size of the widget */
 		GtkAllocation widget_alloc;
 		gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
@@ -335,7 +303,10 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 			maxy = widget_alloc.height;
 		/* Draw background */
 		view_draw_rectangle(cr, &model->game->commons->bgrn_col, 0, 0, maxx, maxy);
+		//GameArea_draw_rectangle(cr, &model->game->commons->bgrn_col, 0, 0, maxx, maxy);
 		float x_start = 5.0, y_start = 5.0;
+		float space = (model->game->commons->cell_s/model->game->commons->zoom)/3;
+
 		for(cur_x=model->game->startAtCellX; cur_x<max_x; cur_x++) {
 			for(cur_y=model->game->startAtCellY; cur_y<max_y; cur_y++) {
 
@@ -350,30 +321,28 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 					state = model->game->grid[cur_x][cur_y];
 					if(state == 1) {
 						view_draw_rectangle(cr, &model->game->commons->cell_col, x_start, y_start, model->game->commons->cell_s/model->game->commons->zoom, model->game->commons->cell_s/model->game->commons->zoom);
+						//GameArea_draw_rectangle(cr, &model->game->commons->cell_col, x_start, y_start, model->game->commons->cell_s/model->game->commons->zoom, model->game->commons->cell_s/model->game->commons->zoom);
 					}
 					else if(state != 1 && model->game->commons->visible == 1)  {
-						/*if(y_start < 0 || x_start < 0) {
-							g_print("y:%d : x%d", y_start, x_start);
-						}
-						else {*/
-							int size = (model->game->commons->cell_s/model->game->commons->zoom);
-							GdkRGBA *rgba;
-							rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
-							rgba->red   += 0.1;
-							rgba->green += 0.1;
-							rgba->blue  += 0.1;
-							view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
-							gdk_rgba_free(rgba);
-						//}
+
+						int size = (model->game->commons->cell_s/model->game->commons->zoom);
+						GdkRGBA *rgba;
+						rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
+						rgba->red   += 0.1;
+						rgba->green += 0.1;
+						rgba->blue  += 0.1;
+						view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+						//GameArea_draw_rectangle(cr, rgba, x_start, y_start, size, size);
+						gdk_rgba_free(rgba);
 					}
-				}// else { g_print("y:%d : x%d\n", cur_y, cur_x); }
+				}
 
 				x_start += model->game->commons->cell_s/model->game->commons->zoom;
-				x_start += model->game->commons->cell_s/3.0; // space between cells
+				x_start +=space; // space between cells
 			}
 			x_start = 5.0;
 			y_start += model->game->commons->cell_s/model->game->commons->zoom;
-			y_start += model->game->commons->cell_s/3.0;
+			y_start += space;
 		}
 	} else { }
 }

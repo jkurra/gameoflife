@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "drawing/gamearea.h"
 
 void controller_clean_menu( view_model *model )
 {
@@ -77,7 +78,7 @@ void on_increase_interval_button_clicked( GtkButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
-void on_settingsbutton_clicked( GtkButton *button, gpointer data )
+void on_settingsButton_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
@@ -85,7 +86,7 @@ void on_settingsbutton_clicked( GtkButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
-void on_startgamebutton_clicked( GtkButton *button, gpointer data )
+void on_startGamebutton_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
 	if(model)
@@ -128,8 +129,15 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 G_MODULE_EXPORT
 void on_drawingarea1_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
-	int posx = get_x_position( widget, data, event->x);
-	int posy = get_y_position( widget, data, event->y);
+
+
+	GtkAllocation widget_alloc;
+	gtk_widget_get_allocation(GTK_WIDGET(widget), &widget_alloc);
+	int maxx = widget_alloc.width,
+		maxy = widget_alloc.height;
+
+		int posx = GameArea_x_pos(data, event->x, maxx, maxy);// get_x_position( widget, data, event->x);
+		int posy = GameArea_y_pos(data, event->y, maxx, maxy);
 	g_print("button pressed on game : x:%d, y:%d.\n", posx, posy);
 	if(posx >= 0 && posy >= 0) {
 		view_model *model = (view_model*)data;
