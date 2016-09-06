@@ -8,7 +8,7 @@
 
 #include "view.h"
 #include "../data/grid.h"
-
+#include "../manager/config.h"
 /* Types of views that may be used */
 #define MENU  0
 #define GAME  1

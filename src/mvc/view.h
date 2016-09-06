@@ -3,6 +3,7 @@
 
 #include "../manager/theme.h"
 #include "../manager/config.h"
+#include "drawing/graphics.h"
 
 #include <gtk/gtk.h>
 #include <GL/glut.h>
@@ -33,6 +34,7 @@ typedef struct
 
 	float cell_s;		/* Size of each cell in the screen. */
 	float zoom; 		/* How big or small cells appear on the screen.	*/
+	float spacing;
 	int interval;
 
 	int timerid;	/* Id of the widget containing update timer. */
@@ -52,7 +54,7 @@ typedef struct
 {
 	GtkWidget *main_frame;
 	GtkWidget *game_area;
-	
+
 	commons_model *commons; /* Common values for this model. May be NULL */
 
 } menu_model;

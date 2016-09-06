@@ -64,10 +64,10 @@ void grid_switch_cell(int **grid, int x, int y)
 {
     if(grid) {
         if(grid[y][x] == 1) {
-            g_print("switch cell to 0");
+            //g_print("switch cell to 0");
             grid[y][x] = 0;
         } else {
-            g_print("switch cell to 1");
+            //g_print("switch cell to 1");
             grid[y][x] = 1;
         }
     }

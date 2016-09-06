@@ -1,7 +1,6 @@
 #include "model.h"
 #include "view.h"
 
-#include "../manager/config.h"
 
 view_model *model_view_new( int type, config *conf )
 {
@@ -67,6 +66,7 @@ commons_model *model_commons_new()
 	commons->zoom     = -1; 	/* How big or small cells appear on the screen.	*/
 	commons->interval = -1;
 	commons->timerid  = -1;		/* Id of the widget containing update timer. */
+	commons->spacing  = -1;
 	commons->live_a = NULL;
 	commons->live_d = NULL;
 

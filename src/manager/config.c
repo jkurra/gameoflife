@@ -34,10 +34,10 @@ void config_free( config *conf )
             free(conf->dir_path);
         }
         if(conf->sel_path) {
-            //free(conf->path_sel);
+            free(conf->sel_path);
         }
         if(conf->sel_name) {
-            //free(conf->name_sel);
+            free(conf->sel_name);
         }
         /* Free saved filenames */
         for(int i=0; i<conf->dir_size; i++) {
@@ -183,6 +183,7 @@ void config_read( commons_model *model, config *c )
     /* TODO: static modifiers for now */
     model->cell_s = 10.0;
     model->zoom   = 1.0;
+    model->spacing = 3.0;
     char *bg_col = json_val(json, "backgroundColor", 3);
     char *fr_col = json_val(json, "cellColor", 3);
 

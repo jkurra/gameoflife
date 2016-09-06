@@ -129,8 +129,6 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 G_MODULE_EXPORT
 void on_drawingarea1_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
-
-
 	GtkAllocation widget_alloc;
 	gtk_widget_get_allocation(GTK_WIDGET(widget), &widget_alloc);
 	int maxx = widget_alloc.width,
@@ -331,6 +329,7 @@ G_MODULE_EXPORT
 void on_up_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
+	//g_print("up clicked");
 	//if(model->game->startAtCellX >= 5){
 		model->game->startAtCellX-=1;
 		view_draw( model );
@@ -341,6 +340,8 @@ G_MODULE_EXPORT
 void on_down_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
+
+	//g_print("down clicked");
 	if(model->game->startAtCellX < model->game->commons->cols)
 		model->game->startAtCellX += 1;
 		view_draw( model );

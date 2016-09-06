@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "json/file.h"
+#include "json/json.h"
 #include "log.h"
 
 /** @brief Configuration structure for manipulating configurations.

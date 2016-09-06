@@ -3,8 +3,8 @@ CFLAGS = -Wall -c
 
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0`
 
-all: gamearea.c draw.c
-	$(CC) $(CFLAGS) $(PKGCONFIG) gamearea.c draw.c
+all: gamearea.c graphics.c
+	$(CC) $(CFLAGS) $(PKGCONFIG) gamearea.c graphics.c
 
 clean:
 	rm -rf *o *~ all
