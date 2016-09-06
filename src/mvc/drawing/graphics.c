@@ -40,7 +40,6 @@ void draw_grid( GtkDrawingArea *area, cairo_t *cr, gpointer data )
     /* Get size of each cell to be drawn on the screen */
     float size = (model->commons->cell_s/model->commons->zoom);
     float x_start = 2.0, y_start = 2.0;
-    //float space = 3.0;
 
     GtkAllocation widget_alloc;
     gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
@@ -77,53 +76,3 @@ void draw_grid( GtkDrawingArea *area, cairo_t *cr, gpointer data )
         y_start += model->commons->spacing;
     }
 }
-
-
-/*
-view_model *model = (view_model*)data;
-
-if(model) {
-    int max_x = model->game->commons->rows,
-        max_y = model->game->commons->cols,
-        cur_x = model->game->startAtCellX,
-        cur_y = model->game->startAtCellY,
-        interval = model->game->commons->interval,
-        step = model->game->c_step;
-
-    GtkAllocation widget_alloc;
-    gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
-    int maxx = widget_alloc.width,
-        maxy = widget_alloc.height;
-    view_draw_rectangle(cr, &model->game->commons->bgrn_col, 0, 0, maxx, maxy);
-    float x_start = 2.0, y_start = 2.0;
-    float space = 3.0;
-    for(cur_x=0; cur_x<max_x; cur_x++) {
-        for(cur_y=0; cur_y<max_y; cur_y++) {
-
-            int state = -1;
-            if(x_start > maxx) {
-                break;
-            }
-            if(y_start > maxy) {
-                break;
-            }
-            if(cur_y >= 0 && cur_x >= 0) {
-                int size = (model->game->commons->cell_s/model->game->commons->zoom);
-                GdkRGBA *rgba;
-                rgba = gdk_rgba_copy(&model->game->commons->bgrn_col);
-                rgba->red   += 0.1;
-                rgba->green += 0.1;
-                rgba->blue  += 0.1;
-                view_draw_rectangle(cr, rgba, x_start, y_start, size, size);
-                //GameArea_draw_rectangle(cr, rgba, x_start, y_start, size, size);
-                gdk_rgba_free(rgba);
-            }
-
-            x_start += model->game->commons->cell_s/model->game->commons->zoom;
-            x_start +=space; // space between cells
-        }
-        x_start = 2.0;
-        y_start += model->game->commons->cell_s/model->game->commons->zoom;
-        y_start += space;
-    }
-} else { }*/

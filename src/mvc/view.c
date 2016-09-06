@@ -1,91 +1,6 @@
 #include "view.h"
 #include "model.h"
 
-void view_init( view_model *model, int type )
-{
-	/* Initialize model variables and GTK parts initialization*/
-	gtk_init(NULL, NULL);
-	model->builder = gtk_builder_new();
-	model->type = type; /* Change current view type. */
-	/*
-		Read css style from file. TODO: add style variable that may be changed
-		by the user.
-	*/
-	GdkDisplay *display = gdk_display_get_default ();
-	GdkScreen  *screen = gdk_display_get_default_screen (display);
-	model->provider = gtk_css_provider_new ();
-
-	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-	gsize bytes_written, bytes_read;
-	if(model->game->commons->themes->sel_path) {
-		const gchar* home = model->game->commons->themes->sel_path;
-
-		GError *error1 = 0;
-		gtk_css_provider_load_from_path (model->provider,
-										 g_filename_to_utf8(home, strlen(home),
-										 &bytes_read, &bytes_written, &error1),
-										 NULL);
-		if(model) {
-			switch(model->type) {
-				case MENU:
-					view_menu_init(model->menu, model->builder);
-					gtk_builder_connect_signals(model->builder, model);
-					break;
-				case GAME:
-					view_game_init(model->game, model->builder);
-					gtk_builder_connect_signals(model->builder, model);
-					break;
-				case PREF:
-					view_pref_init(model->pref, model->builder);
-					gtk_builder_connect_signals(model->builder, model);
-					break;
-				default:
-					break;
-			}
-			gtk_main();
-		} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
-	}else {printf("Unable to open view, no themes available.\n" );}
-}
-
-void view_draw( view_model *model )
-{
-	if(model) {
-		switch(model->type) {
-			case MENU:
-				gtk_widget_queue_draw(model->menu->main_frame);
-				break;
-			case GAME:
-				gtk_widget_queue_draw(model->game->main_frame);
-				break;
-			case PREF:
-				gtk_widget_queue_draw(model->pref->main_frame);
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [DRAW] : ERROR! Received null pointer to model\n"); }
-}
-
-void view_close( view_model *model )
-{
-	if(model) {
-		gtk_main_quit();
-		switch(model->type) {
-			case MENU:
-				view_menu_close(model->menu);
-				break;
-			case GAME:
-				view_game_close(model->game);
-				break;
-			case PREF:
-				view_pref_close(model->pref);
-				break;
-			default:
-				break;
-		}
-	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
-}
-
 void view_menu_init( menu_model *model, GtkBuilder *builder)
 {
 	GError	*error = NULL;
@@ -225,4 +140,87 @@ void view_game_draw( GtkDrawingArea *area, cairo_t *cr, gpointer data )
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (step_sp), step);
 		graphics_draw(GRID, area, cr, model->game);
 	} else { }
+}
+
+
+void view_init( view_model *model, int type )
+{
+	/* Initialize model variables and GTK parts initialization*/
+	gtk_init(NULL, NULL);
+	model->builder = gtk_builder_new();
+	model->type = type; /* Change current view type. */
+
+	GdkDisplay *display = gdk_display_get_default ();
+	GdkScreen  *screen = gdk_display_get_default_screen (display);
+	model->provider = gtk_css_provider_new ();
+
+	gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (model->provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gsize bytes_written, bytes_read;
+	if(model->game->commons->themes->sel_path) {
+		const gchar* home = model->game->commons->themes->sel_path;
+
+		GError *error1 = 0;
+		gtk_css_provider_load_from_path (model->provider,
+										 g_filename_to_utf8(home, strlen(home),
+										 &bytes_read, &bytes_written, &error1),
+										 NULL);
+		if(model) {
+			switch(model->type) {
+				case MENU:
+					view_menu_init(model->menu, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				case GAME:
+					view_game_init(model->game, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				case PREF:
+					view_pref_init(model->pref, model->builder);
+					gtk_builder_connect_signals(model->builder, model);
+					break;
+				default:
+					break;
+			}
+			gtk_main();
+		} else { printf("MODEL [INIT] : ERROR! Received null pointer to model\n"); }
+	}else {printf("Unable to open view, no themes available.\n" );}
+}
+
+void view_draw( view_model *model )
+{
+	if(model) {
+		switch(model->type) {
+			case MENU:
+				gtk_widget_queue_draw(model->menu->main_frame);
+				break;
+			case GAME:
+				gtk_widget_queue_draw(model->game->main_frame);
+				break;
+			case PREF:
+				gtk_widget_queue_draw(model->pref->main_frame);
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [DRAW] : ERROR! Received null pointer to model\n"); }
+}
+
+void view_close( view_model *model )
+{
+	if(model) {
+		gtk_main_quit();
+		switch(model->type) {
+			case MENU:
+				view_menu_close(model->menu);
+				break;
+			case GAME:
+				view_game_close(model->game);
+				break;
+			case PREF:
+				view_pref_close(model->pref);
+				break;
+			default:
+				break;
+		}
+	} else { printf("MODEL [CLOSE] : ERROR! Received null pointer to model\n"); }
 }

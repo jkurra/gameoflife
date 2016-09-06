@@ -1,6 +1,46 @@
 #include "model.h"
 #include "view.h"
 
+/* @brief Get new view model.
+ *
+ */
+game_model *model_game_new();
+
+/* @brief Get new view model.
+ *
+ */
+menu_model *model_menu_new();
+
+/* @brief Get new view model.
+ *
+ */
+pref_model *model_pref_new();
+
+/* @brief Get new view model.
+ *
+ */
+commons_model *model_commons_new();
+
+/* @brief Get new view model.
+ *
+ */
+void model_game_free( game_model *model );
+
+/* @brief Get new view model.
+ *
+ */
+void model_menu_free( menu_model *model );
+
+/* @brief Get new view model.
+ *
+ */
+void model_pref_free( pref_model *model );
+
+/* @brief Free given view model.
+ *
+ */
+void model_commons_free( commons_model *model );
+
 
 view_model *model_view_new( int type, config *conf )
 {
@@ -19,7 +59,7 @@ view_model *model_view_new( int type, config *conf )
 	model->pref->commons = commons;
 	model->commons->conf = conf;
 	/* Read values from file to commons */
-	config_read(commons, NULL);
+	model_read(commons, NULL);
 
 	return model;
 }
@@ -147,7 +187,7 @@ void model_update( view_model *model, int type )
 void model_game_setup( game_model *model, const char *pref_path )
 {
 	if(model) {
-		config_read(model->commons, NULL);
+		model_read(model->commons, NULL);
 		if(model->grid) { /* Free current grid if allocated */
 			grid_free(model->c_rows, model->grid);
 		}
@@ -160,7 +200,7 @@ void model_game_setup( game_model *model, const char *pref_path )
 void model_pref_setup( pref_model *model, const char *pref_path )
 {
 	if(model) {
-		config_read(model->commons, NULL);
+		model_read(model->commons, NULL);
 	} else { printf("MODEL [SETUP] : ERROR! Received null pointer to model\n"); }
 }
 
@@ -182,4 +222,97 @@ void model_remove_timer( view_model *model, int timer_id )
 		g_source_remove(timer_id);
 		model->game->commons->timerid = -1;
 	}
+}
+
+
+void model_write( commons_model *model, config *c)
+{
+    if(model) {
+        char *rows =   (char*) calloc(10, sizeof(char*));
+        char *cols =   (char*) calloc(10, sizeof(char*));
+        char *t_time = (char*) calloc(10, sizeof(char*));
+        char *vis =    (char*) calloc(10, sizeof(char*));
+
+        sprintf(rows, "%d",   model->rows);
+        sprintf(cols, "%d",   model->cols);
+        sprintf(t_time, "%d", model->interval);
+        sprintf(vis, "%d",    model->visible);
+
+        gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
+        gchar *cell = gdk_rgba_to_string(&model->cell_col);
+
+        char *strings[7];
+
+        strings[0] = json_keypair("gridRows", rows, 1);
+        strings[1] = json_keypair("gridCols", cols, 1);
+        strings[2] = json_keypair("tickInterval", t_time, 1);
+        strings[3] = json_keypair("gridVisible", vis, 1);
+        strings[4] = json_keypair("backgroundColor", bgrn, 1);
+        strings[5] = json_keypair("cellColor", cell, 1);
+        strings[6] = json_keypair("defaultTheme", model->themes->sel_name, 0);
+
+        free(bgrn);
+        free(cell);
+
+        char *json = json_obj(3, 7, strings);
+
+        file_write(json, model->conf->sel_path);
+        free(json);
+        for(int i=0; i<6; i++) {
+            free(strings[i]);
+        }
+    } else { printf("NULL model \n"); }
+}
+
+void model_read( commons_model *model, config *c )
+{
+    char *json = file_read(model->conf->sel_path);
+
+    free(model->live_a);
+    free(model->live_d);
+
+    /* populate values for model*/
+    model->cols     = json_atoi(json, "gridCols");
+    model->rows     = json_atoi(json, "gridRows");
+    model->interval = json_atoi(json, "tickInterval");
+    model->visible  = json_atoi(json, "gridVisible");
+
+    if(model->themes) {
+        /* Only change theme if different from before */
+        if(strcmp (json_val(json, "defaultTheme", 3), model->themes->sel_name) != 0) {
+            theme_select(model->themes, json_val(json, "defaultTheme", 3));
+        }
+    }
+
+    /* TODO: static modifiers for now */
+    model->cell_s = 10.0;
+    model->zoom   = 1.0;
+    model->spacing = 3.0;
+    char *bg_col = json_val(json, "backgroundColor", 3);
+    char *fr_col = json_val(json, "cellColor", 3);
+
+    /* parse colors to model */
+    gdk_rgba_parse(&model->bgrn_col, bg_col);
+    gdk_rgba_parse(&model->cell_col, fr_col);
+
+    /* Free dynamically allocated values */
+    int *live_a1 = (int*)calloc(2, sizeof(int));
+    int *live_d1 = (int*)calloc(1, sizeof(int));
+
+    live_a1[0] = 3;
+    live_a1[1] = 2;
+    live_d1[0] = 3;
+
+    model->live_a = live_a1;
+    model->live_d = live_d1;
+
+    free(bg_col);
+    free(fr_col);
+    free(json);
+
+    /* Initialize new grid and give random values */
+    if(model->interval < 100) {
+        g_print("WARNING: update value too small setting to : 100ms.\n");
+        model->interval = 100;
+    }
 }

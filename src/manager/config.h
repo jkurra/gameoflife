@@ -103,9 +103,4 @@ void config_select( config *conf, const char *name );
  */
 void config_list( config *conf );
 
-/**
- *
- */
-char *config_path( config *c );
-
 #endif /* CONFIG_H_INCLUDED */

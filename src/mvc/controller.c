@@ -20,7 +20,7 @@ void controller_clean_pref( view_model *model )
 		NOTICE that values are already changed to model at this point
 	*/
 	if(model) {
-		config_write(model->game->commons, NULL);
+		model_write(model->game->commons, NULL);
 	} else { }
 }
 
@@ -121,7 +121,7 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 		model->game->grid = grid_resize(model->game->grid, model->game->c_rows, tmp_cols, model->game->commons->rows, model->game->commons->cols);
 		model->game->c_rows = model->commons->rows;
 		model->game->c_cols = model->commons->cols;
-		config_write(model->game->commons, model->commons->conf);
+		model_write(model->game->commons, model->commons->conf);
 		gtk_widget_queue_draw(GTK_WIDGET(model->game->main_frame));
 	}
 }
@@ -160,7 +160,7 @@ void on_interval_spinbutton_value_changed ( GtkSpinButton *button, gpointer data
 	if(model) {
 		if(model->game->commons->interval-100 < 5000) {
 			model->game->commons->interval =  gtk_spin_button_get_value_as_int(button);
-			config_write(model->game->commons, model->commons->conf);
+			model_write(model->game->commons, model->commons->conf);
 			if(model->game->commons->timerid != -1) { // Only update timer if game is running
 				model_remove_timer( model, model->game->commons->timerid );
 				model_attach_timer( model, model->game->commons->timerid );
@@ -180,7 +180,7 @@ void on_grid_rows_spinButton_value_changed ( GtkSpinButton *button, gpointer dat
 		model->game->grid = grid_resize(model->game->grid, tmp_rows, model->game->c_cols, model->game->commons->rows, model->game->commons->cols);
 		model->game->c_rows = model->commons->rows;
 		model->game->c_cols = model->commons->cols;
-		config_write(model->game->commons, model->commons->conf);
+		model_write(model->game->commons, model->commons->conf);
 		gtk_widget_queue_draw(GTK_WIDGET(model->game->main_frame));
 	}
 }

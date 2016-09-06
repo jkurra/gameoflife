@@ -3,7 +3,6 @@
 
 #include "view.h"
 #include "model.h"
-#include "../manager/config.h"
 
 /** @brief Change current model.
  *
