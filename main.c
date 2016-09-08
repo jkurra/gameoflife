@@ -43,12 +43,17 @@ int main(int argc, char *argv[])
     view_model *main_model = model_view_new(MENU, conf);
 
     main_model->game->commons->themes = theme_new(th);
+    theme_select(main_model->game->commons->themes, "default");
     model_read(main_model->commons, NULL);
     //theme_select(main_model->game->commons->themes, "default");
     /* Initialize view free when user quit */
     view_init(main_model, MENU); /* Init menu and start main GTK loop */
     model_view_free(main_model); /* User quit. */
     config_free(conf);
+    //theme_free(th);
+    free(co);
+    free(th);
+    free(result);
 
     return 0;
 }

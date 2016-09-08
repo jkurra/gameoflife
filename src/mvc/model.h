@@ -41,8 +41,8 @@ typedef struct
 	int *live_a;
 	int *live_d;
 
-	config *conf;
-	theme  *themes;
+	Manager *conf;
+	Manager *themes;
 } commons_model;
 
 /*
@@ -116,7 +116,7 @@ typedef struct
  * @param pref_path Path to file containing settings.
  * @return Pointer to newly allocated view_model.
  */
-view_model *model_view_new( int type, config *conf );
+view_model *model_view_new( int type, Manager *conf );
 
 /* @brief Update
  *

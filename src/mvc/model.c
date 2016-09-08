@@ -42,7 +42,7 @@ void model_pref_free( pref_model *model );
 void model_commons_free( commons_model *model );
 
 
-view_model *model_view_new( int type, config *conf )
+view_model *model_view_new( int type, Manager *conf )
 {
 	/* Allocate space for new view_model and add base values */
 	view_model *model = (view_model*)malloc(sizeof(view_model));
@@ -225,7 +225,7 @@ void model_remove_timer( view_model *model, int timer_id )
 }
 
 
-void model_write( commons_model *model, config *c)
+void model_write( commons_model *model, Manager *c)
 {
     if(model) {
         char *rows =   (char*) calloc(10, sizeof(char*));
@@ -264,7 +264,7 @@ void model_write( commons_model *model, config *c)
     } else { printf("NULL model \n"); }
 }
 
-void model_read( commons_model *model, config *c )
+void model_read( commons_model *model, Manager *c )
 {
     char *json = file_read(model->conf->sel_path);
 
