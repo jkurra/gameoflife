@@ -1,5 +1,5 @@
 CC = gcc -g
-CFLAGS = -Wall
+CFLAGS = -Wall 
 
 PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0 gmodule-2.0`
 OBJECTS   = src/mvc/model.o src/mvc/drawing/gamearea.o src/mvc/view.o src/mvc/controller.o main.o \
@@ -21,7 +21,7 @@ gameoflife: $(OBJECTS)
 	$(CC) $(CFLAGS) $(PKGCONFIG) -c $<
 
 clean:
-	rm -rf *o *~ gameoflife
+	rm -rf *o *~ bin/gameoflife
 	cd src/data && $(MAKE) clean
 	cd src/mvc && $(MAKE) clean
 	cd src/manager && $(MAKE) clean

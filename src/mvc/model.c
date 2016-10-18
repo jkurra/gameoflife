@@ -242,7 +242,8 @@ void model_write( commons_model *model, Manager *c)
         gchar *cell = gdk_rgba_to_string(&model->cell_col);
 
         char *strings[7];
-
+		json_ob *object = json_create(NULL);
+		printf("keypair : %s\n", json_keypair("gridRows", rows, 1));
         strings[0] = json_keypair("gridRows", rows, 1);
         strings[1] = json_keypair("gridCols", cols, 1);
         strings[2] = json_keypair("tickInterval", t_time, 1);
@@ -251,10 +252,18 @@ void model_write( commons_model *model, Manager *c)
         strings[5] = json_keypair("cellColor", cell, 1);
         strings[6] = json_keypair("defaultTheme", model->themes->sel_name, 0);
 
+		json_add_value(object, strings[0]);
+		json_add_value(object, strings[1]);
+		json_add_value(object, strings[2]);
+		json_add_value(object, strings[3]);
+		json_add_value(object, strings[4]);
+		json_add_value(object, strings[5]);
+		json_add_value(object, strings[6]);
+
         free(bgrn);
         free(cell);
 
-        char *json = json_obj(3, 7, strings);
+        char *json = json_to_string(object);//json_obj(3, 7, strings);
 
         file_write(json, model->conf->sel_path);
         free(json);
@@ -270,12 +279,11 @@ void model_read( commons_model *model, Manager *c )
 
     free(model->live_a);
     free(model->live_d);
-
     /* populate values for model*/
-    model->cols     = json_atoi(json, "gridCols");
-    model->rows     = json_atoi(json, "gridRows");
-    model->interval = json_atoi(json, "tickInterval");
-    model->visible  = json_atoi(json, "gridVisible");
+    model->cols     = atoi(json_val(json, "gridCols", 3));
+    model->rows     = atoi(json_val(json, "gridRows", 3));
+    model->interval = atoi(json_val(json, "tickInterval", 3));
+    model->visible  = atoi(json_val(json, "gridVisible", 3));
 
     if(model->themes) {
         /* Only change theme if different from before */

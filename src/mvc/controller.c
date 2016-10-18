@@ -105,9 +105,10 @@ G_MODULE_EXPORT
 void on_randomize_button_clicked(GtkButton *button, gpointer data)
 {//g_print("Rand pressed \n");
 	view_model *model = (view_model*)data;
-	if(model)
+	if(model) {
 		grid_rand(model->commons->rows, model->commons->cols, model->game->grid);
 		gtk_widget_queue_draw( GTK_WIDGET(model->game->main_frame) );
+	}
 }
 
 G_MODULE_EXPORT
@@ -264,11 +265,12 @@ G_MODULE_EXPORT
 void on_nextButton_clicked( GtkColorButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model)
+	if(model) {
 		//g_print("rules1 %d %d: %d\n", model->game->commons->rows, model->game->commons->live_a[1], model->game->commons->live_d[0]);
 		grid_next(model->game->commons->rows, model->game->commons->cols, model->game->grid, model->game->commons->live_a,2, model->game->commons->live_d, 1);
 		model->game->c_step++;
 		view_draw(model);
+	}
 }
 
 /*
@@ -342,9 +344,10 @@ void on_down_clicked( GtkButton *button, gpointer data )
 	view_model *model = (view_model*)data;
 
 	//g_print("down clicked");
-	if(model->game->startAtCellX < model->game->commons->cols)
+	if(model->game->startAtCellX < model->game->commons->cols) {
 		model->game->startAtCellX += 1;
 		view_draw( model );
+	}
 }
 
 G_MODULE_EXPORT
@@ -360,9 +363,10 @@ G_MODULE_EXPORT
 void on_right_clicked( GtkButton *button, gpointer data )
 {
 	view_model *model = (view_model*)data;
-	if(model->game->startAtCellY < model->game->commons->rows)
+	if(model->game->startAtCellY < model->game->commons->rows) {
 		model->game->startAtCellY += 1;
 		view_draw( model );
+	}
 }
 
 G_MODULE_EXPORT

@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     strcpy( th, cwd );
     strcat( th, "/usr/themes" );
 
-    config *conf = config_new(co);
+    Manager *conf = config_new(co);
     config_select(conf, "config.json");
 
     /* Create new main model for our user interface */

@@ -137,5 +137,6 @@ void model_attach_timer( view_model *model, int interval );
  *
  */
 void model_remove_timer( view_model *model, int timer_id );
-
+void model_write( commons_model *model, Manager *c);
+void model_read( commons_model *model, Manager *c );
 #endif /* MODEL_H_ */

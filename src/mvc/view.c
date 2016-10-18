@@ -158,12 +158,13 @@ void view_init( view_model *model, int type )
 	gsize bytes_written, bytes_read;
 	if(model->game->commons->themes->sel_path) {
 		const gchar* home = model->game->commons->themes->sel_path;
-
+		g_print("path: %s\n", home);
 		GError *error1 = 0;
 		gtk_css_provider_load_from_path (model->provider,
 										 g_filename_to_utf8(home, strlen(home),
 										 &bytes_read, &bytes_written, &error1),
 										 NULL);
+
 		if(model) {
 			switch(model->type) {
 				case MENU:

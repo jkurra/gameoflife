@@ -1,5 +1,5 @@
 
-.button {
+button {
     border-radius: 4px;
     border-width: 2px 2px 2px 2px;
     border: 2px;
@@ -9,57 +9,49 @@
     background: darkgrey;
 }
 
-.button:focus {
+button:focus {
     background: grey;
 }
 
-.button:hover {
+button:hover {
     transition: 100ms linear;
     background: grey;
 }
 
-.button#plusbutton {
+button#plusbutton {
     background-image: url('plus.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.button#minusbutton {
+button#minusbutton {
     background-image: url('minus.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.button#upbutton {
+button#upbutton {
     background-image: url('arrow_up.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.button#downbutton {
+button#downbutton {
     background-image: url('arrow_down.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.button#rightbutton {
+button#rightbutton {
     background-image: url('arrow_right.png');
     background-repeat: no-repeat;
     background-size: auto;
     background-position: center;
 }
 
-.button#leftbutton {
+button#leftbutton {
     background-image: url('arrow_left.png');
     background-repeat: no-repeat;
     background-size: auto;
     background-position: center;
-}
-
-GtkBox#step {
-    border-radius: 2px;
-    border-width: 2px 2px 2px 2px;
-    border-color: red;
-    color: white;
-    background-image: -gtk-gradient (linear, left top, left bottom, from(grey));
 }

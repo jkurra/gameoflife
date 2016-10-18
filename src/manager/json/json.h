@@ -8,6 +8,59 @@
 #include "jsmn.h"
 #include "../log.h"
 
+/** @brief Json object structure.
+ *
+ *  Represents a json object, which may contain key-value pairs and other objects.
+ *  All changes and data requests must be done using appropriate functions.
+ *
+ */
+typedef struct
+{
+    char **objects;
+    int  objects_size;
+
+    char **values;
+    int  values_size;
+
+} json_ob;
+
+/** @brief Create new json-object from string.
+ *
+ *  Creates new json object from existing string, if string is NULL, Creates
+ *  empty object. If json data is corrupted or not a json string function
+ *  returns NULL pointer.
+ *
+ *  @json   Contains full json string, or NULL pointer.
+ *  @return newly allocated json-object.
+ */
+json_ob *json_create( const char *json );
+
+/** @brief Free json object and all its member values and objects.
+ *
+ */
+void json_free( json_ob *json );
+
+/** @brief Add key-value pair to json-object.
+ *
+ *  Adds given key-value pair to "values" array in json_ob. Doesn't check validity
+ *  of the json_keypair. Only used to add values, not objects.
+ *
+ */
+void json_add_value( json_ob *json, const char *keypair);
+
+/** @brief Remove key-value pair to json-object.
+ *
+ *  Removes key-value pair from object, based on given key.
+ *
+ */
+void json_rem_value( json_ob *json, const char *key);
+
+/** @brief Return full representation of the json as a string.
+ *
+ */
+char *json_to_string( json_ob *json );
+
+
 /** @brief Pull single token from json string.
  *
  *  Pulls token from json string based on given start and end values. Only for
@@ -21,11 +74,6 @@
  */
 char *json_tok( const char *json, int start, int end );
 
-/** @brief Pull json value from object.
- *
- *  Pulls value from json object, using key as identifier.
- */
-char *json_val( const char *json, char *key, jsmntype_t type );
 
 /** @brief Construct a json key-value pair as a c-string.
  *
@@ -42,14 +90,6 @@ char *json_val( const char *json, char *key, jsmntype_t type );
  */
 char *json_keypair( char *value, char *key, int comma );
 
-/** @brief Creates json object from key-value pairs.
- *
- */
-char *json_obj( int indent,  int size, char *array[size] );
-
-/* @brief Cast value from json to Integer.
- *
- */
-int json_atoi( const char *json, char *key );
-
+char *json_val( const char *json, char *key, jsmntype_t type );
+int json_atoi( const char *json, char* key );
 #endif /* __JSON_H_ */
