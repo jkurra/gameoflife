@@ -97,62 +97,64 @@ char *json_to_string(json_ob *jsonObject)
 
 json_ob *json_create( const char *json )
 {
-    json_ob *rtn = NULL;
-    rtn = (json_ob*)calloc(1, sizeof(json_ob));
+    json_ob *rtn = (json_ob*)calloc(1, sizeof(json_ob));
+
     rtn->objects = NULL;
-    rtn->values = NULL;
+    rtn->values  = NULL;
+
     rtn->objects_size = 0;
-    rtn->values_size = 0;
+    rtn->values_size  = 0;
+
     if(json) {
-        /* Parse given json string. */
-        jsmn_parser parser;
-        jsmntok_t tokens[256];
-        jsmn_init(&parser);
-        jsmn_parse(&parser, json, strlen(json), tokens, 256);
+            /* Parse given json string. */
+            jsmn_parser parser;
+            jsmntok_t tokens[256];
+            jsmn_init(&parser);
+            jsmn_parse(&parser, json, strlen(json), tokens, 256);
 
-    /* There must be even number of tokens, or some values are missing. */
-    if (tokens->size % 2 == 0)
-    {
-        for(int i=0; i<tokens->size; i++) {
-            if(tokens[i].type == JSMN_OBJECT && i>0) {
-                char *tkn1 = json_tok(json, tokens[i].start, tokens[i].end);
-                printf("object %s\n", tkn1);
-                rtn->objects = (char**)calloc(rtn->objects_size+2, sizeof(char*));
-                rtn->objects[rtn->objects_size+1] = (char*)calloc(strlen(tkn1)+1, sizeof(char));
+        /* There must be even number of tokens, or some values are missing. */
+        if (tokens->size % 2 == 0) {
+            for(int i=0; i<tokens->size; i++) {
+                if(tokens[i].type == JSMN_OBJECT && i>0) {
+                    char *tkn1 = json_tok(json, tokens[i].start, tokens[i].end);
+                    //printf("object %s\n", tkn1);
+                    rtn->objects = (char**)calloc(rtn->objects_size+2, sizeof(char*));
+                    rtn->objects[rtn->objects_size+1] = (char*)calloc(strlen(tkn1)+1, sizeof(char));
 
-                strncpy(rtn->objects[rtn->objects_size+1], tkn1, strlen(tkn1));
+                    strncpy(rtn->objects[rtn->objects_size+1], tkn1, strlen(tkn1));
 
-                rtn->objects_size++;
-                printf("token %s, %d\n", tkn1, rtn->objects_size);
-                free(tkn1);
-            }
-            if(tokens[i].type == JSMN_STRING) {
-
-                char *tkn1 = json_tok(json, tokens[i].start, tokens[i].end);
-                char *tkn2 = json_tok(json, tokens[i+1].start, tokens[i+1].end);
-                char *pair = NULL;
-
-                pair = json_keypair( tkn1, tkn2, 0 );
-
-                if(rtn->values_size > 0) {
-                    rtn->values = array_realloc(rtn->values, rtn->values_size, rtn->values_size+1);
-                    rtn->values[rtn->values_size] = (char*)calloc(strlen(pair)+1, sizeof(char));
-                    strncpy(rtn->values[rtn->values_size], pair, strlen(pair));
-
-                } else {
-                    rtn->values = (char**)calloc(rtn->values_size+1, sizeof(char*));
-                    rtn->values[rtn->values_size] = (char*)calloc(strlen(pair)+1, sizeof(char));
-                    strncpy(rtn->values[rtn->values_size], pair, strlen(pair));
+                    rtn->objects_size++;
+                    //printf("token %s, %d\n", tkn1, rtn->objects_size);
+                    free(tkn1);
                 }
-                i++;
-                rtn->values_size++;
-                free(tkn1);
-                free(tkn2);
-                free(pair);
-            }
+                if(tokens[i].type == JSMN_STRING) {
 
+                    char *tkn1 = json_tok(json, tokens[i].start, tokens[i].end);
+                    char *tkn2 = json_tok(json, tokens[i+1].start, tokens[i+1].end);
+                    char *pair = NULL;
+
+                    pair = json_keypair( tkn1, tkn2, 0 );
+
+                    if(rtn->values_size > 0) {
+                        rtn->values = array_realloc(rtn->values, rtn->values_size, rtn->values_size+1);
+                        rtn->values[rtn->values_size] = (char*)calloc(strlen(pair)+1, sizeof(char));
+                        strncpy(rtn->values[rtn->values_size], pair, strlen(pair));
+
+                    } else {
+                        rtn->values = (char**)calloc(rtn->values_size+1, sizeof(char*));
+                        rtn->values[rtn->values_size] = (char*)calloc(strlen(pair)+1, sizeof(char));
+                        strncpy(rtn->values[rtn->values_size], pair, strlen(pair));
+                    }
+                    i++;
+                    rtn->values_size++;
+                    free(tkn1);
+                    free(tkn2);
+                    free(pair);
+                }
+
+            }
         }
-    }}
+    }
     return rtn;
 }
 

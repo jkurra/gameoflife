@@ -243,7 +243,7 @@ void model_write( commons_model *model, Manager *c)
 
         char *strings[7];
 		json_ob *object = json_create(NULL);
-		printf("keypair : %s\n", json_keypair("gridRows", rows, 1));
+		//printf("keypair : %s\n", json_keypair("gridRows", rows, 1));
         strings[0] = json_keypair("gridRows", rows, 1);
         strings[1] = json_keypair("gridCols", cols, 1);
         strings[2] = json_keypair("tickInterval", t_time, 1);
