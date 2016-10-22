@@ -1,0 +1,57 @@
+
+button {
+    border-radius: 4px;
+    border-width: 2px 2px 2px 2px;
+    border: 2px;
+    color: white;
+    border-color: #5c5c5c;
+    border-style: solid;
+    background: darkgrey;
+}
+
+button:focus {
+    background: grey;
+}
+
+button:hover {
+    transition: 100ms linear;
+    background: grey;
+}
+
+button#plusbutton {
+    background-image: url('plus.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button#minusbutton {
+    background-image: url('minus.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button#upbutton {
+    background-image: url('arrow_up.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button#downbutton {
+    background-image: url('arrow_down.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button#rightbutton {
+    background-image: url('arrow_right.png');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+}
+
+button#leftbutton {
+    background-image: url('arrow_left.png');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+}
