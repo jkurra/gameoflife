@@ -6,7 +6,7 @@
 
 #include "manager.h"
 #include "json/file.h"
-#include "log.h"
+#include "../output/log.h"
 
 /** @brief Creates newly allocated theme.
  *

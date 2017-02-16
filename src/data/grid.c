@@ -38,14 +38,44 @@ int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols )
     return grid;
 }
 
+int **grid_empty( int **grid, int rows, int cols )
+{
+    /* Create temporary grid for copying the current game */
+    //int **tmp_grid = grid_new(rows, cols);
+    /* Copy current nodes to tmp array */
+    /*for(int i=0; i<old_rows; i++) {
+        for(int k=0; k<old_cols; k++) {
+            //tmp_grid[i][k] = grid[i][k];
+        }
+    }*/
+    /* Free current grid and allocate new one. */
+    grid_free(rows, grid);
+    grid = grid_new(rows, cols);
+    /*
+        Copy existing cells to new grid, if new  grid is smaller than previous,
+        loop will break when boundaries of the new grid are reached.
+    *//*
+    for(int i=0; i<old_rows; i++) {
+        if(i>=rows) {break;}
+        for(int k=0; k<old_cols; k++) {
+            if(k>=cols) {break;}
+            grid[i][k] = tmp_grid[i][k];
+        }
+    }*/
+    //grid_free( old_rows, tmp_grid); /* Free temrporary grid. */
+
+    return grid;
+}
 
 void grid_free( int rows, int **arr )
 {
     if(arr) {
        for(int i=0; i<rows; i++) {
            free(arr[i]);
+           arr[i] = NULL;
        }
        free(arr);
+       arr = NULL;
     }
 }
 

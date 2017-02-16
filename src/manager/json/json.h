@@ -6,7 +6,34 @@
 #include <stdio.h>
 
 #include "jsmn.h"
-#include "../log.h"
+#include "../../output/log.h"
+
+/** @brief Json value-keypair structure.
+ *  TODO: Not yet in use.
+ */
+typedef struct
+{
+    /* Key-identifier of the value. Refer to json structure guide. */
+    char *key;
+    /* Value of the keypair as "string". Other types are not supported yet.*/
+    char *value;
+
+} json_kpr;
+
+/** @brief Create new keypair, from two strings.
+ *
+ *  Allocates new keypair, using parameters. Key-value pair consists of two
+ *  strings. Keypair must be deallocated using appropriate free() function.
+ *
+ *
+ */
+json_kpr *json_keypair_create( const char *key, const char *pair );
+
+/** @brief Free json keypair and its members.
+ *
+ *
+ */
+void json_keypair_free( json_kpr *keypair );
 
 /** @brief Json object structure.
  *
@@ -35,6 +62,8 @@ typedef struct
  */
 json_ob *json_create( const char *json );
 
+char *json_get( json_ob *object, const char *key );
+
 /** @brief Free json object and all its member values and objects.
  *
  */
@@ -54,6 +83,29 @@ void json_add_value( json_ob *json, const char *keypair);
  *
  */
 void json_rem_value( json_ob *json, const char *key);
+
+/** @brief Add object to existing object.
+ *
+ *  Add given object to another json-object. parameter to_add is valid json
+ *  object. If object is malformed, it will be discarded.
+ *
+ *  @param main_object Object which is used to add another object into.
+ *  @param to_add   Object to be added to main_object.
+ *  TODO: Not yet implemented.
+ */
+void json_add_object( json_ob *main_object, json_ob *to_add );
+
+/** @brief Remove object from existing object.
+ *
+ *  Remove object from main_object using object identifier. Each object in
+ *  main_object is checked to see if id-string is same as to_remove.
+ *  TODO: Objects must have an unique id-name.
+ *
+ *  @param main_object
+ *  @param to_rem
+ *  TODO: Not yet implemented.
+ */
+void json_rem_object( json_ob *main_object, const char *to_remove );
 
 /** @brief Return full representation of the json as a string.
  *
@@ -91,5 +143,5 @@ char *json_tok( const char *json, int start, int end );
 char *json_keypair( char *value, char *key, int comma );
 
 char *json_val( const char *json, char *key, jsmntype_t type );
-int json_atoi( const char *json, char* key );
+
 #endif /* __JSON_H_ */

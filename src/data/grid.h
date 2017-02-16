@@ -6,6 +6,13 @@
 
 #include "cell.h"
 
+typedef struct
+{
+    int rows;
+    int cols;
+
+} Grid;
+
 void grid_switch_cell(int **grid, int x, int y);
 
 /** @brief Initalizes grid with 0 values.
@@ -34,6 +41,7 @@ int **grid_new( int rows, int cols );
  */
  int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols );
 
+int **grid_empty( int **grid, int rows, int cols );
 /** @brief Free dynamically allocated array.
  *
  */

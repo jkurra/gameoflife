@@ -59,8 +59,8 @@ char **array_realloc( char **array, int oldSize, int newSize )
 
 char *json_to_string(json_ob *jsonObject)
 {
-    char *rtn = (char*)calloc(1, sizeof(char));
-    int full_len = 1;
+    char *rtn = (char*)calloc(3, sizeof(char));
+    int full_len = 2;
     strncpy(rtn, "{\n", 2);
 
     for(int i=0; i<jsonObject->values_size; i++) {
@@ -92,6 +92,21 @@ char *json_to_string(json_ob *jsonObject)
     }
 
     strcat(rtn, "}");
+    return rtn;
+}
+
+char *json_get( json_ob *object, const char *key )
+{
+    //g_print("found key: %s ", key);
+    char *rtn = NULL;
+    for(int i=0; i<object->values_size; i++) {
+        g_print("Compare: %s:%s\n ", key, object->values[i]);
+        if(strcmp(object->values[i], key) == 0) {
+            //g_print("found key", object->values[i]);
+            rtn = (char*)calloc(strlen(object->values[i])+1, sizeof(char));
+            strncpy(object->values[i], rtn, strlen(object->values[i]));
+        }
+    }
     return rtn;
 }
 
@@ -250,29 +265,5 @@ char *json_val( const char *json, char *key, jsmntype_t type )
 		}
 	}
 	//printf("return value %s\n", rtn);
-	return rtn;
-}
-
-int json_jint(char *json, char *key)
-{
-	int rtn = -1;
-
-	char *tmp_str = json_val( json, key, 3 );
-	if(tmp_str) {
-		rtn = atoi(tmp_str);
-		free(tmp_str);
-	}
-
-	return rtn;
-}
-
-int json_atoi( const char *json, char* key )
-{
-	int rtn = -1;
-	char *str = json_val( json, key, 3 );
-	if(rtn) {
-		rtn = atoi(str);
-		free(str);
-	}
 	return rtn;
 }

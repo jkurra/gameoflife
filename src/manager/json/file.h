@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../log.h"
+#include "../../output/log.h"
 
 /** @brief Count files in directory.
  *  Used to return count of files inside a directory. Counts files and/or directories,
