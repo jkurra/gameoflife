@@ -1,8 +1,9 @@
 {
-   "gridRows":"1000",
-   "gridCols":"1000",
-   "tickInterval":"100",
-   "gridVisible":"1",
-   "backgroundColor":"rgb(46,52,54)",
-   "cellColor":"rgb(206,92,0)"
+"gridRows":"491",
+"gridCols":"456",
+"tickInterval":"100",
+"gridVisible":"1",
+"backgroundColor":"rgb(46,52,54)",
+"cellColor":"rgb(196,160,0)",
+"defaultTheme":"default"
 }
