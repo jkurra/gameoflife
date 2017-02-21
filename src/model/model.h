@@ -65,6 +65,9 @@ typedef struct
 typedef struct
 {
 	Model base;
+	Manager *themes;
+	Manager *conf;
+
 	GtkBuilder *builder;
 	GtkWidget  *main_frame;
 } MenuModel;
@@ -75,6 +78,9 @@ typedef struct
 typedef struct
 {
 	Model base;
+	Manager *themes;
+	Manager *conf;
+
 	GtkBuilder *builder;
 	GtkWidget  *main_frame;
 } PrefModel;

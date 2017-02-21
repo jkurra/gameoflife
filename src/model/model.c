@@ -185,7 +185,7 @@ MenuModel *MenuModel_new()
     MenuModel *model = (MenuModel*)calloc(1, sizeof(MenuModel));
     model->base.type  = MENU;
     model->main_frame = NULL;
-
+    model->builder = NULL;
     return model;
 }
 
@@ -197,6 +197,7 @@ void MenuModel_read( MenuModel *model, const char *file )
     char *fr_col = json_val(json, "cellColor", 3);
 
     gdk_rgba_parse(&model->bgrn_col, bg_col);
+
     gdk_rgba_parse(&model->cell_col, fr_col);
 
     model->rows = atoi(json_val(json, "gridRows", 3));
@@ -222,7 +223,7 @@ void MenuModel_free( MenuModel *model )
 PrefModel *PrefModel_new()
 {
     PrefModel *model = (PrefModel*)calloc(1, sizeof(PrefModel));
-    model->base.type  = GAME;
+    model->base.type  = PREF;
     model->main_frame = NULL;
 
     return model;

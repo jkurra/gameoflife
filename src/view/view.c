@@ -1,7 +1,6 @@
 #include "view.h"
 
-
-void GameView_init( GameModel *model )
+void GameView_init( GameModel *model, GameObject *object )
 {
     if(model) {
         /* Search most used frames in UI */
@@ -26,7 +25,7 @@ void GameView_init( GameModel *model )
             Auto-connect signals in glade files to defined signals.
             Signals can be located in src/view/signal/signal.h file.
         */
-        gtk_builder_connect_signals(model->builder, model);
+        gtk_builder_connect_signals(model->builder, object);
         //TODO: cleanup old and unused signals, some of them may be needed.
         // g_signal_connect (G_OBJECT(model->game_frame),  "button-press-event", G_CALLBACK (on_drawingarea_button_press_event ), NULL);
         // g_signal_connect (G_OBJECT(model->game_frame),  "drag-begin", G_CALLBACK (on_drawingarea_button_press_event ), NULL);
@@ -36,28 +35,30 @@ void GameView_init( GameModel *model )
     } else { log_message("GameView init", "Unknown model type receive "); }
 }
 
-void MenuView_init( MenuModel *model )
+void MenuView_init( MenuModel *model, GameObject *object)
 {
 	if(model) {
 		/* Search most used frames in UI */
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
         /* Search UI-elements that are programmatically modified. */
-
-        gtk_builder_connect_signals(model->builder, model);
+        if(!model->builder) {
+            g_print("model was null!");
+        }
+        gtk_builder_connect_signals(model->builder, object);
         // g_signal_connect( G_OBJECT(model->game_frame ), "draw", G_CALLBACK(draw_GameArea), model );
         /* Show all widgets under main_frame */
         gtk_widget_show_all(model->main_frame);
 	} else { log_message("GameView init", "Unknown model type receive "); }
 }
 
-void PrefView_init( PrefModel *model )
+void PrefView_init( PrefModel *model, GameObject *object )
 {
 	if(model) {
 		/* Search most used frames in UI */
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
         /* Search UI-elements that are programmatically modified. */
 
-        gtk_builder_connect_signals(model->builder, model);
+        gtk_builder_connect_signals(model->builder, object);
         // g_signal_connect( G_OBJECT(model->game_frame ), "draw", G_CALLBACK(draw_GameArea), model );
         /* Show all widgets under main_frame */
         gtk_widget_show_all(model->main_frame);
@@ -106,37 +107,42 @@ void GameView_close( GameModel *model )
 		gtk_widget_destroy(GTK_WIDGET(model->main_frame));
 		g_object_unref (G_OBJECT(model->main_frame));
 
-	} else { log_message("GameView close", "Unknown model type receive "); }
+	} else { /*log_message("GameView close", "Unknown model type receive ");*/ }
 }
 
 void MenuView_close( MenuModel *model )
 {
 	if(model) {
-
-	} else { log_message("MenuView close", "Unknown model type receive "); }
+        gtk_widget_destroy(GTK_WIDGET(model->main_frame));
+		//g_object_unref (G_OBJECT(model->main_frame));
+	} else { /*log_message("MenuView close", "Unknown model type receive ");*/ }
 }
 
 void PrefView_close( PrefModel *model )
 {
 	if(model) {
-
-	} else { log_message("PrefView close", "Unknown model type receive "); }
+        gtk_widget_destroy(GTK_WIDGET(model->main_frame));
+		g_object_unref (G_OBJECT(model->main_frame));
+	} else { /*log_message("PrefView close", "Unknown model type receive "); */}
 }
 
-void view_init( Model *model )
+void view_init( Model *model, GameObject *object)
 {
+    g_print("file m1eqqnu\n");
     switch (model->type) {
         case GAME:
-            GameView_init((GameModel*)model);
+            g_print("file Game\n");
+            GameView_init((GameModel*)model, object);
             break;
         case MENU:
-            MenuView_init((MenuModel*)model);
+            g_print("file m1enu\n");
+            MenuView_init((MenuModel*)model, object);
             break;
         case PREF:
-            PrefView_init((PrefModel*)model);
+            PrefView_init((PrefModel*)model, object);
             break;
         default:
-            log_message("View init", "Unknown model type receive ");
+            /*log_message("View init", "Unknown model type receive ");*/
             break;
     }
 }
