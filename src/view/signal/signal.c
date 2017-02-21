@@ -1,14 +1,16 @@
 #include "signal.h"
 #include "../view.h"
-#include "../../model/gameobject.h"
+#include "../../model/viewobject.h"
 
 /* SINGALS FOR MENU VIEW */
 G_MODULE_EXPORT
 void on_startGamebutton_clicked ( GtkButton *button, gpointer data )
 {
-	GameObject *object = (GameObject*)data;
-	//g_print("selectedf : %s",object->conf->sel_name);
-	GameObject_select_view( object, GAME );
+	ViewObject *object = (ViewObject*)data;
+	
+	if(object) {
+		ViewObject_select(object, GAME);
+	}
 }
 
 /* SINGALS FOR GAME VIEW */
@@ -32,7 +34,7 @@ gboolean view_timer_update( GameModel *model )
 G_MODULE_EXPORT
 void on_start_pause_clicked ( GtkButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
     if(model->g_model->timerid != -1) {
         g_source_remove(model->g_model->timerid);
         model->g_model->timerid = -1;
@@ -128,7 +130,7 @@ void window_close( GtkWidget widget, gpointer data )
 G_MODULE_EXPORT
 void on_next_button_clicked( GtkButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
 
     grid_next(model->g_model->rows, model->g_model->cols, model->g_model->grid, model->g_model->live_a, 2, model->g_model->live_d, 1);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
@@ -138,7 +140,7 @@ void on_next_button_clicked( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_randomize_button_clicked ( GtkButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
     grid_rand( model->g_model->rows, model->g_model->cols, model->g_model->grid );
 
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
@@ -148,7 +150,7 @@ void on_randomize_button_clicked ( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_clear_button_clicked ( GtkButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
 
     model->g_model->grid = grid_empty(model->g_model->grid, model->g_model->rows, model->g_model->cols);
     //update_from_Model_to_GameArea(model);
@@ -159,7 +161,7 @@ void on_clear_button_clicked ( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_grid_rows_spinButton_value_changed( GtkSpinButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
 
     int tmpRows = gtk_spin_button_get_value (button);
     model->g_model->grid = grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
@@ -172,7 +174,7 @@ void on_grid_rows_spinButton_value_changed( GtkSpinButton *button, gpointer data
 G_MODULE_EXPORT
 void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
 
     int tmpCols = gtk_spin_button_get_value (button);
     model->g_model->grid = grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
@@ -185,10 +187,10 @@ void on_grid_cols_spinButton_value_changed( GtkSpinButton *button, gpointer data
 G_MODULE_EXPORT
 void on_interval_spinbutton_value_changed( GtkSpinButton *button, gpointer data )
 {
-    GameObject *model = (GameObject*)data;
+    ViewObject *model = (ViewObject*)data;
 	int interval = gtk_spin_button_get_value (button);
 	model->g_model->interval = interval;
-	GameModel_save(model);
+	GameModel_save(model->g_model);
 
 	if(model->g_model->timerid != -1) {
 		g_source_remove(model->g_model->timerid);

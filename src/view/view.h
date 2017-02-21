@@ -11,7 +11,7 @@
 #include "gamearea/gamearea.h"
 #include "../model/model.h"
 #include "../output/log.h"
-#include "../model/gameobject.h"
+#include "../model/viewobject.h"
 
 /* Types of views that may be used */
 #define MENU  0
@@ -30,7 +30,7 @@
  *
  *  @param model Base class of the model to show.
  */
-void view_init( Model *model, GameObject *object );
+void view_init( Model *model, ViewObject *object );
 
 /** @brief Draw view model using its values.
  *

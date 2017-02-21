@@ -14,7 +14,8 @@
 #include "src/model/model.h"
 #include "src/view/view.h"
 
-#include "src/model/gameobject.h"
+#include "src/model/viewobject.h"
+
 int main(int argc, char *argv[])
 {
     /*
@@ -42,8 +43,9 @@ int main(int argc, char *argv[])
 
     strcpy( th, cwd );
     strcat( th, "/usr/themes" );
-    GameObject *object = GameObject_new(co, th);
-    GameObject_init(object);
+
+    ViewObject *object = ViewObject_new(co, th);
+    ViewObject_select(object, MENU);
 
     free(co);
     free(th);

@@ -1,6 +1,6 @@
 #include "view.h"
 
-void GameView_init( GameModel *model, GameObject *object )
+void GameView_init( GameModel *model, ViewObject *object )
 {
     if(model) {
         /* Search most used frames in UI */
@@ -35,7 +35,7 @@ void GameView_init( GameModel *model, GameObject *object )
     } else { log_message("GameView init", "Unknown model type receive "); }
 }
 
-void MenuView_init( MenuModel *model, GameObject *object)
+void MenuView_init( MenuModel *model, ViewObject *object)
 {
 	if(model) {
 		/* Search most used frames in UI */
@@ -51,7 +51,7 @@ void MenuView_init( MenuModel *model, GameObject *object)
 	} else { log_message("GameView init", "Unknown model type receive "); }
 }
 
-void PrefView_init( PrefModel *model, GameObject *object )
+void PrefView_init( PrefModel *model, ViewObject *object )
 {
 	if(model) {
 		/* Search most used frames in UI */
@@ -126,16 +126,13 @@ void PrefView_close( PrefModel *model )
 	} else { /*log_message("PrefView close", "Unknown model type receive "); */}
 }
 
-void view_init( Model *model, GameObject *object)
+void view_init( Model *model, ViewObject *object)
 {
-    g_print("file m1eqqnu\n");
     switch (model->type) {
         case GAME:
-            g_print("file Game\n");
             GameView_init((GameModel*)model, object);
             break;
         case MENU:
-            g_print("file m1enu\n");
             MenuView_init((MenuModel*)model, object);
             break;
         case PREF:
