@@ -7,9 +7,23 @@ G_MODULE_EXPORT
 void on_startGamebutton_clicked ( GtkButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
-	
+
 	if(object) {
 		ViewObject_select(object, GAME);
+	}else {
+		g_print("NULL Gameobject\n");
+	}
+}
+
+G_MODULE_EXPORT
+void on_settingsButton_clicked ( GtkButton *button, gpointer data )
+{
+	ViewObject *object = (ViewObject*)data;
+
+	if(object) {
+		ViewObject_select(object, PREF);
+	} else {
+		g_print("NULL Prefobject\n");
 	}
 }
 
@@ -42,10 +56,9 @@ void on_start_pause_clicked ( GtkButton *button, gpointer data )
         model->g_model->timerid = g_timeout_add(model->g_model->interval, (GSourceFunc) view_timer_update, model->g_model);
     }
 }
+
 G_MODULE_EXPORT
-void on_drawingarea1_button_press_event( GtkWidget      *widget,
-                                         GdkEventButton *event,
-                                         gpointer        data )
+void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *event, gpointer data )
 {
 
 }
@@ -65,7 +78,11 @@ void on_prev_button_clicked( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_menu_button_clicked( GtkButton *button, gpointer data )
 {
+	ViewObject *object = (ViewObject*)data;
 
+	if(object) {
+		ViewObject_select(object, MENU);
+	} else {g_print("NULL MENUobject\n");}
 }
 
 G_MODULE_EXPORT
@@ -75,7 +92,7 @@ void on_zoom_in_clicked( GtkButton *button, gpointer data )
 	model->zoom = model->zoom+0.2;
     GameModel_save(model);
     //gtk_widget_queue_draw(GTK_WIDGET(model->main_frame));
-	view_draw( (Model*)model );
+	//view_draw( (Model*)model );
 }
 
 G_MODULE_EXPORT
@@ -85,7 +102,7 @@ void on_zoom_out_clicked( GtkButton *button, gpointer data )
 	model->zoom = model->zoom-0.2;
     GameModel_save(model);
     //gtk_widget_queue_draw(GTK_WIDGET(model->main_frame));
-	view_draw( (Model*)model );
+	//view_draw( (Model*)model );
 }
 
 G_MODULE_EXPORT
@@ -95,7 +112,8 @@ void on_up_clicked( GtkButton *button, gpointer data )
 	if(model->game->startAtCellY < model->game->commons->rows) {
 		model->game->startAtCellY += 1;
 		view_draw( model );
-	}*/
+	}
+*/
 }
 
 G_MODULE_EXPORT
@@ -119,12 +137,7 @@ void on_right_clicked( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void window_close( GtkWidget widget, gpointer data )
 {
-    GameModel *model = (GameModel*)data;
-    g_print("Quit called");
-//    view_close((Model*)model);
-    gtk_main_quit();
-    //view_close((Model*)model);
-    //gtk_main_quit();
+	//gtk_main_quit();
 }
 
 G_MODULE_EXPORT

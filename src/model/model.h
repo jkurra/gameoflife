@@ -24,8 +24,6 @@
 typedef struct
 {
 	int type;
-
-    GtkCssProvider *provider;
 } Model;
 
 /*

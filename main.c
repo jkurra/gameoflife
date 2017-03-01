@@ -45,8 +45,10 @@ int main(int argc, char *argv[])
     strcat( th, "/usr/themes" );
 
     ViewObject *object = ViewObject_new(co, th);
+    ViewObject_init( object );
     ViewObject_select(object, MENU);
-
+    gtk_main();
+    ViewObject_quit( object );
     free(co);
     free(th);
     free(result);

@@ -9,7 +9,6 @@ Model *model_new()
         can be found in "model.h"
     */
     model->type     = -1;
-    model->provider = NULL; /* TODO: remove */
 
     return model;
 }
@@ -53,6 +52,10 @@ void GameModel_read( GameModel *model, const char *file )
     char *json = file_read(file);
     json_ob *jsn = json_create(json);
     if(json) {
+        if(model) {
+            GameModel_free(model );
+            model = GameModel_new();
+        }
         //char *bg_col = json_get(jsn, "backgroundColor");
         //char *fr_col = json_get(jsn, "cellColor");
 
@@ -115,9 +118,13 @@ void GameModel_read( GameModel *model, const char *file )
         // char *tmpTick = json_val(json, "tickInterval", 3);
         model->visible  = atoi(tmpGrid->value);
         model->interval = atoi(tmpTick->value);
-        free(tmpTick);
-        free(tmpGrid);
+        //json_keypair_free(tmpGrid);
+        //json_keypair_free(tmpTick);
+        //free(tmpTick);
+        //f//ree(tmpGrid);
         free(json);
+        json_free(jsn);
+
     }
 }
 
@@ -212,8 +219,8 @@ void MenuModel_free( MenuModel *model )
 {
     if(model) {
         if(model->main_frame) {
-            free(model->main_frame);
-            model->main_frame = NULL;
+            /*free(model->main_frame);
+            model->main_frame = NULL;*/
         }
         free(model);
         model = NULL;

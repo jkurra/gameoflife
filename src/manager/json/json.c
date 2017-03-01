@@ -44,21 +44,20 @@ static char *json_tok( const char *json, int start, int end );
 
 json_kpr *json_keypair_create( const char *key, const char *value )
 {
-    json_kpr *rtn = (json_kpr*)calloc(1, sizeof(json_kpr));
+    json_kpr *rtn = NULL;
     /*
         Initialize all values to NULL. If NULL values are provided, return will
         also contain NULL. TODO: define proper behaviour in this case. Should
         json key-value pair contain NULL values, or should we simply return
         NULL pointer if unintialized values are provided?
-    */
+
     rtn->key   = NULL;
     rtn->value = NULL;
-
-    if(key) { /* If key was given, initialize it, otherwise use NULL */
+    */
+    if( key && value ) { /* If key was given, initialize it, otherwise use NULL */
+        rtn = (json_kpr*)calloc(1, sizeof(json_kpr));
         rtn->key = (char*)calloc(strlen(key)+1, sizeof(char));
         strncpy(rtn->key, key, strlen(key));
-    }
-    if(value) { /* If value was given, initialize it, otherwise use NULL */
         rtn->value = (char*)calloc(strlen(value)+1, sizeof(char));
         strncpy(rtn->value, value, strlen(value));
     }
@@ -66,7 +65,7 @@ json_kpr *json_keypair_create( const char *key, const char *value )
     return rtn;
 }
 
-void json_keypair_free(json_kpr *keypair)
+void json_keypair_free( json_kpr *keypair )
 {
     if(keypair) {
         /*
@@ -84,7 +83,7 @@ void json_keypair_free(json_kpr *keypair)
         }
         free(keypair);  /* Free struct pointer and set it to NULL */
         keypair = NULL;
-    } else { }
+    } else { printf("Null pointer provided for json keypair. \n");}
 
 }
 
@@ -125,7 +124,7 @@ void json_add_object( json_ob *json, json_ob *to_add )
             Set last value in object to given pointer.
             This pointer is freed when json_free is called.
         */
-        json->objects[json->objects_size] = to_add;
+        json->objects[json->objects_size+1] = to_add;
         json->objects_size++; /* Update size variable. */
         create_main_object(json); /* Update main_object string. */
     } else { }
@@ -258,6 +257,7 @@ json_ob *json_create( const char *json )
                     char *tmpkey = json_tok(json, tokens[i].start, tokens[i].end);
                     char *tmpval = json_tok(json, tokens[i+1].start, tokens[i+1].end);
                     rtn->values[val] = json_keypair_create(tmpkey, tmpval);
+                    printf("created keypair %s:%s \n", tmpkey, tmpval);
                     rtn->values_size++;
                     free(tmpkey);
                     free(tmpval);
@@ -286,6 +286,7 @@ void json_free( json_ob *json )
     json->objects = NULL;
 
     for(int i=0; i<json->values_size; i++) {
+        printf("free value %s\n", json->values[i]->key);
         json_keypair_free(json->values[i]);
     }
 
@@ -401,6 +402,7 @@ json_kpr **array_realloc1( json_kpr **array, int oldSize, int newSize )
         for(int k=0; k<oldSize; k++) {
             //rtn[k] = (json_kpr*)calloc(1, sizeof(json_kpr));
             rtn[k] = json_keypair_copy( array[k] );
+            printf("copied keypair %s:%s\n", rtn[k]->key, rtn[k]->value);
         }
         for(int k=0; k<oldSize; k++) {
              json_keypair_free(array[k]);

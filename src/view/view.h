@@ -9,6 +9,7 @@
 #include <GL/gl.h>
 
 #include "gamearea/gamearea.h"
+
 #include "../model/model.h"
 #include "../output/log.h"
 #include "../model/viewobject.h"
@@ -30,15 +31,21 @@
  *
  *  @param model Base class of the model to show.
  */
-void view_init( Model *model, ViewObject *object );
+void view_show( Model *model );
 
-/** @brief Draw view model using its values.
+/** @brief Intialize view using base Model.
  *
- *  Calls draw() for the model given in as a parameter.
+ *  Intializes view using given model. Model must be a subclass of baseclass Model.
+ *  Model is recognised using "type" value in model. Available subclasses can be
+ *  found from "Model.h" file and constructed using corresponding constructor
+ *  functions. Subclass must be cast to base "Model" class before using this
+ *  function. For example, with GameModel you would use
+ *  "Model *model = (Model*)game_model". Invalid casts cannot be caught in this
+ *  function so user must be careful.
  *
- * @param model Model to be drawn
+ *  @param model Base class of the model to show.
  */
-void view_draw( Model *model );
+void view_hide( Model *model );
 
 /** @brief Free view model values and close it.
  *
@@ -50,6 +57,6 @@ void view_draw( Model *model );
  *
  * @param model Model to be closed.
  */
-void view_close( Model *model );
+void view_destroy( Model *model );
 
 #endif /* VIEW_H_ */
