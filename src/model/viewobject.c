@@ -23,11 +23,11 @@ ViewObject *ViewObject_new( const char *co, const char *th )
     rtn->m_model->conf = rtn->conf;
     rtn->m_model->themes = rtn->theme;
 
-    rtn->g_model->conf =rtn->conf;
-    rtn->g_model->themes =rtn->theme;
+    rtn->g_model->conf = rtn->conf;
+    rtn->g_model->themes = rtn->theme;
 
-    rtn->p_model->conf =rtn->conf;
-    rtn->p_model->themes =rtn->theme;
+    rtn->p_model->conf = rtn->conf;
+    rtn->p_model->themes = rtn->theme;
 
     MenuModel_read(rtn->m_model, rtn->conf->sel_path);
     GameModel_read(rtn->g_model, rtn->conf->sel_path);
@@ -66,7 +66,7 @@ void ViewObject_quit( ViewObject *object )
         }
         theme_free(object->theme );
         config_free(object->conf );
-        
+
         g_object_unref(object->m_model->builder);
         g_object_unref(object->g_model->builder);
         g_object_unref(object->p_model->builder);

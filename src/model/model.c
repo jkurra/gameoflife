@@ -8,7 +8,7 @@ Model *model_new()
         it can be cast to another "subclass". Available subcasses
         can be found in "model.h"
     */
-    model->type     = -1;
+    model->type = -1;
 
     return model;
 }
@@ -50,18 +50,11 @@ GameModel *GameModel_new()
 void GameModel_read( GameModel *model, const char *file )
 {
     char *json = file_read(file);
-    json_ob *jsn = json_create(json);
+    JsonObject *jsn = json_parse(json);
     if(json) {
-        if(model) {
-            GameModel_free(model );
-            model = GameModel_new();
-        }
-        //char *bg_col = json_get(jsn, "backgroundColor");
-        //char *fr_col = json_get(jsn, "cellColor");
 
-        json_kpr *bg_col = json_find_value(jsn, "backgroundColor"); // json_val(json, "backgroundColor", 3);
-        json_kpr *fr_col = json_find_value(jsn, "cellColor");  // json_val(json, "cellColor", 3);
-
+        JsonKeypair *bg_col = (JsonKeypair*)json_find(jsn, "backgroundColor"); // json_val(json, "backgroundColor", 3);
+        JsonKeypair *fr_col = (JsonKeypair*)json_find(jsn, "cellColor");  // json_val(json, "cellColor", 3);
         /* parse colors to model */
         if(bg_col) {
             gdk_rgba_parse(&model->bgrn_col, bg_col->value);
@@ -74,19 +67,11 @@ void GameModel_read( GameModel *model, const char *file )
             fr_col = NULL;
         }
 
-        //free(bg_col);
-        //free(fr_col);
-        json_kpr *rows1 = json_find_value(jsn, "gridRows");
-        json_kpr *rows2 = json_find_value(jsn, "gridCols");
-
-    //    char* rows1 = json_val(json, "gridRows", 3);
-    //    char *cols1 = json_val(json, "gridCols", 3);
+        JsonKeypair *rows1 = (JsonKeypair*)json_find(jsn, "gridRows");
+        JsonKeypair *rows2 = (JsonKeypair*)json_find(jsn, "gridCols");
 
         int rows = atoi(rows1->value);
         int cols = atoi(rows2->value);
-
-    //    free(rows1);
-    //    free(cols1);
 
         if(model->grid) {
             grid_resize(model->grid, model->rows, model->cols, rows, cols);
@@ -98,7 +83,6 @@ void GameModel_read( GameModel *model, const char *file )
         model->rows = rows;
         model->cols = cols;
 
-
         model->live_a = (int*)calloc(2, sizeof(int));
         model->live_d = (int*)calloc(1, sizeof(int));
 
@@ -106,25 +90,18 @@ void GameModel_read( GameModel *model, const char *file )
         model->live_a[1] = 2;
         model->live_d[0] = 3;
 
-        //model->grid = grid_new(model->rows, model->cols);
         model->infinite = 0;
         model->spacing = 2.0;
         model->cell_s = 10.0;
 
-        json_kpr *tmpGrid = json_find_value(jsn, "gridVisible");
-        json_kpr *tmpTick = json_find_value(jsn, "tickInterval");
+        JsonKeypair *tmpGrid = (JsonKeypair*)json_find(jsn, "gridVisible");
+        JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");
 
-        // char *tmpGrid = json_val(json, "gridVisible", 3);
-        // char *tmpTick = json_val(json, "tickInterval", 3);
         model->visible  = atoi(tmpGrid->value);
         model->interval = atoi(tmpTick->value);
-        //json_keypair_free(tmpGrid);
-        //json_keypair_free(tmpTick);
-        //free(tmpTick);
-        //f//ree(tmpGrid);
+
         free(json);
         json_free(jsn);
-
     }
 }
 
@@ -144,7 +121,7 @@ void GameModel_save( GameModel *model )
         gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
         gchar *cell = gdk_rgba_to_string(&model->cell_col);
 
-		json_ob *object = json_create(NULL);
+		JsonObject *object = json_parse(NULL);
 
 		json_add_value(object, json_keypair_create("gridRows", rows));
 		json_add_value(object, json_keypair_create("gridCols", cols));
@@ -157,11 +134,7 @@ void GameModel_save( GameModel *model )
         free(bgrn);
         free(cell);
 
-        //char *json = object->main_object;//json_to_string(object);//json_obj(3, 7, strings);
-
         file_write(object->main_object, model->conf->sel_path);
-    //    free(json);
-    //    json = NULL;
     }
 }
 
@@ -240,7 +213,7 @@ void PrefModel_read( PrefModel *model, const char *file )
 {
     //char *json = file_read(file);
 
-    //json_ob *object = json_create(json);
+    //JsonObject *object = json_create(json);
     //printf("json \n%s\n", json);
 /*
     char *bg_col = json_val(json, "backgroundColor", 3);
