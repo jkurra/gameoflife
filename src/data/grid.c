@@ -1,5 +1,81 @@
 #include "grid.h"
 
+Grid *Grid_new( int rows, int cols )
+{
+    Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
+    rtn->rows = rows;
+    rtn->cols = cols;
+
+    rtn->grid = (int**)calloc(rows, sizeof(int*));
+    for(int i=0; i<rows; i++) {
+        rtn->grid[i] = (int*)calloc(cols, sizeof(int));
+    }
+
+    return rtn;
+}
+
+void Grid_free( Grid *grid )
+{
+
+    if(grid->grid) {
+       for(int i=0; i<grid->rows; i++) {
+           free(grid->grid[i]);
+           grid->grid[i] = NULL;
+       }
+       free(grid->grid);
+       grid->grid = NULL;
+    }
+    grid->rows = -1;
+    grid->cols = -1;
+
+    free(grid);
+    grid = NULL;
+
+}
+
+void Grid_resize( Grid *grid, int new_rows, int new_cols )
+{
+    /* Create temporary grid for copying the current game */
+    int old_rows = grid->rows;
+    int old_cols = grid->cols;
+
+    Grid *tmp_grid = Grid_new(grid->rows, grid->cols);
+    /* Copy current nodes to tmp array */
+    for(int i=0; i<old_rows; i++) {
+        for(int k=0; k<old_cols; k++) {
+            tmp_grid->grid[i][k] = grid->grid[i][k];
+        }
+    }
+    /* Free current grid and allocate new one. */
+    Grid_free(grid->grid);
+    grid->grid = grid_new(new_rows, new_cols);
+    /*
+        Copy existing cells to new grid, if new  grid is smaller than previous,
+        loop will break when boundaries of the new grid are reached.
+    */
+    for(int i=0; i<old_rows; i++) {
+        if(i>=grid->rows) {break;}
+        for(int k=0; k<old_cols; k++) {
+            if(k>=grid->cols) {break;}
+            grid->grid[i][k] = tmp_grid->grid[i][k];
+        }
+    }
+    Grid_free(tmp_grid); /* Free temporary grid. */
+
+
+}
+
+void Grid_rand( Grid *grid )
+{
+    if(grid->grid) {
+        for(int i=0; i<grid->rows; i++){
+            for(int k=0; k<grid->cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
+                grid->grid[i][k] = rand()%2;
+            }
+        }
+    }
+}
+
 int **grid_new( int rows, int cols )
 {
     int **arr = (int**)calloc(rows, sizeof(int*));
@@ -33,7 +109,7 @@ int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols )
             grid[i][k] = tmp_grid[i][k];
         }
     }
-    grid_free( old_rows, tmp_grid); /* Free temrporary grid. */
+    grid_free( old_rows, tmp_grid); /* Free temporary grid. */
 
     return grid;
 }

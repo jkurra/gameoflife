@@ -40,51 +40,6 @@ ViewObject *ViewObject_new( const char *co, const char *th )
     return rtn;
 }
 
-void ViewObject_init( ViewObject *object )
-{
-    GtkCssProvider *provider = gtk_css_provider_new();
-    GError *error = NULL;
-    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  error);
-
-    GdkDisplay *display = gdk_display_get_default();
-    GdkScreen  *screen  = gdk_display_get_default_screen(display);
-
-    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-}
-
-void ViewObject_quit( ViewObject *object )
-{
-    if(object) {
-        if(object->g_model){
-            view_destroy((Model*)object->g_model);
-        }
-        if(object->p_model) {
-            view_destroy((Model*)object->p_model);
-        }
-        if(object->m_model){
-            view_destroy((Model*)object->m_model);
-        }
-        theme_free(object->theme );
-        config_free(object->conf );
-
-        g_object_unref(object->m_model->builder);
-        g_object_unref(object->g_model->builder);
-        g_object_unref(object->p_model->builder);
-
-        MenuModel_free(object->m_model);
-        GameModel_free(object->g_model);
-        PrefModel_free(object->p_model);
-/*
-        object->m_model->builder = gtk_builder_new_from_file("src/view/gui/gof_menu.glade");
-        object->g_model->builder = gtk_builder_new_from_file("src/view/gui/gof_game_test.glade");
-        object->p_model->builder = gtk_builder_new_from_file("src/view/gui/gof_pref.glade");
-
-*/
-        free(object);
-        object = NULL;
-    }
-}
-
 void ViewObject_select( ViewObject *object, int view )
 {
     if(object) {
@@ -113,6 +68,48 @@ void ViewObject_select( ViewObject *object, int view )
          */
         ViewObject_connect_signals(object);
     }
+}
+
+void ViewObject_init( ViewObject *object )
+{
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GError *error = NULL;
+    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  error);
+
+    GdkDisplay *display = gdk_display_get_default();
+    GdkScreen  *screen  = gdk_display_get_default_screen(display);
+
+    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
+void ViewObject_quit( ViewObject *object )
+{
+    if(object) {
+        if(object->g_model){
+            view_destroy((Model*)object->g_model);
+        }
+        if(object->p_model) {
+            view_destroy((Model*)object->p_model);
+        }
+        if(object->m_model){
+            view_destroy((Model*)object->m_model);
+        }
+        theme_free(object->theme );
+        config_free(object->conf );
+
+        //g_object_unref(object->m_model->builder);
+        //g_object_unref(object->g_model->builder);
+        //g_object_unref(object->p_model->builder);
+
+        MenuModel_free(object->m_model);
+        GameModel_free(object->g_model);
+        PrefModel_free(object->p_model);
+
+        free(object);
+        object = NULL;
+
+    }
+    gtk_main_quit();
 }
 
 void ViewObject_close_selected( ViewObject *object )

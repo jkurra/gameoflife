@@ -4,6 +4,16 @@
 #define X_SIZE 0
 #define Y_SIZE 0
 
+/** @brief Structure for Cell object.
+ *
+ */
+typedef struct
+{
+    int x;
+    int y;
+
+} Cell;
+
 /** @brief Checks state of the cell in previous turn.
  *
  * Based on current state of the cell, it is possible to peek previous state of

@@ -46,6 +46,8 @@ typedef struct
 	int interval;
 	int c_step;
 	int timerid;	/* Id of the widget containing update timer. */
+	int startX;
+	int startY;
 	int **grid;
 	/* RULES */
 	int *live_a, *live_d;
@@ -94,21 +96,16 @@ Model *model_new();
 void model_free( Model *model );
 
 GameModel *GameModel_new();
-
 void GameModel_free( GameModel *model );
 void GameModel_save( GameModel *model );
 void GameModel_read( GameModel *model, const char *file );
 
 PrefModel *PrefModel_new();
-
 void PrefModel_free( PrefModel *model );
-
 void PrefModel_read( PrefModel *model, const char *file );
 
 MenuModel *MenuModel_new();
-
 void MenuModel_free( MenuModel *model );
-
 void MenuModel_read( MenuModel *model, const char *file );
 
 #endif /* MODEL_H_ */

@@ -10,7 +10,7 @@
 #define KEYPAIR 0
 #define OBJECT  1
 
-/** @brief Json value-keypair structure.
+/** @brief Base JsonObject class.
  *
  */
 typedef struct
@@ -27,7 +27,7 @@ typedef struct
     JsonToken base;
     /* Key-identifier of the value. Refer to json structure guide. */
     char *key;
-    /* Value of the keypair as "string". Other types are not supported yet.*/
+    /* Value of the keypair as "string". Other types are not supported.*/
     char *value;
 
 } JsonKeypair;
@@ -53,8 +53,14 @@ typedef struct json_o
 
 } JsonObject;
 
-/** @brief Free json object and all its member values and objects.
+/** @brief Parse json object from string.
  *
+ *  Parses json from given string. String is a properly formatted json object.
+ *  NULL value intializes empty json string (basically "{}") and all member
+ *  values are set to initial values. New values and objects may then be added
+ *  later. TODO: Add checks if json is malformed or missing identifiers.
+ *
+ *  @param json String representation of json object.
  */
 JsonObject *json_parse( const char *json );
 
@@ -63,7 +69,7 @@ JsonObject *json_parse( const char *json );
  */
 void json_free( JsonObject *json );
 
-/** @brief Add object to existing object.
+/** @brief Add value or object to existing object.
  *
  *  Add given object to another json-object. parameter to_add is valid json
  *  object. If object is malformed, it will be discarded.
@@ -74,7 +80,7 @@ void json_free( JsonObject *json );
  */
 void json_add( JsonObject *json, JsonToken *to_add );
 
-/** @brief Remove object from existing object.
+/** @brief Remove value or object from existing object.
  *
  *  Remove object from main_object using object identifier. Each object in
  *  main_object is checked to see if id-string is same as to_remove.
@@ -86,15 +92,16 @@ void json_add( JsonObject *json, JsonToken *to_add );
  */
 void json_rem( JsonObject *json, const char *to_remove );
 
-/** @brief Remove object from existing object.
+/** @brief Find value or object from given object.
  *
- *  Remove object from main_object using object identifier. Each object in
- *  main_object is checked to see if id-string is same as to_remove.
- *  TODO: Objects must have an unique id-name.
+ *  Searches for keypair or object with matching key-identifier. If one is found
+ *  pointer to it is returned, if none is found returned pointer is set NULL.
+ *  Returned pointer doesn't have to be freed, since it is part of JsonObject and
+ *  is freed when json_free is called. Attempting to free it will result in
+ *  double free.
  *
- *  @param main_object
- *  @param to_rem
- *  TODO: Not yet implemented.
+ *  @param json String representation of the json object.
+ *  @param key  Identifier of the object or keypair to be searched.
  */
 JsonToken *json_find( JsonObject *json, const char *key );
 
@@ -102,6 +109,7 @@ JsonToken *json_find( JsonObject *json, const char *key );
  *
  *  Allocates new keypair, using parameters. Key-value pair consists of two
  *  strings. Keypair must be deallocated using appropriate free() function.
+ *  TODO: rename and rethink structure.
  */
 JsonKeypair *json_keypair_create( const char *key, const char *value );
 

@@ -3,14 +3,14 @@
 void GameView_show( GameModel *model )
 {
     if(model) {
-        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
+        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
         model->game_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "drawingarea1"));
         /* Search UI-elements that are programmatically modified. */
         GtkWidget *overlay    = GTK_WIDGET(gtk_builder_get_object(model->builder, "overlay3"));
         GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
-        GtkWidget *row_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "gridRowsspinButton"));
-        GtkWidget *col_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "gridColsspinButton"));
-        GtkWidget *int_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "interval_spinbutton"));
+        GtkWidget *row_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetRows"));
+        GtkWidget *col_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetCols"));
+        GtkWidget *int_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetInterval"));
         /* Assign UI spinbutton values from model */
         char str[20];
         sprintf(str, "%d", model->c_step);
@@ -28,7 +28,7 @@ void GameView_show( GameModel *model )
 void MenuView_show( MenuModel *model )
 {
     if(model) {
-        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
+        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
     }
 }
@@ -36,7 +36,7 @@ void MenuView_show( MenuModel *model )
 void PrefView_show( PrefModel *model )
 {
     if(model) {
-        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "window1"));
+        model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
     }
 }

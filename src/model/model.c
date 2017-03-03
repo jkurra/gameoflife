@@ -34,7 +34,7 @@ GameModel *GameModel_new()
     model->live_d = NULL;
 
     model->c_step   = 0;
-    model->zoom     = 2;    /* TODO: Read from json file, */
+    model->zoom     = 1;    /* TODO: Read from json file, */
     model->rows = 0;
     model->cols = 0;
     model->infinite = 0;
@@ -43,6 +43,9 @@ GameModel *GameModel_new()
     model->spacing = 0.0;
     model->interval = 0;
     model->timerid = -1;
+
+    model->startX = 0;
+    model->startY = 0;
 
     return model;
 }
@@ -93,6 +96,8 @@ void GameModel_read( GameModel *model, const char *file )
         model->infinite = 0;
         model->spacing = 2.0;
         model->cell_s = 10.0;
+        JsonKeypair *zoom= (JsonKeypair*)json_find(jsn, "zoom");
+        model->zoom = atoi(zoom->value);
 
         JsonKeypair *tmpGrid = (JsonKeypair*)json_find(jsn, "gridVisible");
         JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");
@@ -123,6 +128,9 @@ void GameModel_save( GameModel *model )
 
 		JsonObject *object = json_parse(NULL);
 
+        char *zoom = (char*)calloc(10, sizeof(char*));
+        sprintf(zoom, "%f", model->zoom);
+
 		json_add_value(object, json_keypair_create("gridRows", rows));
 		json_add_value(object, json_keypair_create("gridCols", cols));
 		json_add_value(object, json_keypair_create("tickInterval", t_time));
@@ -130,10 +138,11 @@ void GameModel_save( GameModel *model )
 		json_add_value(object, json_keypair_create("backgroundColor", bgrn));
 		json_add_value(object, json_keypair_create("cellColor", cell));
         json_add_value(object, json_keypair_create("defaultTheme", model->themes->sel_name));
+        json_add_value(object, json_keypair_create("zoom", zoom));
 
         free(bgrn);
         free(cell);
-
+        ///printf("Writing object: \n %s\n", object->main_object);
         file_write(object->main_object, model->conf->sel_path);
     }
 }
@@ -141,20 +150,20 @@ void GameModel_save( GameModel *model )
 void GameModel_free( GameModel *model )
 {
     if(model) {
-        if(model->main_frame) {
+        //if(model->main_frame) {
             //gtk_widget_destroy(GTK_WIDGET(model->main_frame));
             //model->main_frame = NULL;
-        }
-        if(model->game_frame) {
+        //}
+        //if(model->game_frame) {
             //gtk_widget_destroy(GTK_WIDGET(model->game_frame));
             //model->game_frame = NULL;
-        }
+        //}
         if(model->grid) {
             grid_free(model->rows, model->grid);
         }
 
-        free(model->live_a);
-        free(model->live_d);
+        //free(model->live_a);
+        //free(model->live_d);
         free(model);
         model = NULL;
     }
@@ -191,10 +200,10 @@ void MenuModel_read( MenuModel *model, const char *file )
 void MenuModel_free( MenuModel *model )
 {
     if(model) {
-        if(model->main_frame) {
+        //if(model->main_frame) {
             /*free(model->main_frame);
             model->main_frame = NULL;*/
-        }
+        //}
         free(model);
         model = NULL;
     }
@@ -205,7 +214,7 @@ PrefModel *PrefModel_new()
     PrefModel *model = (PrefModel*)calloc(1, sizeof(PrefModel));
     model->base.type  = PREF;
     model->main_frame = NULL;
-
+    model->builder = NULL;
     return model;
 }
 
@@ -234,10 +243,10 @@ void PrefModel_read( PrefModel *model, const char *file )
 void PrefModel_free( PrefModel *model )
 {
     if(model) {
-        if(model->main_frame) {
+        /*if(model->main_frame) {
             free(model->main_frame);
             model->main_frame = NULL;
-        }
+        }*/
         free(model);
         model = NULL;
     }

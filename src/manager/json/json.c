@@ -331,7 +331,7 @@ static void create_main_object( JsonObject *object )
         }else {
             strncat(line, ",\n", 2);
         }
-        printf("line: %s", line );
+        //printf("line: %s", line );
 
         tmp = array_realloc( tmp, strlen(tmp), strlen(tmp)+length );
         strncat(tmp, line, strlen(line));
@@ -348,7 +348,7 @@ static void create_main_object( JsonObject *object )
         }else {
             strncat(line, ",\n", 2);
         }
-        printf("line: %s", line );
+        //printf("line: %s", line );
 
         tmp = array_realloc( tmp, strlen(tmp), strlen(tmp)+length );
         strncat(tmp, line, strlen(line));

@@ -8,10 +8,61 @@
 
 typedef struct
 {
+
+} RuleSet;
+
+/** @brief Structure for GameGrid object.
+ *
+ */
+typedef struct
+{
     int rows;
     int cols;
 
+    int **grid;
 } Grid;
+
+/** @brief Allocates and initalizes grid with 0 values.
+ *
+ *  TODO: Not yet implemented.
+ */
+Grid *Grid_new( int rows, int cols );
+
+/** @brief Frees given grid and all its member values.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_free( Grid *grid );
+
+/** @brief Resizes grid into new size.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_resize( Grid *grid, int new_rows, int new_cols );
+
+/** @brief Initalizes grid with 0 values.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_empty( Grid *grid );
+
+/** @brief Initalizes grid with random values.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_rand( Grid *grid );
+
+/** @brief Calculates next turn using ruleset.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_prev( Grid *grid, RuleSet *rules );
+
+/** @brief Calculates previous turn using ruleset.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_prev( Grid *grid, RuleSet *rules );
 
 void grid_switch_cell(int **grid, int x, int y);
 

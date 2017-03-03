@@ -24,11 +24,11 @@
     <property name="step_increment">100</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkWindow" id="window1">
+  <object class="GtkWindow" id="MainWindow">
     <property name="width_request">800</property>
     <property name="height_request">500</property>
     <property name="can_focus">False</property>
-    <signal name="destroy" handler="window_close" swapped="no"/>
+    <signal name="destroy" handler="on_MainWindow_destroy" swapped="no"/>
     <child>
       <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
@@ -83,14 +83,14 @@
                     <property name="margin_top">5</property>
                     <property name="margin_bottom">5</property>
                     <child>
-                      <object class="GtkButton" id="button5">
+                      <object class="GtkButton" id="MoveLeft">
                         <property name="name">leftbutton</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_left_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_MoveLeft_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -98,14 +98,14 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button6">
+                      <object class="GtkButton" id="MoveRight">
                         <property name="name">rightbutton</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_right_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_MoveRight_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -113,7 +113,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button7">
+                      <object class="GtkButton" id="MoveDown">
                         <property name="name">downbutton</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
@@ -122,7 +122,7 @@
                         <property name="receives_default">True</property>
                         <property name="halign">center</property>
                         <property name="valign">start</property>
-                        <signal name="clicked" handler="on_down_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_MoveDown_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -138,7 +138,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">5</property>
                         <child>
-                          <object class="GtkButton" id="button9">
+                          <object class="GtkButton" id="ZoomAdd">
                             <property name="name">plusbutton</property>
                             <property name="width_request">40</property>
                             <property name="height_request">40</property>
@@ -147,7 +147,7 @@
                             <property name="focus_on_click">False</property>
                             <property name="receives_default">True</property>
                             <property name="relief">none</property>
-                            <signal name="clicked" handler="on_zoom_in_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_ZoomIn_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -156,7 +156,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="button10">
+                          <object class="GtkButton" id="ZoomDec">
                             <property name="name">minusbutton</property>
                             <property name="width_request">40</property>
                             <property name="height_request">40</property>
@@ -165,7 +165,7 @@
                             <property name="receives_default">True</property>
                             <property name="border_width">0</property>
                             <property name="relief">none</property>
-                            <signal name="clicked" handler="on_zoom_out_clicked" swapped="no"/>
+                            <signal name="clicked" handler="on_ZoomOut_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -181,7 +181,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button8">
+                      <object class="GtkButton" id="MoveUp">
                         <property name="name">upbutton</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
@@ -189,7 +189,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="valign">end</property>
-                        <signal name="clicked" handler="on_up_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_MoveUp_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -198,7 +198,6 @@
                     </child>
                     <child>
                       <object class="GtkExpander">
-                        <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="vexpand">True</property>
                         <child>
@@ -271,7 +270,7 @@
             <property name="orientation">vertical</property>
             <property name="baseline_position">top</property>
             <child>
-              <object class="GtkButton" id="button11">
+              <object class="GtkButton" id="ToMenu">
                 <property name="label" translatable="yes">&lt;</property>
                 <property name="name">40</property>
                 <property name="width_request">40</property>
@@ -283,7 +282,7 @@
                 <property name="valign">start</property>
                 <property name="margin_left">10</property>
                 <property name="relief">none</property>
-                <signal name="clicked" handler="on_menu_button_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_ToMenu_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -327,12 +326,12 @@
                 <property name="spacing">2</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="prev_button">
+                  <object class="GtkButton" id="PrevTurn">
                     <property name="label" translatable="yes">&lt;&lt;</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_prev_button_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_PrevTurn_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -341,12 +340,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="start_pause_button">
+                  <object class="GtkButton" id="SetPlay">
                     <property name="label" translatable="yes">&gt;</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_start_pause_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_SetPlay_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -355,12 +354,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="next_button">
+                  <object class="GtkButton" id="NextTurn">
                     <property name="label" translatable="yes">&gt;&gt;</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on_next_button_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_NextTurn_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -400,7 +399,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">2</property>
                     <child>
-                      <object class="GtkButton" id="clear_button">
+                      <object class="GtkButton" id="ClearGrid">
                         <property name="label" translatable="yes">Clear</property>
                         <property name="name">clear_button</property>
                         <property name="visible">True</property>
@@ -409,7 +408,7 @@
                         <property name="receives_default">True</property>
                         <property name="margin_left">10</property>
                         <property name="margin_right">10</property>
-                        <signal name="clicked" handler="on_clear_button_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_ClearGrid_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -418,7 +417,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="randomize_button">
+                      <object class="GtkButton" id="RandGrid">
                         <property name="label" translatable="yes">Rand</property>
                         <property name="name">randomize_button</property>
                         <property name="visible">True</property>
@@ -427,55 +426,12 @@
                         <property name="receives_default">True</property>
                         <property name="margin_left">10</property>
                         <property name="margin_right">10</property>
-                        <signal name="clicked" handler="on_randomize_button_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_RandGrid_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">2</property>
-                        <child>
-                          <object class="GtkLabel" id="label1">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">center</property>
-                            <property name="margin_left">10</property>
-                            <property name="label" translatable="yes">Step:</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="stepspinbutton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="valign">start</property>
-                            <property name="margin_left">10</property>
-                            <property name="margin_right">10</property>
-                            <property name="editable">False</property>
-                            <property name="adjustment">adjustment3</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">6</property>
                       </packing>
                     </child>
                   </object>
@@ -521,13 +477,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="gridRowsspinButton">
+                          <object class="GtkSpinButton" id="SetRows">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment2</property>
-                            <signal name="value-changed" handler="on_grid_rows_spinButton_value_changed" swapped="no"/>
+                            <signal name="value-changed" handler="on_SetRows_value_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -560,13 +516,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="gridColsspinButton">
+                          <object class="GtkSpinButton" id="SetCols">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment1</property>
-                            <signal name="value-changed" handler="on_grid_cols_spinButton_value_changed" swapped="no"/>
+                            <signal name="value-changed" handler="on_SetCols_value_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -602,13 +558,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="interval_spinbutton">
+                          <object class="GtkSpinButton" id="SetInterval">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment4</property>
-                            <signal name="value-changed" handler="on_interval_spinbutton_value_changed" swapped="no"/>
+                            <signal name="value-changed" handler="on_SetInterval_value_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
