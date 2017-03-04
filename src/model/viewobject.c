@@ -34,7 +34,7 @@ ViewObject *ViewObject_new( const char *co, const char *th )
     PrefModel_read(rtn->p_model, rtn->conf->sel_path);
 
     rtn->m_model->builder = gtk_builder_new_from_file("src/view/gui/gof_menu.glade");
-    rtn->g_model->builder = gtk_builder_new_from_file("src/view/gui/gof_game_test.glade");
+    rtn->g_model->builder = gtk_builder_new_from_file("src/view/gui/gof_game.glade");
     rtn->p_model->builder = gtk_builder_new_from_file("src/view/gui/gof_pref.glade");
 
     return rtn;

@@ -23,14 +23,10 @@ char *log_timestamp()
 
 char *log_message(const char *key, const char* message)
 {
-    char *result = (char*)calloc(sizeof(char), 26 + strlen(key)+strlen(message)+6);
-    strncpy(result, "[", 2);
-    strcat(result, log_timestamp());
-    strcat(result, "]");
-    strcat(result, "[");
-    strcat(result, key);
-    strcat(result, "] ");
-    strcat(result, message);
+    char *timestamp = log_timestamp();
+    static char result[60]; //= (char*)calloc(sizeof(char), 26 + strlen(key)+strlen(message)+6);
+
+    sprintf( result, "[%s][%s] %s\n", timestamp, key, message );
 
     return result;
 }

@@ -15,7 +15,66 @@ void color_lighter1( GdkRGBA *rgba, float level )
     rgba->green += level;
     rgba->blue  += level;
 }
+int GameArea_x_pos( gpointer data, float x, float width, float height )
+{
+    int pos = -1;
+    ViewObject *model = (ViewObject*)data;
 
+    int max_x = model->g_model->rows,
+		cur_x = 0;
+
+    float x_start = 5.0;
+    int x_cell = 0;
+
+    float x_max = 0;
+    float x_min = 0;
+    x_cell += model->g_model->startY;
+
+    for(cur_x=model->g_model->startX; cur_x<max_x; cur_x++) {
+		x_max = x_start+(model->g_model->cell_s*model->g_model->zoom);
+		x_min = x_start;
+        if(x>x_min && x<x_max) {
+            pos = x_cell;
+            break;
+        }
+        x_cell++;
+        //cur_x = x_cell;
+        x_start += model->g_model->cell_s*model->g_model->zoom;
+        x_start += model->g_model->spacing; // space between cells
+    }
+	//g_print("button pressed on game1 %f: x_min:%f, x_max:%f\n",x, x_min, x_max);
+    return pos;
+}
+
+int GameArea_y_pos( gpointer data, float y, float width, float height )
+{
+    int pos = -1;
+    ViewObject *model = (ViewObject*)data;
+
+    int	max_y = model->g_model->cols, cur_x = 0;
+
+    float y_start = 5.0;
+    int   x_cell = 0;
+
+    float x_max = 0;
+    float x_min = 0;
+
+    x_cell += model->g_model->startX;
+
+    for(cur_x=model->g_model->startY; cur_x<max_y; cur_x++) {
+		x_max = y_start+(model->g_model->cell_s*model->g_model->zoom);
+		x_min = y_start;
+        if(y>x_min && y<x_max) {
+            pos = x_cell;
+            break;
+        }
+        x_cell++;
+        y_start += model->g_model->cell_s*model->g_model->zoom;
+        y_start += model->g_model->spacing; // space between cells
+
+    }      //  g_print("button pressed on game1 %f: x_min:%f, x_max:%f\n",y, x_min, x_max);
+    return pos;
+}
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 {
     GameModel *area1 = (GameModel*)data;
