@@ -20,7 +20,7 @@ int GameArea_x_pos( gpointer data, float x, float width, float height )
     int pos = -1;
     ViewObject *model = (ViewObject*)data;
 
-    int max_x = model->g_model->rows,
+    int max_x = model->g_model->grid->rows,
 		cur_x = 0;
 
     float x_start = 5.0;
@@ -51,7 +51,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
     int pos = -1;
     ViewObject *model = (ViewObject*)data;
 
-    int	max_y = model->g_model->cols, cur_x = 0;
+    int	max_y = model->g_model->grid->cols, cur_x = 0;
 
     float y_start = 5.0;
     int   x_cell = 0;
@@ -101,11 +101,11 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	    gdk_cairo_set_source_rgba(cr, bgrn_col);
 	    cairo_fill(cr);
 
-        for(int cur_x=area1->startX; cur_x<area1->rows; cur_x++) {
+        for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {
             if(x_point > maxx) { break; }
-            for(int cur_y=area1->startY; cur_y<area1->cols; cur_y++) {
+            for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
                 if(y_point > maxy) { break; }
-                if(area1->grid[cur_x][cur_y] == 1) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
+                if(area1->grid->grid[cur_x][cur_y] == 1) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
                     draw_rectangle1(cr, cell_col, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
                 }
                 else {

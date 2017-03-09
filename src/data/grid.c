@@ -6,9 +6,13 @@ Grid *Grid_new( int rows, int cols )
     rtn->rows = rows;
     rtn->cols = cols;
 
-    rtn->grid = (int**)calloc(rows, sizeof(int*));
+    rtn->grid = (int**)calloc(rtn->rows+1, sizeof(int*));
     for(int i=0; i<rows; i++) {
-        rtn->grid[i] = (int*)calloc(cols, sizeof(int));
+        rtn->grid[i] = (int*)calloc(rtn->cols+1, sizeof(int));
+        /*for(int k=0; k<rtn->cols; k++) {
+            rtn->grid[i][k] = 0;
+        }*/
+        //rtn->grid[i] = 0;
     }
 
     return rtn;
@@ -36,33 +40,41 @@ void Grid_free( Grid *grid )
 void Grid_resize( Grid *grid, int new_rows, int new_cols )
 {
     /* Create temporary grid for copying the current game */
-    int old_rows = grid->rows;
-    int old_cols = grid->cols;
-
     Grid *tmp_grid = Grid_new(grid->rows, grid->cols);
     /* Copy current nodes to tmp array */
-    for(int i=0; i<old_rows; i++) {
-        for(int k=0; k<old_cols; k++) {
+    for(int i=0; i<grid->rows; i++) {
+        for(int k=0; k<grid->cols; k++) {
             tmp_grid->grid[i][k] = grid->grid[i][k];
         }
     }
     /* Free current grid and allocate new one. */
-    Grid_free(grid->grid);
-    grid->grid = grid_new(new_rows, new_cols);
+    Grid_free(grid);
+    grid = Grid_new(new_rows, new_cols);
+    //g_print("Create grid size [%d][%d]:[%d][%d]", new_rows, new_cols,tmp_grid->rows, tmp_grid->cols );
     /*
         Copy existing cells to new grid, if new  grid is smaller than previous,
         loop will break when boundaries of the new grid are reached.
     */
-    for(int i=0; i<old_rows; i++) {
-        if(i>=grid->rows) {break;}
-        for(int k=0; k<old_cols; k++) {
-            if(k>=grid->cols) {break;}
+    for(int i=0; i<grid->rows; i++) {
+        if(i>=tmp_grid->rows || i>=grid->rows) { break; }
+        for(int k=0; k<grid->cols; k++) {
+            if(i>=tmp_grid->cols || i>=grid->cols) { break; }
+            if(tmp_grid->grid[i][k] == 1) {
+                g_print("found live cell at: %d:%d", i, k);
+            }
             grid->grid[i][k] = tmp_grid->grid[i][k];
         }
     }
     Grid_free(tmp_grid); /* Free temporary grid. */
+}
 
-
+void Grid_empty( Grid *grid )
+{
+    for(int i=0; i<grid->rows; i++) {
+        for(int k=0; k<grid->cols; k++) {
+            grid->grid[i][k] = 0;
+        }
+    }
 }
 
 void Grid_rand( Grid *grid )
@@ -76,134 +88,52 @@ void Grid_rand( Grid *grid )
     }
 }
 
-int **grid_new( int rows, int cols )
+void Grid_prev( Grid *grid, RuleSet *rules )
 {
-    int **arr = (int**)calloc(rows, sizeof(int*));
-    for(int i=0; i<rows; i++) {
-        arr[i] = (int*)calloc(cols, sizeof(int));
-    }
-    return arr;
+
 }
 
-int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols )
+void Grid_next( Grid *grid, RuleSet *rules )
 {
-    /* Create temporary grid for copying the current game */
-    int **tmp_grid = grid_new(old_rows, old_cols);
-    /* Copy current nodes to tmp array */
-    for(int i=0; i<old_rows; i++) {
-        for(int k=0; k<old_cols; k++) {
-            tmp_grid[i][k] = grid[i][k];
+
+    if(grid) {
+        Grid *tmpGrid = Grid_new(grid->rows, grid->cols);
+        int k=0, i=0;
+        for(i=0; i<grid->rows; i++) {
+            for(k=0; k<grid->cols; k++) {
+                int nbrs = 0;
+                nbrs = grid_nbrs(i, k, grid->rows, grid->cols, grid->grid);
+                //g_print("cell nbrs %d\n", nbrs);
+                int life = 0;
+                //g_print("rules: d:%d|a:%d", rules->live_d[0], rules->live_a[0]);
+                life = cell_next( grid->grid[i][k], nbrs, rules->live_a, rules->live_s, rules->live_d, rules->dead_s );//cell_next_turn(grid[i][k], nbrs);
+                //life = cell_next( grid[i][k], nbrs, live_a, live_s, live_d, dead_s );
+                //g_print("cell nbrs %d[%d]\n", nbrs, life);
+                tmpGrid->grid[i][k] = life;
+
+            }
+
         }
-    }
-    /* Free current grid and allocate new one. */
-    grid_free(old_rows, grid);
-    grid = grid_new(rows, cols);
-    /*
-        Copy existing cells to new grid, if new  grid is smaller than previous,
-        loop will break when boundaries of the new grid are reached.
-    */
-    for(int i=0; i<old_rows; i++) {
-        if(i>=rows) {break;}
-        for(int k=0; k<old_cols; k++) {
-            if(k>=cols) {break;}
-            grid[i][k] = tmp_grid[i][k];
-        }
-    }
-    grid_free( old_rows, tmp_grid); /* Free temporary grid. */
-
-    return grid;
-}
-
-int **grid_empty( int **grid, int rows, int cols )
-{
-    /* Create temporary grid for copying the current game */
-    //int **tmp_grid = grid_new(rows, cols);
-    /* Copy current nodes to tmp array */
-    /*for(int i=0; i<old_rows; i++) {
-        for(int k=0; k<old_cols; k++) {
-            //tmp_grid[i][k] = grid[i][k];
-        }
-    }*/
-    /* Free current grid and allocate new one. */
-    grid_free(rows, grid);
-    grid = grid_new(rows, cols);
-    /*
-        Copy existing cells to new grid, if new  grid is smaller than previous,
-        loop will break when boundaries of the new grid are reached.
-    *//*
-    for(int i=0; i<old_rows; i++) {
-        if(i>=rows) {break;}
-        for(int k=0; k<old_cols; k++) {
-            if(k>=cols) {break;}
-            grid[i][k] = tmp_grid[i][k];
-        }
-    }*/
-    //grid_free( old_rows, tmp_grid); /* Free temrporary grid. */
-
-    return grid;
-}
-
-void grid_free( int rows, int **arr )
-{
-    if(arr) {
-       for(int i=0; i<rows; i++) {
-           free(arr[i]);
-           arr[i] = NULL;
-       }
-       free(arr);
-       arr = NULL;
-    }
-}
-
-void grid_rand( int rows, int cols, int **arr )
-{
-    if(arr) {
-        for(int i=0; i<rows; i++){
-            for(int k=0; k<cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
-                arr[i][k] = rand()%2;
+        for(i=0; i<grid->rows; i++) {
+            for(k=0; k<grid->cols; k++) {
+                grid->grid[i][k] = tmpGrid->grid[i][k];
             }
         }
+        Grid_free(tmpGrid);
     }
 }
 
-void grid_switch_cell(int **grid, int x, int y)
+void Grid_switch_cell(Grid *grid, int x, int y)
 {
     if(grid) {
-        if(grid[y][x] == 1) {
+        if(grid->grid[y][x] == 1) {
             //g_print("switch cell to 0");
-            grid[y][x] = 0;
+            grid->grid[y][x] = 0;
         } else {
             //g_print("switch cell to 1");
-            grid[y][x] = 1;
+            grid->grid[y][x] = 1;
         }
     }
-}
-
-void grid_next( int rows, int cols, int **grid, int *live_a, int live_s, int *live_d, int dead_s )
-{
-    int **tmp_grid = grid_new(rows, cols);
-    int k=0, i=0;
-    for(i=0; i<rows; i++) {
-        for(k=0; k<cols; k++) {
-            int nbrs = 0;
-            nbrs = grid_nbrs(i, k, rows, cols, grid);
-            int life = 0;
-            life = cell_next( grid[i][k], nbrs, live_a, live_s, live_d, dead_s );//cell_next_turn(grid[i][k], nbrs);
-            tmp_grid[i][k] = life;
-
-        }
-    }
-    for(i=0; i<rows; i++) {
-        for(k=0; k<cols; k++) {
-            grid[i][k] = tmp_grid[i][k] ;
-        }
-    }
-    grid_free(rows, tmp_grid);
-}
-
-void grid_prev( int x, int y, int **grid, int *live_a, int *live_d )
-{
-
 }
 
 void grid_print( int x, int y, int **grid )

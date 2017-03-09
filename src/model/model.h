@@ -36,7 +36,7 @@ typedef struct
 	GdkRGBA bgrn_col; /* Background color of the grid */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
-	int rows, cols; /* Maximum dimensions of the game grid */
+	//int rows, cols; /* Maximum dimensions of the game grid */
 	int infinite;
 	int visible;
 
@@ -48,9 +48,10 @@ typedef struct
 	int timerid;	/* Id of the widget containing update timer. */
 	int startX;
 	int startY;
-	int **grid;
+	Grid *grid;
 	/* RULES */
-	int *live_a, *live_d;
+	RuleSet *ruleset;
+	//int *live_a, *live_d;
 	Manager *themes;
 	Manager *conf;
 	GtkBuilder *builder;

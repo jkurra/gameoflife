@@ -80,8 +80,8 @@ G_MODULE_EXPORT
 void on_RandGrid_clicked ( GtkButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;
-    grid_rand( model->g_model->rows, model->g_model->cols, model->g_model->grid );
-
+    //grid_rand( model->g_model->rows, model->g_model->cols, model->g_model->grid );
+	Grid_rand( model->g_model->grid );
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -89,7 +89,7 @@ G_MODULE_EXPORT
 void on_ClearGrid_clicked ( GtkButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;
-    model->g_model->grid = grid_empty(model->g_model->grid, model->g_model->rows, model->g_model->cols);
+    Grid_empty(model->g_model->grid );
 
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
@@ -103,8 +103,8 @@ void on_NextTurn_clicked( GtkButton *button, gpointer data )
 	char str[20];
 	sprintf(str, "%d", model->g_model->c_step);
 	gtk_label_set_text(GTK_LABEL(step_count), str);
-
-    grid_next(model->g_model->rows, model->g_model->cols, model->g_model->grid, model->g_model->live_a, 2, model->g_model->live_d, 1);
+	Grid_next(model->g_model->grid, model->g_model->ruleset);
+//    grid_next(model->g_model->rows, model->g_model->cols, model->g_model->grid, model->g_model->live_a, 2, model->g_model->live_d, 1);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -120,8 +120,8 @@ void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
 
     int tmpRows = gtk_spin_button_get_value (button);
-    model->g_model->grid = grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
-    model->g_model->rows = tmpRows;
+    Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
+    model->g_model->grid->rows = tmpRows;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
@@ -132,8 +132,8 @@ void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
 
     int tmpCols = gtk_spin_button_get_value (button);
-    model->g_model->grid = grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
-    model->g_model->cols = tmpCols;
+    Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
+    model->g_model->grid->cols = tmpCols;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
@@ -167,7 +167,7 @@ void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *even
 	//	g_print("button pressed on game : x:%f, y:%d.\n", event->x, event->y);
 		if(posx >= 0 && posy >= 0) {
 			ViewObject *model = (ViewObject*)data;
-			grid_switch_cell( model->g_model->grid, posx, posy );
+			Grid_switch_cell( model->g_model->grid, posx, posy );
 			gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 		} else {
 			g_print("positions out of range.\n");
@@ -272,7 +272,8 @@ on_ShowGrid_state_set( GtkSwitch *widget, gboolean   state, gpointer data )
 gboolean view_timer_update( GameModel *model )
 {
 	if(model) {
-		grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
+		Grid_next(model->grid, model->ruleset);
+		//grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
 		model->c_step++;
 		GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
 		char str[20];

@@ -30,13 +30,13 @@ GameModel *GameModel_new()
     model->main_frame = NULL;
     //model->game_frame = NULL;
     model->grid = NULL;
-    model->live_a = NULL;
-    model->live_d = NULL;
-
+    //model->live_a = NULL;
+    //model->live_d = NULL;
+    model->ruleset = (RuleSet*)calloc(1, sizeof(RuleSet));
     model->c_step   = 0;
     model->zoom     = 1;    /* TODO: Read from json file, */
-    model->rows = 0;
-    model->cols = 0;
+    //model->rows = 0;
+    //model->cols = 0;
     model->infinite = 0;
     model->visible  = 0;
     model->cell_s = 0;
@@ -77,22 +77,32 @@ void GameModel_read( GameModel *model, const char *file )
         int cols = atoi(rows2->value);
 
         if(model->grid) {
-            grid_resize(model->grid, model->rows, model->cols, rows, cols);
+            Grid_resize(model->grid, rows, cols);
         }
         else {
-            model->grid = grid_new(rows, cols);
+            model->grid = Grid_new(rows, cols);//grid_new(rows, cols);
         }
 
-        model->rows = rows;
-        model->cols = cols;
+        //model->rows = rows;
+        //model->cols = cols;
 
-        model->live_a = (int*)calloc(2, sizeof(int));
-        model->live_d = (int*)calloc(1, sizeof(int));
+        //model->live_a = (int*)calloc(2, sizeof(int));
+        //model->live_d = (int*)calloc(1, sizeof(int));
+        model->ruleset->live_a = (int*)calloc(2, sizeof(int));
+        model->ruleset->live_s = 2;
+        model->ruleset->live_d = (int*)calloc(1, sizeof(int));
+        model->ruleset->dead_s =1 ;
 
+        model->ruleset->live_a[0] = 3;
+        model->ruleset->live_a[1] = 2;
+
+        model->ruleset->live_d[0] = 3;
+
+        /*
         model->live_a[0] = 3;
         model->live_a[1] = 2;
         model->live_d[0] = 3;
-
+*/
         model->infinite = 0;
         model->spacing = 2.0;
         model->cell_s = 10.0;
@@ -118,8 +128,8 @@ void GameModel_save( GameModel *model )
         char *t_time = (char*) calloc(10, sizeof(char*));
         char *vis =    (char*) calloc(10, sizeof(char*));
 
-        sprintf(rows, "%d",   model->rows);
-        sprintf(cols, "%d",   model->cols);
+        sprintf(rows, "%d",   model->grid->rows);
+        sprintf(cols, "%d",   model->grid->cols);
         sprintf(t_time, "%d", model->interval);
         sprintf(vis, "%d",    model->visible);
 
@@ -159,7 +169,7 @@ void GameModel_free( GameModel *model )
             //model->game_frame = NULL;
         //}
         if(model->grid) {
-            grid_free(model->rows, model->grid);
+            Grid_free(model->grid);
         }
 
         //free(model->live_a);

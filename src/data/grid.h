@@ -8,7 +8,10 @@
 
 typedef struct
 {
-
+    int *live_a;
+    int live_s;
+    int *live_d;
+    int dead_s ;
 } RuleSet;
 
 /** @brief Structure for GameGrid object.
@@ -22,50 +25,6 @@ typedef struct
     int **grid;
 } Grid;
 
-/** @brief Allocates and initalizes grid with 0 values.
- *
- *  TODO: Not yet implemented.
- */
-Grid *Grid_new( int rows, int cols );
-
-/** @brief Frees given grid and all its member values.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_free( Grid *grid );
-
-/** @brief Resizes grid into new size.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_resize( Grid *grid, int new_rows, int new_cols );
-
-/** @brief Initalizes grid with 0 values.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_empty( Grid *grid );
-
-/** @brief Initalizes grid with random values.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_rand( Grid *grid );
-
-/** @brief Calculates next turn using ruleset.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_prev( Grid *grid, RuleSet *rules );
-
-/** @brief Calculates previous turn using ruleset.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_prev( Grid *grid, RuleSet *rules );
-
-void grid_switch_cell(int **grid, int x, int y);
-
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new
@@ -78,7 +37,13 @@ void grid_switch_cell(int **grid, int x, int y);
  * @param y   Desired amount of rows in the array.
  * @return pointer to  created two-dimensional array
  */
-int **grid_new( int rows, int cols );
+Grid *Grid_new( int rows, int cols );
+
+/** @brief Frees given grid and all its member values.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_free( Grid *grid );
 
 /** @brief Resizes grid with given dimensions.
  *
@@ -90,13 +55,13 @@ int **grid_new( int rows, int cols );
  * @param y   Desired amount of rows in the array.
  * @return pointer to reallocated grid.
  */
- int **grid_resize( int **grid, int old_rows, int old_cols, int rows, int cols );
+void Grid_resize( Grid *grid, int new_rows, int new_cols );
 
-int **grid_empty( int **grid, int rows, int cols );
-/** @brief Free dynamically allocated array.
+/** @brief Initalizes grid with 0 values.
  *
+ *  TODO: Not yet implemented.
  */
-void grid_free( int rows, int **arr);
+void Grid_empty( Grid *grid );
 
 /** @brief Initialize random values to each cell in a grid
  *
@@ -113,7 +78,7 @@ void grid_free( int rows, int **arr);
  * @param y   amount of rows in the array.
  * @param arr array to be initalized.
  */
-void grid_rand( int rows, int cols, int **arr );
+void Grid_rand( Grid *grid );
 
 /** @brief Update grid to next values.
  *
@@ -130,7 +95,7 @@ void grid_rand( int rows, int cols, int **arr );
  * @param live_a rules to apply when cell is currently alive.
  * @param live_d rules to apply when cell is currently dead.
  */
-void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, int dead_s );
+void Grid_next( Grid *grid, RuleSet *rules );
 
 /** @brief Update grid to previous values.
  *
@@ -138,7 +103,9 @@ void grid_next( int x, int y, int **grid, int *live_a, int live_s, int *live_d, 
  * @param y   Amount of rows in the array.
  * @param arr Array to update.
  */
-void grid_prev( int x, int y, int **arr, int *live_a, int *live_d );
+void Grid_prev( Grid *grid, RuleSet *rules );
+
+void Grid_switch_cell(Grid *grid, int x, int y);
 
 /** @brief Count current neighbours for a cell.
  *

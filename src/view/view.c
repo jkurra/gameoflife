@@ -15,8 +15,8 @@ void GameView_show( GameModel *model )
         char str[20];
         sprintf(str, "%d", model->c_step);
         gtk_label_set_text(GTK_LABEL(step_count), str);
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->cols);
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->rows);
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
         /* Set overlay to pass buttons in navigation to front so user can press them. */
         gtk_overlay_set_overlay_pass_through(GTK_OVERLAY(overlay), GTK_WIDGET(model->game_frame), FALSE);

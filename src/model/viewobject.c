@@ -94,19 +94,20 @@ void ViewObject_quit( ViewObject *object )
         if(object->m_model){
             view_destroy((Model*)object->m_model);
         }
+        /*
         theme_free(object->theme );
         config_free(object->conf );
-
+*/
         //g_object_unref(object->m_model->builder);
         //g_object_unref(object->g_model->builder);
         //g_object_unref(object->p_model->builder);
-
+/*
         MenuModel_free(object->m_model);
         GameModel_free(object->g_model);
         PrefModel_free(object->p_model);
-
-        free(object);
-        object = NULL;
+*/
+        //free(object);
+        //object = NULL;
 
     }
     gtk_main_quit();
