@@ -1,18 +1,49 @@
 #ifndef CELL_H_INCLUDED
 #define CELL_H_INCLUDED
 
+#include <stdlib.h>
+
 #define X_SIZE 0
 #define Y_SIZE 0
+
+/** @brief Structure for GameGrid object.
+ *
+ */
+typedef struct
+{
+    int *live_a;
+    int live_s;
+    int *live_d;
+    int dead_s ;
+
+} RuleSet;
 
 /** @brief Structure for Cell object.
  *
  */
 typedef struct
 {
-    int x;
-    int y;
+    int row;
+    int col;
+
+    int state;
 
 } Cell;
+
+/** @brief Structure for Cell object.
+ *
+ */
+Cell *Cell_new( int row, int col );
+
+/** @brief Structure for Cell object.
+ *
+ */
+void Cell_free(Cell *cell);
+
+/** @brief Structure for Cell object.
+ *
+ */
+void Cell_set( Cell *cell, int state );
 
 /** @brief Checks state of the cell in previous turn.
  *
@@ -35,7 +66,7 @@ typedef struct
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in previous turn.
  */
-int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
+int Cell_prev( Cell *cell, int nbr_count, RuleSet *rules );
 
 /** @brief Checks state of the cell in next turn.
  * NOT YET IMPLEMENTED
@@ -57,6 +88,6 @@ int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in next turn.
  */
-int cell_next( int c_state, int nbrs, int live_a[], int live_s, int live_d[], int dead_s ) ;
+int Cell_next( Cell *cell, int nbr_count, RuleSet *rules );
 
 #endif /* CELL_H_ */

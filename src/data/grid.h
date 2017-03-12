@@ -6,23 +6,22 @@
 
 #include "cell.h"
 
-typedef struct
-{
-    int *live_a;
-    int live_s;
-    int *live_d;
-    int dead_s ;
-} RuleSet;
-
 /** @brief Structure for GameGrid object.
  *
  */
 typedef struct
 {
+    /* Amount of rows and columns */
     int rows;
     int cols;
+    /* Array for CellsOfInterest */
+    Cell **coiArray;
+    /* Array for CellsOfInterest */
+    int coiCount;
 
+    /* Array for CellsOfInterest */
     int **grid;
+
 } Grid;
 
 /** @brief Initalizes grid with 0 values.
@@ -104,6 +103,21 @@ void Grid_next( Grid *grid, RuleSet *rules );
  * @param arr Array to update.
  */
 void Grid_prev( Grid *grid, RuleSet *rules );
+
+/** @brief
+ *
+ */
+int Grid_coiCount( Grid *grid );
+
+/** @brief Update grid to previous values.
+ *
+ */
+void Grid_coiAdd( Grid *grid, Cell *cell );
+
+/** @brief Update grid to previous values.
+ *
+ */
+void Grid_coiRem( Grid *grid, Cell *cell );
 
 void Grid_switch_cell(Grid *grid, int x, int y);
 

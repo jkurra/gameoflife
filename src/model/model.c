@@ -23,20 +23,18 @@ void model_free( Model *model )
 
 GameModel *GameModel_new()
 {
+    /* Allocate space for the new GameModel. */
     GameModel *model = (GameModel*)calloc(1, sizeof(GameModel));
     /* Set base type to GAME, can be read from GameModel cast to Model */
     model->base.type  = GAME;
     /* Initialize member values */
     model->main_frame = NULL;
-    //model->game_frame = NULL;
+    model->game_frame = NULL;
     model->grid = NULL;
-    //model->live_a = NULL;
-    //model->live_d = NULL;
     model->ruleset = (RuleSet*)calloc(1, sizeof(RuleSet));
     model->c_step   = 0;
     model->zoom     = 1;    /* TODO: Read from json file, */
-    //model->rows = 0;
-    //model->cols = 0;
+
     model->infinite = 0;
     model->visible  = 0;
     model->cell_s = 0;
@@ -52,69 +50,50 @@ GameModel *GameModel_new()
 
 void GameModel_read( GameModel *model, const char *file )
 {
+    /*
+     *  Read raw json data from text file.
+     */
     char *json = file_read(file);
-    JsonObject *jsn = json_parse(json);
-    if(json) {
 
-        JsonKeypair *bg_col = (JsonKeypair*)json_find(jsn, "backgroundColor"); // json_val(json, "backgroundColor", 3);
-        JsonKeypair *fr_col = (JsonKeypair*)json_find(jsn, "cellColor");  // json_val(json, "cellColor", 3);
+    if( json && model ) {
+        /* Parse data got from file. */
+        JsonObject *jsn = json_parse(json);
+        /* Retrieve needed keypairs from json object and cast to JsonKeypair. */
+        JsonKeypair *bg_col  = (JsonKeypair*)json_find(jsn, "backgroundColor");
+        JsonKeypair *fr_col  = (JsonKeypair*)json_find(jsn, "cellColor");
+        JsonKeypair *rows1   = (JsonKeypair*)json_find(jsn, "gridRows");
+        JsonKeypair *rows2   = (JsonKeypair*)json_find(jsn, "gridCols");
+        JsonKeypair *zoom    = (JsonKeypair*)json_find(jsn, "zoom");
+        JsonKeypair *tmpGrid = (JsonKeypair*)json_find(jsn, "gridVisible");
+        JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");
         /* parse colors to model */
-        if(bg_col) {
-            gdk_rgba_parse(&model->bgrn_col, bg_col->value);
-        }else {
-            bg_col = NULL;
-        }
-        if(fr_col) {
-            gdk_rgba_parse(&model->cell_col, fr_col->value);
-        }else {
-            fr_col = NULL;
-        }
-
-        JsonKeypair *rows1 = (JsonKeypair*)json_find(jsn, "gridRows");
-        JsonKeypair *rows2 = (JsonKeypair*)json_find(jsn, "gridCols");
-
+        if(bg_col) { gdk_rgba_parse(&model->bgrn_col, bg_col->value); }
+        if(fr_col) { gdk_rgba_parse(&model->cell_col, fr_col->value); }
+        /* Convert necessary values to integer. */
         int rows = atoi(rows1->value);
         int cols = atoi(rows2->value);
-
+        model->zoom     = atoi(zoom->value);
+        model->visible  = atoi(tmpGrid->value);
+        model->interval = atoi(tmpTick->value);
+        /* Initialize grid using found rows/cols values. */
         if(model->grid) {
-            Grid_resize(model->grid, rows, cols);
+            Grid_free(model->grid);
         }
-        else {
-            model->grid = Grid_new(rows, cols);//grid_new(rows, cols);
-        }
-
-        //model->rows = rows;
-        //model->cols = cols;
-
-        //model->live_a = (int*)calloc(2, sizeof(int));
-        //model->live_d = (int*)calloc(1, sizeof(int));
+        model->grid = Grid_new(rows, cols);
+        /* Initialize ruleset values. */
         model->ruleset->live_a = (int*)calloc(2, sizeof(int));
         model->ruleset->live_s = 2;
         model->ruleset->live_d = (int*)calloc(1, sizeof(int));
-        model->ruleset->dead_s =1 ;
-
+        model->ruleset->dead_s = 1;
+        /* TODO: Rules will be read from json file, for now we use static "classic" rules. */
         model->ruleset->live_a[0] = 3;
         model->ruleset->live_a[1] = 2;
-
         model->ruleset->live_d[0] = 3;
-
-        /*
-        model->live_a[0] = 3;
-        model->live_a[1] = 2;
-        model->live_d[0] = 3;
-*/
+        /* TODO: add dynamic modification to these values. */
         model->infinite = 0;
-        model->spacing = 2.0;
-        model->cell_s = 10.0;
-        JsonKeypair *zoom= (JsonKeypair*)json_find(jsn, "zoom");
-        model->zoom = atoi(zoom->value);
-
-        JsonKeypair *tmpGrid = (JsonKeypair*)json_find(jsn, "gridVisible");
-        JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");
-
-        model->visible  = atoi(tmpGrid->value);
-        model->interval = atoi(tmpTick->value);
-
+        model->spacing  = 2.0;
+        model->cell_s   = 10.0;
+        /* Free dynamically allocated values. */
         free(json);
         json_free(jsn);
     }
@@ -160,6 +139,27 @@ void GameModel_save( GameModel *model )
 void GameModel_free( GameModel *model )
 {
     if(model) {
+
+        model->infinite = -1;
+        model->visible= -1;
+
+        model->cell_s = -1;
+        model->zoom = -1;
+        model->spacing = -1;
+        model->interval= -1;
+        model->c_step = -1;
+        model->timerid= -1;
+        model->startX = -1;
+        model->startY = -1;
+
+        if(model->themes) {
+            theme_free(model->themes);
+        }
+        if(model->conf) {
+            config_free(model->conf);
+        }
+
+
         //if(model->main_frame) {
             //gtk_widget_destroy(GTK_WIDGET(model->main_frame));
             //model->main_frame = NULL;
@@ -171,7 +171,10 @@ void GameModel_free( GameModel *model )
         if(model->grid) {
             Grid_free(model->grid);
         }
-
+        free(model->ruleset->live_a);
+        free(model->ruleset->live_d);
+        free(model->ruleset);
+        model->ruleset = NULL;
         //free(model->live_a);
         //free(model->live_d);
         free(model);
@@ -190,6 +193,14 @@ MenuModel *MenuModel_new()
 
 void MenuModel_read( MenuModel *model, const char *file )
 {
+    if(model) {
+        //if(model->main_frame) {
+            /*free(model->main_frame);
+            model->main_frame = NULL;*/
+        //}
+        //free(model);
+        //model = NULL;
+    }
     //char *json = file_read(file);
 /*
     char *bg_col = json_val(json, "backgroundColor", 3);

@@ -1,6 +1,10 @@
 #include "json.h"
 
 static void create_main_object( JsonObject *object );
+void json_keypair_free(JsonKeypair *keypair);
+
+void json_add_value( JsonObject *json, JsonKeypair *to_add );
+void json_add_object( JsonObject *json, JsonObject *to_add );
 
 /** @brief Pull single token from json string.
  *

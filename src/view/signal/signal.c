@@ -7,12 +7,15 @@ gboolean view_timer_update( GameModel *model );
 /* COMMON SIGNALS */
 
 G_MODULE_EXPORT
-on_MainWindow_destroy( GtkWidget *widget, gpointer data )
+void on_MainWindow_destroy( GtkWidget *widget, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
 
 	if(object) {
-		ViewObject_quit(object);
+		if(gtk_main_level() > 0) {
+			gtk_main_quit();
+		}
+		//ViewObject_quit(object);
 	} else { g_print("%s", log_message("SIGNAL", "ViewObject was NULL when attempting to destroy MainWindow. ")); }
 }
 
@@ -22,7 +25,7 @@ void on_ToGame_clicked( GtkButton *button, gpointer data )
 	ViewObject *object = (ViewObject*)data;
 
 	if(object) {
-		g_print(log_message("SIGNAL", "Move to GameView."));
+	//	g_print(log_message("SIGNAL", "Move to GameView."));
 		ViewObject_select(object, GAME);
 	} else { g_print("%s", log_message("SIGNAL", "ViewObject was NULL when opening GameView")); }
 }
@@ -51,15 +54,6 @@ void on_ToMenu_clicked( GtkButton *button, gpointer data )
 
 /* SINGALS FOR MENU VIEW */
 
-G_MODULE_EXPORT
-on_QuitAll_clicked( GtkButton *button, gpointer data )
-{
-	ViewObject *object = (ViewObject*)data;
-	if(object) {
-		g_print("%s", log_message("SIGNAL", "Quit all."));
-		ViewObject_quit(object);
-	} else { g_print("%s", log_message("SIGNAL", "Quit all failed due to NULL pointer!")); }
-}
 
 /* SINGALS FOR GAME VIEW */
 
@@ -167,7 +161,7 @@ void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *even
 	//	g_print("button pressed on game : x:%f, y:%d.\n", event->x, event->y);
 		if(posx >= 0 && posy >= 0) {
 			ViewObject *model = (ViewObject*)data;
-			Grid_switch_cell( model->g_model->grid, posx, posy );
+			Grid_switch_cell( model->g_model->grid, posy, posx );
 			gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 		} else {
 			g_print("positions out of range.\n");
@@ -243,23 +237,36 @@ void on_MoveRight_clicked( GtkButton *button, gpointer data )
 
 /* SINGALS FOR MENU VIEW */
 
+G_MODULE_EXPORT
+void on_QuitAll_clicked( GtkButton *button, gpointer data )
+{
+	ViewObject *object = (ViewObject*)data;
+
+	if(object) {
+		gtk_widget_destroy(GTK_WIDGET(object->m_model->main_frame));
+	}
+	//TODO: call destroy oin main widget.
+}
 
 /* SINGALS FOR PREF VIEW */
 
-on_SetBgColor_color_set( GtkColorButton *button, gpointer data )
+G_MODULE_EXPORT
+void on_SetBgColor_color_set( GtkColorButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
-	gtk_color_chooser_get_rgba ( button, &object->g_model->bgrn_col );
+	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->bgrn_col );
 
 }
 
-on_SetCellColor_color_set( GtkColorButton *button, gpointer data )
+G_MODULE_EXPORT
+void on_SetCellColor_color_set( GtkColorButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
-	gtk_color_chooser_get_rgba ( button, &object->g_model->cell_col );
+	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->cell_col );
 }
 
-on_ShowGrid_state_set( GtkSwitch *widget, gboolean   state, gpointer data )
+G_MODULE_EXPORT
+void on_ShowGrid_state_set( GtkSwitch *widget, gboolean   state, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
 

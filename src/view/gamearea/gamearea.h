@@ -24,11 +24,11 @@ int read_col_index( GtkWidget game_area, float x_point, float y_point );
 /*
  *
  */
-GameArea_y_pos( gpointer data, float y, float width, float height );
+int GameArea_y_pos( gpointer data, float y, float width, float height );
 
 /*
  *
  */
-GameArea_x_pos( gpointer data, float x, float width, float height );
+int GameArea_x_pos( gpointer data, float x, float width, float height );
 
 #endif /* GAMEAREA_H_ */

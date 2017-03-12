@@ -9,6 +9,8 @@
 #include <time.h>
 
 #include "../manager/manager.h"
+#include "../manager/theme.h"
+#include "../manager/config.h"
 #include "../data/grid.h"
 #include "../manager/json/json.h"
 #include "../manager/json/file.h"

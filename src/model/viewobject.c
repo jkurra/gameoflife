@@ -74,7 +74,7 @@ void ViewObject_init( ViewObject *object )
 {
     GtkCssProvider *provider = gtk_css_provider_new();
     GError *error = NULL;
-    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  error);
+    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  &error);
 
     GdkDisplay *display = gdk_display_get_default();
     GdkScreen  *screen  = gdk_display_get_default_screen(display);
@@ -84,6 +84,7 @@ void ViewObject_init( ViewObject *object )
 
 void ViewObject_quit( ViewObject *object )
 {
+    g_print("calling viewvobject quit...\n");
     if(object) {
         if(object->g_model){
             view_destroy((Model*)object->g_model);
@@ -101,16 +102,16 @@ void ViewObject_quit( ViewObject *object )
         //g_object_unref(object->m_model->builder);
         //g_object_unref(object->g_model->builder);
         //g_object_unref(object->p_model->builder);
-/*
+
+
         MenuModel_free(object->m_model);
         GameModel_free(object->g_model);
         PrefModel_free(object->p_model);
-*/
-        //free(object);
-        //object = NULL;
+
+        free(object);
+        object = NULL;
 
     }
-    gtk_main_quit();
 }
 
 void ViewObject_close_selected( ViewObject *object )

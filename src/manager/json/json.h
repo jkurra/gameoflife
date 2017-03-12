@@ -92,6 +92,7 @@ void json_add( JsonObject *json, JsonToken *to_add );
  */
 void json_rem( JsonObject *json, const char *to_remove );
 
+void json_add_value( JsonObject *json, JsonKeypair *to_add );
 /** @brief Find value or object from given object.
  *
  *  Searches for keypair or object with matching key-identifier. If one is found

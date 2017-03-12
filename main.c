@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     ViewObject_init(object);
     ViewObject_select(object, MENU);
     gtk_main();
-    //ViewObject_quit( object );
+    ViewObject_quit( object );
     free(co);
     free(th);
     free(result);
