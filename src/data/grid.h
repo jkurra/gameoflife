@@ -14,6 +14,10 @@ typedef struct
     /* Amount of rows and columns */
     int rows;
     int cols;
+
+    int liveCells; /* Current living cells in grid  */
+    int nbrsCells; /* Neighbouring cells that might turn alive. */
+
     /* Array for CellsOfInterest */
     Cell **coiArray;
     /* Array for CellsOfInterest */
@@ -24,6 +28,14 @@ typedef struct
 
 } Grid;
 
+typedef struct
+{
+    /* Array for CellsOfInterest */
+    Cell **coiArray;
+    /* Array for CellsOfInterest */
+    int coiCount;
+
+} CellGrid;
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new
