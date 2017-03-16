@@ -147,10 +147,9 @@ void Grid_empty( Grid *grid )
 
 Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize )
 {
-
-        array = realloc(array, (oldSize+1)*sizeof(Cell*));
-        //printf("added new cell at: %d\n", oldSize);
-        array[oldSize] = toAdd;
+    array = realloc(array, (oldSize+1)*sizeof(Cell*));
+    //printf("added new cell at: %d\n", oldSize);
+    array[oldSize] = toAdd;
 
     //printf("Adding cell: %d:%d\n", toAdd->row, toAdd->col);
     //Cell *rtn = (Cell*)calloc(newSize+1, sizeof(Cell));
@@ -276,7 +275,8 @@ CellGrid *check_cell_nbrs(Grid*finalGrid, Grid *grid, CellGrid *cells, Cell *cel
                     if(tmpc->state == 0) {
                         int nbrs = 0;
                         nbrs = grid_nbrs(grid_row, grid_col, finalGrid->rows, finalGrid->cols, finalGrid->grid);
-                        tmpc->state = Cell_next( tmpc, nbrs, rules );
+                        tmpc->nbrs_count = nbrs;
+                        tmpc->state = Cell_next( tmpc, rules );
 
                         if(tmpc->state == 1) {
                             //printf("Adding cell: %d:%d\n", c->row, c->col);
@@ -308,6 +308,47 @@ CellGrid *check_cell_nbrs(Grid*finalGrid, Grid *grid, CellGrid *cells, Cell *cel
 
 }
 
+/*
+TODO: New implementation of grid_next.
+*
+void Grid_next1( Grid *grid, RuleSet *rules )
+{
+    printf("We have %d cells to check\n", grid->coiCount );
+    if(grid) {
+        Cell *tmp_array;
+
+        for(i=0; i<grid->coiCount; i++) {
+            Cell *c = Cell_new( grid->coiArray[i]->row, grid->coiArray[i]->col ); //Grid_new(grid->coiArray[i]);
+            c->nbrs_count = grid_nbrs( c->row, c->col, grid->rows, grid->cols, grid->grid );
+            int life = Cell_next( c, rules );
+            if(life == 1) { // Next state is alive.
+                // Add to tmp_array as a new cell.
+                // Set cell checked value to 0
+            }
+            // Set cell checked value to 1
+            grid->coiArray[i]->checked = 1;
+            // If cell state was 0 and state was not checked.
+            // if( !grid->g_grid[i-1][i-1]->state && !grid->g_grid[i-1][i-1]->checked )
+                grid->g_grid[i-1][i-1];
+                // check if grid might turn alive
+                // int nbrs = check_cell_nbrs(grid->g_grid[i-1][i-1])
+                // if( Cell_Next(grid->g_grid[i-1][i-1], nbrs) == 1 )
+                      // Add cell to tmp_live cells.
+                grid->g_grid[i-1][i];
+                grid->g_grid[i-1][i+1];
+                grid->g_grid[i][i-1];
+                // grid->g_grid[i][i];
+                grid->g_grid[i][i+1];
+                grid->g_grid[i+1][i+1];
+                grid->g_grid[i+1][i];
+                grid->g_grid[i+1][i-1];
+
+            // Finally remove values from grid and copy new tmp_cell values to grid.
+
+        }
+    }
+}*/
+
 void Grid_next( Grid *grid, RuleSet *rules )
 {
     printf("We have %d cells to check\n", grid->coiCount );
@@ -323,7 +364,8 @@ void Grid_next( Grid *grid, RuleSet *rules )
             Cell_set(c1, grid->coiArray[i]->state);
             int nbrs = 0;
             nbrs = grid_nbrs(c1->row, c1->col, grid->rows, grid->cols, grid->grid);
-            int life = Cell_next( c1, nbrs,rules ); //cell_next( c1->state, nbrs, rules->live_a, rules->live_s, rules->live_d, rules->dead_s );
+            c1->nbrs_count = nbrs;
+            int life = Cell_next( c1, rules ); //cell_next( c1->state, nbrs, rules->live_a, rules->live_s, rules->live_d, rules->dead_s );
             Cell_set(c1, life);
             //printf("Check cell at %d:%d\n", c1->row, c1->col);
             if(life == 1) {

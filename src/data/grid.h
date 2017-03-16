@@ -17,12 +17,11 @@ typedef struct
 
     int liveCells; /* Current living cells in grid  */
     int nbrsCells; /* Neighbouring cells that might turn alive. */
-
     /* Array for CellsOfInterest */
     Cell **coiArray;
+    Cell **g_grid;
     /* Array for CellsOfInterest */
     int coiCount;
-
     /* Array for CellsOfInterest */
     int **grid;
 
@@ -36,6 +35,7 @@ typedef struct
     int coiCount;
 
 } CellGrid;
+
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new
@@ -56,6 +56,12 @@ Grid *Grid_new( int rows, int cols );
  */
 void Grid_free( Grid *grid );
 
+/** @brief Initalizes grid with 0 values.
+ *
+ *  TODO: Not yet implemented.
+ */
+void Grid_empty( Grid *grid );
+
 /** @brief Resizes grid with given dimensions.
  *
  * Takes in two dimensional grid, with it's new desired constraint values and
@@ -67,12 +73,6 @@ void Grid_free( Grid *grid );
  * @return pointer to reallocated grid.
  */
 void Grid_resize( Grid *grid, int new_rows, int new_cols );
-
-/** @brief Initalizes grid with 0 values.
- *
- *  TODO: Not yet implemented.
- */
-void Grid_empty( Grid *grid );
 
 /** @brief Initialize random values to each cell in a grid
  *
@@ -131,7 +131,7 @@ void Grid_coiAdd( Grid *grid, Cell *cell );
  */
 void Grid_coiRem( Grid *grid, Cell *cell );
 
-void Grid_switch_cell(Grid *grid, int x, int y);
+void Grid_switch_cell( Grid *grid, int x, int y );
 
 /** @brief Count current neighbours for a cell.
  *

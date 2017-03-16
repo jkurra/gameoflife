@@ -26,8 +26,9 @@ typedef struct
     int row;
     int col;
 
+    int nbrs_count;
     int state;
-
+    int checked;
 } Cell;
 
 /** @brief Structure for Cell object.
@@ -66,7 +67,7 @@ void Cell_set( Cell *cell, int state );
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in previous turn.
  */
-int Cell_prev( Cell *cell, int nbr_count, RuleSet *rules );
+int Cell_prev( Cell *cell, RuleSet *rules );
 
 /** @brief Checks state of the cell in next turn.
  * NOT YET IMPLEMENTED
@@ -88,6 +89,6 @@ int Cell_prev( Cell *cell, int nbr_count, RuleSet *rules );
  * @param live_d  Set of rules that aplly if cell is currently alive.
  * @return state of the cell in next turn.
  */
-int Cell_next( Cell *cell, int nbr_count, RuleSet *rules );
+int Cell_next( Cell *cell, RuleSet *rules );
 
 #endif /* CELL_H_ */
