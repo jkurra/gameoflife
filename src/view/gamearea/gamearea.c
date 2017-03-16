@@ -105,7 +105,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
             if(x_point > maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
                 if(y_point > maxy) { break; }
-                if(area1->grid->grid[cur_x][cur_y] == 1) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
+                if(area1->grid->g_grid[cur_x][cur_y]->state == 1 ) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
                     draw_rectangle1(cr, cell_col, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
                 }
                 else {

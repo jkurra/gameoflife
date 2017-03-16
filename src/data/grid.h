@@ -19,11 +19,11 @@ typedef struct
     int nbrsCells; /* Neighbouring cells that might turn alive. */
     /* Array for CellsOfInterest */
     Cell **coiArray;
-    Cell **g_grid;
+    Cell ***g_grid;
     /* Array for CellsOfInterest */
     int coiCount;
     /* Array for CellsOfInterest */
-    int **grid;
+    //int **grid;
 
 } Grid;
 
@@ -153,6 +153,6 @@ int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
 /** @brief Print two dimensional array to console.
  *
  */
-void grid_print( int x, int y, int **arr );
+void grid_print(Grid *grid );
 
 #endif /* GRID_H_ */
