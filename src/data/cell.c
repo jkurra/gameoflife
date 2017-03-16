@@ -8,6 +8,7 @@ Cell *Cell_new( int row, int col )
     rtn->col = col;
     rtn->nbrs_count = 0;
     rtn->state = 0;
+    rtn->checked = 0;
 
     return rtn;
 }
@@ -17,13 +18,6 @@ void Cell_free(Cell *cell)
     if(cell) {
         free(cell);
         cell = NULL;
-    }
-}
-
-void Cell_set( Cell *cell, int state )
-{
-    if(cell) {
-        cell->state = state;
     }
 }
 

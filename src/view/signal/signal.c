@@ -289,7 +289,8 @@ gboolean view_timer_update( GameModel *model )
         //view_draw((Model*)model);
 		// const gchar *name = gtk_widget_get_name(GTK_WIDGET(model->main_frame));
 		//g_print("refresh widget:%s \n", name);
-		gtk_widget_queue_draw(GTK_WIDGET(model->main_frame));
+
+		gtk_widget_queue_draw(GTK_WIDGET(model->game_frame));
 	}
 	return TRUE;
 }

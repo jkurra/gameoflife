@@ -78,7 +78,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 {
     GameModel *area1 = (GameModel*)data;
-
+	printf("Drawing area again. \n" );
     if(area1) {
 		//g_print("Found area");
         GtkAllocation widget_alloc;
@@ -102,9 +102,8 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	    cairo_fill(cr);
 
         for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {
-            if(x_point > maxx) { break; }
+            if(x_point >= maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
-                if(y_point > maxy) { break; }
                 if(area1->grid->g_grid[cur_x][cur_y]->state == 1 ) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
                     draw_rectangle1(cr, cell_col, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
                 }
@@ -123,12 +122,15 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
                 }
                 x_point += area1->cell_s*area1->zoom;
                 x_point += area1->spacing;
+				if(y_point >= maxy) { break; }
         }
         x_point = 5;
         /* add size of the cell and space between each cell to the columns */
         y_point += area1->cell_s*area1->zoom;
         y_point += area1->spacing;
     }
+	gdk_rgba_free(cell_col);
+	gdk_rgba_free(bgrn_col);
     //free(cell_col);
     //free(bgrn_col);
 }

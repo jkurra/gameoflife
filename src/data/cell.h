@@ -41,11 +41,6 @@ Cell *Cell_new( int row, int col );
  */
 void Cell_free(Cell *cell);
 
-/** @brief Structure for Cell object.
- *
- */
-void Cell_set( Cell *cell, int state );
-
 /** @brief Checks state of the cell in previous turn.
  *
  * Based on current state of the cell, it is possible to peek previous state of

@@ -15,15 +15,13 @@ typedef struct
     int rows;
     int cols;
 
-    int liveCells; /* Current living cells in grid  */
-    int nbrsCells; /* Neighbouring cells that might turn alive. */
-    /* Array for CellsOfInterest */
-    Cell **coiArray;
+    /* Array Full grid filled with cells. */
     Cell ***g_grid;
+
     /* Array for CellsOfInterest */
     int coiCount;
     /* Array for CellsOfInterest */
-    //int **grid;
+    Cell **coiArray;
 
 } Grid;
 
@@ -131,6 +129,7 @@ void Grid_coiAdd( Grid *grid, Cell *cell );
  */
 void Grid_coiRem( Grid *grid, Cell *cell );
 
+
 void Grid_switch_cell( Grid *grid, int x, int y );
 
 /** @brief Count current neighbours for a cell.
@@ -149,10 +148,5 @@ void Grid_switch_cell( Grid *grid, int x, int y );
  * @return  Count of neighbours for the given cell.
  */
 int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
-
-/** @brief Print two dimensional array to console.
- *
- */
-void grid_print(Grid *grid );
 
 #endif /* GRID_H_ */

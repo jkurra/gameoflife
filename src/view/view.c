@@ -1,4 +1,5 @@
 #include "view.h"
+#include <GL/gl.h>
 
 void GameView_show( GameModel *model )
 {
@@ -18,7 +19,12 @@ void GameView_show( GameModel *model )
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
+
+        //model->game_frame = gtk_gl_area_new();
+        //g_signal_connect (model->game_frame, "render", G_CALLBACK (render), NULL);
         /* Set overlay to pass buttons in navigation to front so user can press them. */
+        //gtk_overlay_add_overlay (GTK_OVERLAY(overlay),model->game_frame  );
+        //gtk_overlay_reorder_overlay (overlay, model->game_frame , 0);
         gtk_overlay_set_overlay_pass_through(GTK_OVERLAY(overlay), GTK_WIDGET(model->game_frame), FALSE);
         /* Show all widgets under main_frame */
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
