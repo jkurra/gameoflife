@@ -7,22 +7,34 @@ void grid_print(Grid *grid );
 
 Grid *Grid_new( int rows, int cols )
 {
+    /*
+     *
+     */
     Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
+    /*
+     *
+     */
     rtn->rows = rows;
     rtn->cols = cols;
-
+    /*
+     *
+     */
     rtn->g_grid = (Cell***)calloc(rtn->rows+1, sizeof(Cell**));
     for(int i=0; i<rows; i++) {
         rtn->g_grid[i] = (Cell**)calloc(rtn->cols+1, sizeof(Cell*));
     }
-
+    /*
+     *
+     */
     for(int i=0; i<rtn->rows; i++) {
         for(int k=0; k<rtn->cols; k++) {
             rtn->g_grid[i][k] = Cell_new(i, k);
             rtn->g_grid[i][k]->checked = 0;
         }
     }
-
+    /*
+     *
+     */
     rtn->coiCount = -0;
     rtn->coiArray = NULL;
 
@@ -155,7 +167,7 @@ void Grid_resize( Grid *grid, int new_rows, int new_cols )
             /*if(tmp_grid->grid[i][k] == 1) {
                 g_print("found live cell at: %d:%d", i, k);
             }*/
-            grid->g_grid[i][k] = tmp_grid->g_grid[i][k];
+            //grid->g_grid[i][k] = Cell_new()//tmp_grid->g_grid[i][k];
         }
     }
     Grid_free(tmp_grid); /* Free temporary grid. */
@@ -235,26 +247,23 @@ void Grid_rand( Grid *grid )
     }
 }
 
-void Grid_prev( Grid *grid, RuleSet *rules )
-{
-
-}
-
-
 void Grid_addCell( Grid *grid, Cell *cell )
 {
-
     grid->g_grid[cell->row][cell->col] = cell;
 }
 
 CellGrid *addToGrid( CellGrid *cg, Cell *toAdd, size_t oldSize )
 {
-
     cg->coiArray = realloc(cg->coiArray, (cg->coiCount+1)*sizeof(Cell*));
         //printf("added new cell at: %d\n", oldSize);
     cg->coiArray[cg->coiCount] = toAdd;
 
     return cg;
+}
+
+void Grid_prev( Grid *grid, RuleSet *rules )
+{
+
 }
 
 void Grid_next( Grid *grid, RuleSet *rules )
@@ -263,7 +272,7 @@ void Grid_next( Grid *grid, RuleSet *rules )
     if(grid) {
         //Cell *tmp_array;
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
-        CellGrid *wasChecked = (CellGrid*)calloc(1, sizeof(CellGrid));
+        //CellGrid *wasChecked = (CellGrid*)calloc(1, sizeof(CellGrid));
         for(int i=0; i<grid->coiCount; i++) {
             Cell *c = Cell_new( grid->coiArray[i]->row, grid->coiArray[i]->col );
             //grid_print(grid);
@@ -282,7 +291,6 @@ void Grid_next( Grid *grid, RuleSet *rules )
 
             for(grid_x=c->row-1;grid_x<c->row+2; grid_x++) {
                 for(grid_y=c->col-1; grid_y<c->col+2; grid_y++) {
-
                     if( grid_x >= 0 && grid_x < grid->rows && /* If row or col is -1 its outside borders */
                         grid_y >= 0 && grid_y < grid->cols) {
                             if(grid->g_grid[grid_x][grid_y]->state == 0 && grid->g_grid[grid_x][grid_y]->checked == 0) {
@@ -292,9 +300,8 @@ void Grid_next( Grid *grid, RuleSet *rules )
                                 if( Cell_next( c1, rules ) == 1 ) {
                                     tmpAlive->coiArray = addCell1( tmpAlive->coiArray, c1, tmpAlive->coiCount );
                                     tmpAlive->coiCount++;
-
-                                    wasChecked->coiArray = addCell1( wasChecked->coiArray, Cell_new( grid_x,  grid_y), wasChecked->coiCount );
-                                    wasChecked->coiCount++;
+                                    //wasChecked->coiArray = addCell1( wasChecked->coiArray, Cell_new( grid_x,  grid_y), wasChecked->coiCount );
+                                    //wasChecked->coiCount++;
                                     grid->g_grid[grid_x][grid_y]->checked = 1;
                                 }
                                 else {
@@ -307,6 +314,11 @@ void Grid_next( Grid *grid, RuleSet *rules )
                 Cell_free(c);
             }
 
+        for(int i=0; i<grid->coiCount; i++) {
+                //grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col] = Cell_new(tmpAlive->coiArray[i]->row, tmpAlive->coiArray[i]->col);
+            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = 0;
+            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
+        }
         Grid_coiEmpty(grid);
         Grid_coiRealloc( grid,  tmpAlive->coiCount );
         //grid->coiArray = realloc(grid->coiArray, (tmpCellsSize)*sizeof(Cell*));
@@ -315,23 +327,13 @@ void Grid_next( Grid *grid, RuleSet *rules )
             grid->coiArray[i]->state = 1;
             //printf("Set cell at : %d - %d - %d:%d\n", i,grid->livingCells[i]->state, grid->livingCells[i]->x, grid->livingCells[i]->y );
         }
-
         grid->coiCount = tmpAlive->coiCount ;
-        Grid_empty(grid);
 
         for(int i=0; i<tmpAlive->coiCount; i++) {
             //grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col] = Cell_new(tmpAlive->coiArray[i]->row, tmpAlive->coiArray[i]->col);
             grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = 1;
             grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
         }
-
-        for(int i=0; i<wasChecked->coiCount; i++) {
-            Cell_free(wasChecked->coiArray[i]);
-        }
-        free(wasChecked->coiArray);
-        wasChecked->coiArray = NULL;
-        free(wasChecked);
-        wasChecked = NULL;
 
         for(int i=0; i<tmpAlive->coiCount; i++) {
             Cell_free(tmpAlive->coiArray[i]);
@@ -341,7 +343,7 @@ void Grid_next( Grid *grid, RuleSet *rules )
         free(tmpAlive);
         tmpAlive = NULL;
     }
-    //g//rid_print( grid );
+    //grid_print( grid );
 }
 
 void Grid_switch_cell( Grid *grid, int row, int col )
@@ -352,14 +354,14 @@ void Grid_switch_cell( Grid *grid, int row, int col )
                 Cell *c = Cell_new( row, col );
                 Grid_coiRem( grid, c );
                 grid->g_grid[row][col]->state = 0;
-                Cell_free(c);
+                //Cell_free(c);
                 break;
             }
             case 0: {
                 Cell *c1 = Cell_new(row,col);
                 Grid_coiAdd( grid, c1 );
                 grid->g_grid[row][col]->state = 1;
-                Cell_free(c1);
+                //Cell_free(c1);
                 break;
             }
             default:

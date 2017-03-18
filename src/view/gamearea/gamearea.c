@@ -78,7 +78,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 {
     GameModel *area1 = (GameModel*)data;
-	printf("Drawing area again. \n" );
+	//printf("Drawing area again. \n" );
     if(area1) {
 		//g_print("Found area");
         GtkAllocation widget_alloc;

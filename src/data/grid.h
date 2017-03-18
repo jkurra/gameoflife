@@ -14,7 +14,6 @@ typedef struct
     /* Amount of rows and columns */
     int rows;
     int cols;
-
     /* Array Full grid filled with cells. */
     Cell ***g_grid;
 
@@ -114,21 +113,7 @@ void Grid_next( Grid *grid, RuleSet *rules );
  */
 void Grid_prev( Grid *grid, RuleSet *rules );
 
-/** @brief
- *
- */
-int Grid_coiCount( Grid *grid );
-
-/** @brief Update grid to previous values.
- *
- */
-void Grid_coiAdd( Grid *grid, Cell *cell );
-
-/** @brief Update grid to previous values.
- *
- */
-void Grid_coiRem( Grid *grid, Cell *cell );
-
+void Grid_switch( Grid *grid, int x, int y );
 
 void Grid_switch_cell( Grid *grid, int x, int y );
 
@@ -148,5 +133,20 @@ void Grid_switch_cell( Grid *grid, int x, int y );
  * @return  Count of neighbours for the given cell.
  */
 int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
+
+/** @brief
+ *
+ */
+int Grid_coiCount( Grid *grid );
+
+/** @brief Update grid to previous values.
+ *
+ */
+void Grid_coiAdd( Grid *grid, Cell *cell );
+
+/** @brief Update grid to previous values.
+ *
+ */
+void Grid_coiRem( Grid *grid, Cell *cell );
 
 #endif /* GRID_H_ */

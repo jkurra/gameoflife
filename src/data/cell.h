@@ -29,6 +29,7 @@ typedef struct
     int nbrs_count;
     int state;
     int checked;
+
 } Cell;
 
 /** @brief Structure for Cell object.
