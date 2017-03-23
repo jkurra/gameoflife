@@ -115,7 +115,7 @@ void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
 
     int tmpRows = gtk_spin_button_get_value (button);
     Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
-    model->g_model->grid->rows = tmpRows;
+    //model->g_model->grid->rows = tmpRows;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
@@ -127,7 +127,7 @@ void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
 
     int tmpCols = gtk_spin_button_get_value (button);
     Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
-    model->g_model->grid->cols = tmpCols;
+    //model->g_model->grid->cols = tmpCols;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }

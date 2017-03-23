@@ -142,35 +142,39 @@ void Grid_coiEmpty( Grid *grid )
 
 void Grid_resize( Grid *grid, int new_rows, int new_cols )
 {
-    /* Create temporary grid for copying the current game */
-    Grid *tmp_grid = Grid_new(grid->rows, grid->cols);
-    /* Copy current nodes to tmp array */
-    for(int i=0; i<grid->rows; i++) {
 
-        for(int k=0; k<grid->cols; k++) {
+//    printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
+    grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows+1)*sizeof(Cell**));
+    for(int i=0; i<new_rows; i++) {
+        printf("alloc row: %d\n", i);
+        grid->g_grid[i] = (Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_grid, (grid->cols+1)*sizeof(Cell*));
+    }
 
-            tmp_grid->g_grid[i][k] = grid->g_grid[i][k];
+    for(int i=0; i<new_rows; i++) {
+        for(int k=0; k<new_cols; k++) {
+            grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+            grid->g_grid[i][k]->checked = 0;
         }
     }
-    /* Free current grid and allocate new one. */
-    Grid_free(grid);
-    grid = Grid_new(new_rows, new_cols);
-    //g_print("Create grid size [%d][%d]:[%d][%d]", new_rows, new_cols,tmp_grid->rows, tmp_grid->cols );
-    /*
-        Copy existing cells to new grid, if new  grid is smaller than previous,
-        loop will break when boundaries of the new grid are reached.
-    */
-    for(int i=0; i<grid->rows; i++) {
-        if(i>=tmp_grid->rows || i>=grid->rows) { break; }
-        for(int k=0; k<grid->cols; k++) {
-            if(i>=tmp_grid->cols || i>=grid->cols) { break; }
-            /*if(tmp_grid->grid[i][k] == 1) {
-                g_print("found live cell at: %d:%d", i, k);
-            }*/
-            //grid->g_grid[i][k] = Cell_new()//tmp_grid->g_grid[i][k];
+    for(int i=0; i<grid->coiCount; i++) {
+        if(grid->coiArray[i]->row < new_rows && grid->coiArray[i]->col < new_cols) {
+            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col] = Cell_new(grid->coiArray[i]->row, grid->coiArray[i]->col);
+            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = grid->coiArray[i]->state;
+            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
         }
     }
-    Grid_free(tmp_grid); /* Free temporary grid. */
+    /// TODO: Add removal of cells outside grid borders here. Otherwise program will crash later.
+    for(int i=0; i<grid->coiCount; i++) {
+        if(grid->coiArray[i]->row < new_rows && grid->coiArray[i]->col < new_cols) {
+
+        } else {
+            Grid_coiRem(grid,  Cell_new(grid->coiArray[i]->row, grid->coiArray[i]->col));
+            continue;
+        }
+    }
+    grid->rows = new_rows;
+    grid->cols = new_cols;
+
 }
 
 void Grid_empty( Grid *grid )
@@ -270,18 +274,14 @@ void Grid_next( Grid *grid, RuleSet *rules )
 {
     //printf("We have %d cells to check\n", grid->coiCount );
     if(grid) {
-        //Cell *tmp_array;
+        /* This array is used to store tmp values of living cells. */
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
-        //CellGrid *wasChecked = (CellGrid*)calloc(1, sizeof(CellGrid));
+
         for(int i=0; i<grid->coiCount; i++) {
             Cell *c = Cell_new( grid->coiArray[i]->row, grid->coiArray[i]->col );
-            //grid_print(grid);
             c->state = 1;
             c->nbrs_count = Grid_nbrs( grid, c );
-            //printf("nbrs: %d\n", Grid_nbrs( grid->g_grid, c ));
-            int life = Cell_next( c, rules );
-            //printf("%s\n", );
-            if(life == 1) { // Next state is alive.
+            if(Cell_next( c, rules )) { // Next state is alive.
                 grid->g_grid[c->row][c->col]->checked = 1;
                 tmpAlive->coiArray = addCell1( tmpAlive->coiArray , Cell_new(c->row, c->col), tmpAlive->coiCount );
                 tmpAlive->coiCount++;
@@ -351,17 +351,15 @@ void Grid_switch_cell( Grid *grid, int row, int col )
     if(grid) {
         switch (grid->g_grid[row][col]->state) {
             case 1: {
-                Cell *c = Cell_new( row, col );
-                Grid_coiRem( grid, c );
+                //Cell *c = Cell_new( row, col );
+                Grid_coiRem( grid, Cell_new( row, col ) );
                 grid->g_grid[row][col]->state = 0;
-                //Cell_free(c);
                 break;
             }
             case 0: {
-                Cell *c1 = Cell_new(row,col);
-                Grid_coiAdd( grid, c1 );
+                //Cell *c1 = Cell_new(row,col);
+                Grid_coiAdd( grid, Cell_new( row, col ) );
                 grid->g_grid[row][col]->state = 1;
-                //Cell_free(c1);
                 break;
             }
             default:

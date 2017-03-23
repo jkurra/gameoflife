@@ -1,11 +1,20 @@
 #include "view.h"
 #include <GL/gl.h>
 
+static gboolean
+game_area_render (GtkGLArea *area, GdkGLContext *context)
+{
+  glClearColor (0, 0, 0, 0);
+  glClear (GL_COLOR_BUFFER_BIT);
+
+  return TRUE;
+}
+
 void GameView_show( GameModel *model )
 {
     if(model) {
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
-        model->game_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "drawingarea1"));
+    //    model->game_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "drawingarea1"));
         /* Search UI-elements that are programmatically modified. */
         GtkWidget *overlay    = GTK_WIDGET(gtk_builder_get_object(model->builder, "overlay3"));
         GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
@@ -19,12 +28,13 @@ void GameView_show( GameModel *model )
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
-
-        //model->game_frame = gtk_gl_area_new();
+       //gtk_gl_area_new (void);
+        model->game_frame = gtk_gl_area_new();
+        g_signal_connect (model->game_frame, "render", G_CALLBACK (game_area_render), NULL);
         //g_signal_connect (model->game_frame, "render", G_CALLBACK (render), NULL);
         /* Set overlay to pass buttons in navigation to front so user can press them. */
-        //gtk_overlay_add_overlay (GTK_OVERLAY(overlay),model->game_frame  );
-        //gtk_overlay_reorder_overlay (overlay, model->game_frame , 0);
+        gtk_overlay_add_overlay (GTK_OVERLAY(overlay),model->game_frame  );
+        gtk_overlay_reorder_overlay (overlay, model->game_frame , 0);
         gtk_overlay_set_overlay_pass_through(GTK_OVERLAY(overlay), GTK_WIDGET(model->game_frame), FALSE);
         /* Show all widgets under main_frame */
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
