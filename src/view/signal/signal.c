@@ -151,6 +151,7 @@ void on_SetInterval_value_changed( GtkSpinButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *event, gpointer data )
 {
+		g_print("Draw pressed of range.\n");
 	GtkAllocation widget_alloc;
 	gtk_widget_get_allocation(GTK_WIDGET(widget), &widget_alloc);
 	int maxx = widget_alloc.width,
@@ -279,6 +280,7 @@ void on_ShowGrid_state_set( GtkSwitch *widget, gboolean   state, gpointer data )
 gboolean view_timer_update( GameModel *model )
 {
 	if(model) {
+
 		Grid_next(model->grid, model->ruleset);
 		//grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
 		model->c_step++;
@@ -289,8 +291,19 @@ gboolean view_timer_update( GameModel *model )
         //view_draw((Model*)model);
 		// const gchar *name = gtk_widget_get_name(GTK_WIDGET(model->main_frame));
 		//g_print("refresh widget:%s \n", name);
-
-		gtk_widget_queue_draw(GTK_WIDGET(model->game_frame));
+		//gtk_widget_draw(GTK_WIDGET(model->game_frame));
+		GtkAllocation widget_alloc;
+		/* Get current allocation for widget to know draw size. */
+		gtk_widget_get_allocation(GTK_WIDGET(model->game_frame), &widget_alloc);
+		int maxx = widget_alloc.width,
+			maxy = widget_alloc.height;
+		//model->game_frame
+		gtk_widget_queue_draw_area (model->game_frame,
+                             0,
+                             0,
+                            	maxx,
+                            	maxy);
+		//gtk_widget_queue_draw(GTK_WIDGET(model->game_frame));
 	}
 	return TRUE;
 }

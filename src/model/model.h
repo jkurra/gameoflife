@@ -60,6 +60,8 @@ typedef struct
 
 	GtkWidget *main_frame;
 	GtkWidget *game_frame;
+
+	time_t *timer;
 } GameModel;
 
 /*

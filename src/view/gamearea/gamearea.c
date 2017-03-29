@@ -76,7 +76,9 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
     return pos;
 }
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
-{
+{    time_t start,end;
+    start=clock();
+	//printf("redraw game model : %d\n", clock());
     GameModel *area1 = (GameModel*)data;
 	//printf("Drawing area again. \n" );
     if(area1) {
@@ -104,7 +106,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
         for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {
             if(x_point >= maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
-				printf("read grid [%d] value at :[%d][%d]\n", area1->grid->rows, cur_x, cur_y);
+				// printf("read grid [%d] value at :[%d][%d]\n", area1->grid->rows, cur_x, cur_y);
                 if(area1->grid->g_grid[cur_x][cur_y]->state == 1 ) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
                     draw_rectangle1(cr, cell_col, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
                 }
@@ -135,4 +137,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
     //free(cell_col);
     //free(bgrn_col);
 }
+//end = clock();
+//time_t t = (end-start);
+//printf("redraw game model : %d\n", t);
 }

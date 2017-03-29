@@ -32,12 +32,12 @@ int Cell_next( Cell *cell, RuleSet *rules )
     int i=0, n_state = 0; // next state of the cell, assumed dead, turned alive if necessary
     if(cell) {
         if( cell->state == 1 ) { // cell is currently alive
-            for(i=0; i<rules->live_s; i++) {
+            for(i=rules->live_s; i--; ) {
                 if(cell->nbrs_count == rules->live_a[i]) { n_state = 1; }
             }
         }
         else {
-            for(i=0; i<rules->dead_s; i++) {
+            for(i=rules->dead_s; i--; ) {
                 if(cell->nbrs_count == rules->live_d[i]) { n_state = 1; }
             }
         }
