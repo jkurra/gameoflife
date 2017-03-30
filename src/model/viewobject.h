@@ -16,19 +16,34 @@
  */
 typedef struct
 {
-    /* Type of currently selected view.  */
+    /** @brief
+	 *
+     */
     int selected;
 
-    /* Configuration manager */
+    /** @brief
+	 *
+     */
     Manager *conf;
-    /* Theme manager */
+
+    /** @brief
+	 *
+     */
     Manager *theme;
 
-    /* Model containing data for menu-view.  */
+    /** @brief
+	 *
+     */
     MenuModel *m_model;
-    /* Model containing data for game-view.  */
+    
+    /** @brief
+	 *
+     */
     GameModel *g_model;
-    /* Model containing data for preferences-view.  */
+
+    /** @brief
+	 *
+     */
     PrefModel *p_model;
 
 } ViewObject;

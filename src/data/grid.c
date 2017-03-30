@@ -8,9 +8,7 @@ void grid_print(Grid *grid );
 
 Grid *Grid_new( int rows, int cols )
 {
-    /*
-     *
-     */
+    /* */
     Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
     /*
      *
@@ -21,14 +19,14 @@ Grid *Grid_new( int rows, int cols )
      *
      */
     rtn->g_grid = (Cell***)calloc(rtn->rows+1, sizeof(Cell**));
-    for(int i=0; i<rows; i++) {
+    for(int i=rows; i--;) {
         rtn->g_grid[i] = (Cell**)calloc(rtn->cols+1, sizeof(Cell*));
     }
     /*
      *
      */
-    for(int i=0; i<rtn->rows; i++) {
-        for(int k=0; k<rtn->cols; k++) {
+    for(int i=rtn->rows; i--;) {
+        for(int k=rtn->cols; k--;) {
             rtn->g_grid[i][k] = Cell_new(i, k);
             rtn->g_grid[i][k]->checked = 0;
         }
@@ -36,7 +34,7 @@ Grid *Grid_new( int rows, int cols )
     /*
      *
      */
-    rtn->coiCount = -0;
+    rtn->coiCount = 0;
     rtn->coiArray = NULL;
 
     return rtn;
@@ -310,17 +308,7 @@ void Grid_Nbrs_check( CellGrid *tmpAlive, Grid *grid, Cell *c, RuleSet *rules )
                 if(Cell_next( grid->g_grid[grid_x][grid_y], rules ) == 1) {
                     tmpAlive->coiArray = addCell1(tmpAlive->coiArray, Cell_new(grid_x,  grid_y), tmpAlive->coiCount);
                     tmpAlive->coiCount++;
-                    //grid->g_grid[grid_x][grid_y]->checked = 1;
                 }
-                /*else {
-                    grid->g_grid[grid_x][grid_y]->checked = 1;
-                }*/
-                        //printf("c:[%d][%d]\n",grid_x, grid_y);
-                        //printf("Checking cell[%d]: state: %d, checked: %d\n", ct, grid->g_grid[grid_x][grid_y]->state, grid->g_grid[grid_x][grid_y]->checked);
-                        //Cell *c1 = Cell_new( grid_x,  grid_y);
-                        //c1->state = 0;
-                        //c1->nbrs_count = Grid_nbrs( grid, c1 );
-                    //    printf("c:[%d][%d]: %d\n",grid_x, grid_y, Cell_next( c1, rules ));
             }
         }
     }
@@ -332,14 +320,11 @@ void Grid_next( Grid *grid, RuleSet *rules )
     if(grid) {
         /* This array is used to store tmp values of living cells. */
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
-    //    CellGrid *tmpChecked = (CellGrid*)calloc(1, sizeof(CellGrid));
         time_t start,end;
         start=clock();
         //for(int i=0; i<grid->coiCount; i++) {
         for(unsigned int i=grid->coiCount; i--; ) {
         //for(unsigned int i=0;i<grid->coiCount; i+=2 ) {
-            //Cell *c = Cell_new( grid->coiArray[i]->row, grid->coiArray[i]->col );
-            //c->state = 1;
             grid->coiArray[i]->nbrs_count = Grid_nbrs( grid, grid->coiArray[i] );
             if(Cell_next( grid->coiArray[i], rules )) { // Next state is alive.
                 grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 1;
@@ -347,37 +332,12 @@ void Grid_next( Grid *grid, RuleSet *rules )
                 tmpAlive->coiCount++;
             }
             grid->coiArray[i]->checked = 1; /* Mark as checked.  */
-            //tmpChecked->coiArray = addCell1( tmpChecked->coiArray , Cell_new(c->row, c->col), tmpChecked->coiCount );
             Grid_Nbrs_check( tmpAlive, grid, grid->coiArray[i], rules );
-            /*if(i+1<grid->coiCount) {//printf("i:%d :: c:%d\n", i, grid->coiCount);
-                grid->coiArray[i+1]->nbrs_count = Grid_nbrs( grid, grid->coiArray[i+1] );
-                if(Cell_next( grid->coiArray[i+1], rules )) { // Next state is alive.
-                    grid->g_grid[grid->coiArray[i+1]->row][grid->coiArray[i+1]->col]->checked = 1;
-                    tmpAlive->coiArray = addCell1( tmpAlive->coiArray , Cell_new(grid->coiArray[i+1]->row, grid->coiArray[i+1]->col), tmpAlive->coiCount );
-                    tmpAlive->coiCount++;
-                }
-                grid->coiArray[i+1]->checked = 1; /* Mark as checked.  */
-                //tmpChecked->coiArray = addCell1( tmpChecked->coiArray , Cell_new(c->row, c->col), tmpChecked->coiCount );
-                //Grid_Nbrs_check( tmpAlive, grid, grid->coiArray[i+1], rules );
-            //}
-            //Cell_free(c);
         }
         end = clock();
         time_t t = (end-start);
         printf("array update time: %d\n", t);
-/*
-        for(int i=0; i<tmpChecked->coiCount; i++ ) {
-            grid->g_grid[tmpChecked->coiArray[i]->row][tmpChecked->coiArray[i]->col]->state = 0;
-            grid->g_grid[tmpChecked->coiArray[i]->row][tmpChecked->coiArray[i]->col]->checked = 0;
 
-        }0
-
-        for(int i=0; i<tmpChecked->coiCount; i++) {
-            Cell_free(tmpChecked->coiArray[i]);
-        }
-        free(tmpChecked->coiArray);
-        tmpChecked->coiArray = NULL;
-*/
         for(unsigned int i=grid->rows; i--; ) {
             for(int k=grid->cols; k--; ) {
                 grid->g_grid[i][k]->state = 0;
@@ -397,9 +357,6 @@ void Grid_next( Grid *grid, RuleSet *rules )
         }
         grid->coiCount = tmpAlive->coiCount ;
 
-/*    /for(unsigned int i=tmpAlive->coiCount; i--; ) {
-            Cell_free(tmpAlive->coiArray[i]);
-        }*/
         free(tmpAlive->coiArray);
         tmpAlive->coiArray = NULL;
         free(tmpAlive);
@@ -408,7 +365,7 @@ void Grid_next( Grid *grid, RuleSet *rules )
 
 }
 
-void Grid_switch_cell( Grid *grid, int row, int col )
+void Grid_switch( Grid *grid, int row, int col )
 {
     if(grid) {
         switch (grid->g_grid[row][col]->state) {
@@ -434,9 +391,8 @@ int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, i
 {
     unsigned int c=0;
 //    int grid_x=cell->row-1, grid_y=cell->col-1;
-
     unsigned int grid_x=cell->row-1, grid_y=cell->col-1;
-    unsigned int finalX =cell->row-1, finalY =cell->col-1;
+    unsigned int finalX=cell->row-1, finalY=cell->col-1;
 
     if(cell->row-1 < 0) {
         finalX = cell->row;
@@ -467,6 +423,23 @@ int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, i
 
     return c;
 }
+
+void grid_print( Grid *grid )
+{
+  printf("Printing array[%d][%d]:\n", grid->rows, grid->cols);
+  if(grid->g_grid) {
+    for(int i=0; i<grid->rows; i++) {
+        printf("r:%d ", i);
+        for(int k=0; k<grid->cols; k++) {
+            if(grid->g_grid[i][k]){
+                printf("[%d]", grid->g_grid[i][k]->state);
+            }else {printf("[0]");}
+        }
+        printf(" \n");
+    }
+  }
+}
+
 /*
 int grid_nbrs( int row, int col, int rows, int cols, int **grid )
 {
@@ -491,19 +464,3 @@ int grid_nbrs( int row, int col, int rows, int cols, int **grid )
 
     return c;
 }*/
-
-void grid_print( Grid *grid )
-{
-  printf("Printing array[%d][%d]:\n", grid->rows, grid->cols);
-  if(grid->g_grid) {
-    for(int i=0; i<grid->rows; i++) {
-        printf("r:%d ", i);
-        for(int k=0; k<grid->cols; k++) {
-            if(grid->g_grid[i][k]){
-                printf("[%d]", grid->g_grid[i][k]->state);
-            }else {printf("[0]");}
-        }
-        printf(" \n");
-    }
-  }
-}

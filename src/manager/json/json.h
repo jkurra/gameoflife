@@ -15,6 +15,9 @@
  */
 typedef struct
 {
+    /** @brief
+     *
+     */
     int type;
 
 } JsonToken;
@@ -24,10 +27,19 @@ typedef struct
  */
 typedef struct
 {
+    /** @brief
+     *
+     */
     JsonToken base;
     /* Key-identifier of the value. Refer to json structure guide. */
+    /** @brief
+	 *
+     */
     char *key;
     /* Value of the keypair as "string". Other types are not supported.*/
+    /** @brief
+	 *
+     */
     char *value;
 
 } JsonKeypair;
@@ -40,15 +52,39 @@ typedef struct
  */
 typedef struct json_o
 {
+    /** @brief
+     *
+     */
     JsonToken base;
-
+    
+    /** @brief
+	 *
+     */
     char *main_object;
+
+    /** @brief
+     *
+     */
     char *object_id;
 
+    /** @brief
+	 *
+     */
     JsonKeypair **values;
+
+    /** @brief
+     *
+     */
     int  values_size;
 
+    /** @brief
+	 *
+     */
     int objects_size;
+
+    /** @brief
+     *
+     */
     struct json_o **objects;
 
 } JsonObject;

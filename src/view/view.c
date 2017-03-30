@@ -1,13 +1,6 @@
 #include "view.h"
 #include <GL/gl.h>
 
-static gboolean
-game_area_render (GtkGLArea *area, GdkGLContext *context)
-{
-
-  return TRUE;
-}
-
 void GameView_show( GameModel *model )
 {
     if(model) {

@@ -12,7 +12,7 @@ int file_count( const char *d_path, int mode )
                 while ((ent = readdir(dir)) != NULL) {
 
                     if (ent->d_type == DT_DIR) {
-                        if(strcmp (ent->d_name, "..") == 0||strcmp (ent->d_name, ".") == 0) {
+                        if(strcmp (ent->d_name, "..") == 0 || strcmp (ent->d_name, ".") == 0) {
                             // skip
                         }else {
                             count++;

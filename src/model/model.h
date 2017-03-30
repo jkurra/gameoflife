@@ -20,26 +20,47 @@
 #define GAME  1
 #define PREF  2
 
-/*
+/** @brief
  *
  */
 typedef struct
 {
+	 /** @brief
+     *
+     */
 	int type;
+
 } Model;
 
-/*
+/** @brief
  *
  */
 typedef struct
 {
+	/** @brief
+	 *
+     */
 	Model base;
 
+	/** @brief
+	 *
+     */
 	GdkRGBA bgrn_col; /* Background color of the grid */
+
+	/** @brief
+	 *
+     */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
 	//int rows, cols; /* Maximum dimensions of the game grid */
+	/** @brief
+	 *
+     */
 	int infinite;
+
+	/** @brief
+	 *
+     */
 	int visible;
 
 	float cell_s;		/* Size of each cell in the screen. */

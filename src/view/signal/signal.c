@@ -151,7 +151,7 @@ void on_SetInterval_value_changed( GtkSpinButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *event, gpointer data )
 {
-		g_print("Draw pressed of range.\n");
+	g_print("Draw pressed of range.\n");
 	GtkAllocation widget_alloc;
 	gtk_widget_get_allocation(GTK_WIDGET(widget), &widget_alloc);
 	int maxx = widget_alloc.width,
@@ -162,7 +162,7 @@ void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *even
 	//	g_print("button pressed on game : x:%f, y:%d.\n", event->x, event->y);
 		if(posx >= 0 && posy >= 0) {
 			ViewObject *model = (ViewObject*)data;
-			Grid_switch_cell( model->g_model->grid, posy, posx );
+			Grid_switch( model->g_model->grid, posy, posx );
 			gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 		} else {
 			g_print("positions out of range.\n");

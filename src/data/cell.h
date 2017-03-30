@@ -3,18 +3,30 @@
 
 #include <stdlib.h>
 
-#define X_SIZE 0
-#define Y_SIZE 0
-
 /** @brief Structure for GameGrid object.
  *
  */
 typedef struct
 {
+    /** @brief
+     *
+     */
     int *live_a;
+
+    /** @brief
+     *
+     */
     int live_s;
+
+    /** @brief
+     *
+     */
     int *live_d;
-    int dead_s ;
+
+    /** @brief
+     *
+     */
+    int dead_s;
 
 } RuleSet;
 
@@ -23,11 +35,29 @@ typedef struct
  */
 typedef struct
 {
+    /** @brief
+     *
+     */
     int row;
+
+    /** @brief
+     *
+     */
     int col;
 
+    /** @brief
+     *
+     */
     int nbrs_count;
+
+    /** @brief
+     *
+     */
     int state;
+
+    /** @brief
+     *
+     */
     int checked;
 
 } Cell;
@@ -66,7 +96,8 @@ void Cell_free(Cell *cell);
 int Cell_prev( Cell *cell, RuleSet *rules );
 
 /** @brief Checks state of the cell in next turn.
- * NOT YET IMPLEMENTED
+ *
+ * TODO: NOT YET IMPLEMENTED
  * Based on current state of the cell, it is possible to peek future state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not

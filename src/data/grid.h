@@ -1,9 +1,9 @@
 #ifndef GRID_H_INCLUDED
 #define GRID_H_INCLUDED
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+
 #include "cell.h"
 
 /** @brief Structure for GameGrid object.
@@ -11,24 +11,46 @@
  */
 typedef struct
 {
-    /* Amount of rows and columns */
-    int rows;
-    int cols;
-    /* Array Full grid filled with cells. */
+    /** @brief
+     *
+     */
     Cell ***g_grid;
 
-    /* Array for CellsOfInterest */
-    int coiCount;
-    /* Array for CellsOfInterest */
+    /** @brief
+     *
+     */
+    int rows;
+
+    /** @brief
+     *
+     */
+    int cols;
+
+    /** @brief
+     *
+     */
     Cell **coiArray;
+
+    /** @brief
+     *
+     */
+    int coiCount;
 
 } Grid;
 
+/** @brief
+ *
+ */
 typedef struct
 {
-    /* Array for CellsOfInterest */
+    /** @brief
+     *
+     */
     Cell **coiArray;
-    /* Array for CellsOfInterest */
+
+    /** @brief
+     *
+     */
     int coiCount;
 
 } CellGrid;
@@ -55,7 +77,7 @@ void Grid_free( Grid *grid );
 
 /** @brief Initalizes grid with 0 values.
  *
- *  TODO: Not yet implemented.
+ *
  */
 void Grid_empty( Grid *grid );
 
@@ -113,9 +135,13 @@ void Grid_next( Grid *grid, RuleSet *rules );
  */
 void Grid_prev( Grid *grid, RuleSet *rules );
 
+/** @brief Update grid to previous values.
+ *
+ * @param x   Amount of columns in the array.
+ * @param y   Amount of rows in the array.
+ * @param arr Array to update.
+ */
 void Grid_switch( Grid *grid, int x, int y );
-
-void Grid_switch_cell( Grid *grid, int x, int y );
 
 /** @brief Count current neighbours for a cell.
  *
@@ -125,14 +151,9 @@ void Grid_switch_cell( Grid *grid, int x, int y );
  * example to predict their future state. This function doesn't have safety
  * checks for x and y, so make sure they are within maximum limits.
  *
- * @param x Column of the cell.
- * @param y Row of the cell.
- * @max_x   Number of columns in the grid-
- * @max_y   Number of rows in the grid.
- * @grid    Grid containing the cell that is examined.
  * @return  Count of neighbours for the given cell.
  */
-int grid_nbrs( int x, int y, int max_x, int max_y, int **grid );
+int Grid_nbrs( Grid *grid, Cell *cell);
 
 /** @brief
  *

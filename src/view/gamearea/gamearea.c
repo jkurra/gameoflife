@@ -5,7 +5,7 @@ void draw_rectangle1( cairo_t *cairo, GdkRGBA *color, int start_x, int start_y, 
 	if(cairo && color) {
 		cairo_rectangle(cairo, start_x, start_y, width, height);
 		gdk_cairo_set_source_rgba(cairo, color);
-		cairo_fill(cairo);
+	//	cairo_fill(cairo);
 	} else { }
 }
 
@@ -103,35 +103,40 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	    gdk_cairo_set_source_rgba(cr, bgrn_col);
 	    cairo_fill(cr);
 
-        for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {
+        for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {GdkRGBA *clr = NULL;
             if(x_point >= maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
-				// printf("read grid [%d] value at :[%d][%d]\n", area1->grid->rows, cur_x, cur_y);
-                if(area1->grid->g_grid[cur_x][cur_y]->state == 1 ) {//g_print("grid x: %f:%f", x_point, area1->cell_s*area1->zoom);
-                    draw_rectangle1(cr, cell_col, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-                }
-                else {
-					if(area1->visible) {
-	                    GdkRGBA *rgba;
 
-	                    rgba = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
-	                    color_lighter1(rgba, 0.1);
-	                    //draw_rectangle1(cr, rgba, x_point, y_point, area1->cell_s* area1->zoom, area1->cell_s*area1->zoom);
-	                    cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-	                    gdk_cairo_set_source_rgba(cr, rgba);
-	                    cairo_fill(cr);
-	                    gdk_rgba_free(rgba);
-					}
-                }
+				switch (area1->grid->g_grid[cur_x][cur_y]->state) {
+					case 0:
+						clr = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
+						color_lighter1( clr, 0.1);
+						gdk_cairo_set_source_rgba(cr, clr);
+						cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
+						break;
+					case 1:
+						clr = cell_col;//gdk_rgba_copy(cell_col);
+						gdk_cairo_set_source_rgba(cr, clr);
+						cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
+						break;
+					default:
+						break;
+				}
+				cairo_fill(cr);
+			//	gdk_cairo_set_source_rgba(cr, clr);
+				//cairo_fill(cr);
                 x_point += area1->cell_s*area1->zoom;
                 x_point += area1->spacing;
 				if(y_point >= maxy) { break; }
         }
+			//gdk_cairo_set_source_rgba(cr, clr);
+		//	cairo_fill(cr);
         x_point = 5;
         /* add size of the cell and space between each cell to the columns */
         y_point += area1->cell_s*area1->zoom;
         y_point += area1->spacing;
     }
+	cairo_fill(cr);
 	gdk_rgba_free(cell_col);
 	gdk_rgba_free(bgrn_col);
     //free(cell_col);
