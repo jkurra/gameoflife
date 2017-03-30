@@ -30,7 +30,6 @@
     <property name="can_focus">False</property>
     <property name="events"/>
     <signal name="destroy" handler="on_MainWindow_destroy" swapped="no"/>
-    <signal name="key-press-event" handler="on_drawingarea_key_press_event" swapped="no"/>
     <child>
       <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>

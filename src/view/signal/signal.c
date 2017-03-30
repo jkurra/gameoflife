@@ -197,6 +197,37 @@ void on_ZoomOut_clicked( GtkButton *button, gpointer data )
     gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
 }
 
+gboolean on_drawingarea_key_press_event( GtkWidget *widget, GdkEventKey *event, gpointer *data )
+{
+	ViewObject *object = (ViewObject*)data;
+	//printf("Grid key event %d\n", event->keyval);
+	switch (event->keyval) {
+		case GDK_KEY_Right:
+			object->g_model->startY += 1;
+			gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+			break;
+		case GDK_KEY_Left:
+			if(object->g_model->startY -1 > 0) {
+				object->g_model->startY -= 1;
+				gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+			}
+			break;
+		case GDK_KEY_Up:
+			if(object->g_model->startX -1 > 0) {
+				object->g_model->startX -= 1;
+				gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+			}
+			break;
+		case GDK_KEY_Down:
+			object->g_model->startX += 1;
+			gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+			break;
+		default:
+			break;
+	}
+	return TRUE;
+}
+
 G_MODULE_EXPORT
 void on_MoveUp_clicked( GtkButton *button, gpointer data )
 {
@@ -298,11 +329,7 @@ gboolean view_timer_update( GameModel *model )
 		int maxx = widget_alloc.width,
 			maxy = widget_alloc.height;
 		//model->game_frame
-		gtk_widget_queue_draw_area (model->game_frame,
-                             0,
-                             0,
-                            	maxx,
-                            	maxy);
+		gtk_widget_queue_draw_area (model->game_frame, 0, 0, maxx, maxy);
 		//gtk_widget_queue_draw(GTK_WIDGET(model->game_frame));
 	}
 	return TRUE;
