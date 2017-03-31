@@ -42,7 +42,7 @@ GameModel *GameModel_new()
     model->spacing = 0.0;
     model->interval = 0;
     model->timerid = -1;
-
+    model->updated = 0;
     model->startX = 0;
     model->startY = 0;
 

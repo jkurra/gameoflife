@@ -63,7 +63,8 @@ typedef struct
 	 *
      */
 	int visible;
-
+	int updated;
+	
 	float cell_s;		/* Size of each cell in the screen. */
 	float zoom; 		/* How big or small cells appear on the screen.	*/
 	float spacing;

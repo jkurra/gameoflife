@@ -12,8 +12,8 @@ Cell *Cell_new( int row, int col )
      *
      */
     rtn->nbrs_count = 0;
-    rtn->checked = 0;
-    rtn->state = 0;
+    rtn->checked    = 0;
+    rtn->state      = 0;
 
     return rtn;
 }
