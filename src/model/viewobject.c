@@ -82,6 +82,28 @@ void ViewObject_init( ViewObject *object )
     gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
+void *gameLoopThread(void *arg)
+{
+    ViewObject *object = (ViewObject*)arg;
+
+    while(object->g_model->is_playing) {
+        //sleep(1);
+        printf("game update called.\n");
+        Grid_next(object->g_model->grid, object->g_model->ruleset);
+        //grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
+        object->g_model->c_step++;
+        usleep(100000);
+    }
+    return NULL;
+}
+
+void ViewObject_start_grid_loop( ViewObject *object )
+{
+    pthread_t *thread;
+    object->g_model->is_playing = 1;
+    pthread_create(&thread, NULL, gameLoopThread, object);
+}
+
 void ViewObject_quit( ViewObject *object )
 {
     g_print("calling viewvobject quit...\n");

@@ -42,6 +42,7 @@ typedef struct
      */
 	Model base;
 
+	int is_playing;
 	/** @brief
 	 *
      */

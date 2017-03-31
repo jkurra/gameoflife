@@ -27,6 +27,7 @@ GameModel *GameModel_new()
     GameModel *model = (GameModel*)calloc(1, sizeof(GameModel));
     /* Set base type to GAME, can be read from GameModel cast to Model */
     model->base.type  = GAME;
+    model->is_playing = 0;
     /* Initialize member values */
     model->main_frame = NULL;
     model->game_frame = NULL;

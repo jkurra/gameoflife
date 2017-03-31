@@ -35,7 +35,7 @@ typedef struct
 	 *
      */
     MenuModel *m_model;
-    
+
     /** @brief
 	 *
      */
@@ -61,6 +61,8 @@ ViewObject *ViewObject_new( const char *co, const char *th );
  *  and show views.
  */
 void ViewObject_init( ViewObject *object );
+
+void ViewObject_start_grid_loop( ViewObject *object );
 
 /** @brief Quit ViewObject and free everything in it.
  *

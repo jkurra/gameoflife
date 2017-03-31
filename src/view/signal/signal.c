@@ -65,8 +65,9 @@ void on_SetPlay_clicked ( GtkButton *button, gpointer data )
         g_source_remove(model->g_model->timerid);
         model->g_model->timerid = -1;
     } else {
-        model->g_model->timerid = g_timeout_add(model->g_model->interval, (GSourceFunc) view_timer_update, model->g_model);
-    }
+        model->g_model->timerid = g_timeout_add(33, (GSourceFunc) view_timer_update, model->g_model);
+		ViewObject_start_grid_loop(model);
+	}
 }
 
 
@@ -312,9 +313,9 @@ gboolean view_timer_update( GameModel *model )
 {
 	if(model) {
 
-		Grid_next(model->grid, model->ruleset);
+	//	G//rid_next(model->grid, model->ruleset);
 		//grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
-		model->c_step++;
+		//model->c_step++;
 		GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
 		char str[20];
 		sprintf(str, "%d", model->c_step);
