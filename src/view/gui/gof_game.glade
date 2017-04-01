@@ -29,7 +29,6 @@
     <property name="height_request">500</property>
     <property name="can_focus">False</property>
     <signal name="destroy" handler="on_MainWindow_destroy" swapped="no"/>
-    <signal name="key-press-event" handler="on_drawingarea_key_press_event" swapped="no"/>
     <child>
       <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
@@ -41,7 +40,7 @@
           <object class="GtkOverlay" id="overlay3">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="events">GDK_BUTTON_PRESS_MASK</property>
+            <property name="events"/>
             <property name="margin_top">5</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
@@ -490,6 +489,7 @@
                           <object class="GtkSpinButton" id="SetRows">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment2</property>
@@ -529,6 +529,7 @@
                           <object class="GtkSpinButton" id="SetCols">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment1</property>
@@ -571,6 +572,7 @@
                           <object class="GtkSpinButton" id="SetInterval">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="events">GDK_KEY_PRESS_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="margin_left">10</property>
                             <property name="margin_right">10</property>
                             <property name="adjustment">adjustment4</property>
@@ -665,10 +667,12 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkColorButton">
+                              <object class="GtkColorButton" id="BagckgroundColor">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
+                                <signal name="color-set" handler="on_BagckgroundColor_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -702,11 +706,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkColorButton">
+                              <object class="GtkColorButton" id="CellColor">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
                                 <property name="halign">end</property>
+                                <signal name="color-set" handler="on_CellColor_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

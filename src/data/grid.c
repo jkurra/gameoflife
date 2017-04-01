@@ -36,7 +36,7 @@ Grid *Grid_new( int rows, int cols )
      */
     rtn->coiCount = 0;
     rtn->coiArray = NULL;
-
+    rtn->updated=1;
     return rtn;
 }
 
@@ -387,6 +387,7 @@ void Grid_next( Grid *grid, RuleSet *rules )
     //printf("We have %d cells to check\n", grid->coiCount );
     if(grid) {
         /* This array is used to store tmp values of living cells. */
+//grid->updated = 0;
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
         time_t start,end;
         start=clock();
@@ -421,7 +422,8 @@ void Grid_next( Grid *grid, RuleSet *rules )
                 grid->g_grid[i][k]->state = 0;
                 grid->g_grid[i][k]->checked = 0;
             }
-        }*/
+        }
+*/
         pthread_t *thread1;
         pthread_create(&thread1, NULL, gridClearThread, grid);
         pthread_join(thread1, NULL);
@@ -438,19 +440,20 @@ void Grid_next( Grid *grid, RuleSet *rules )
 
         pthread_create(&thread, NULL, nbrUpdateThread, tmp);
         pthread_join(thread, NULL);
-
+        //grid->updated = 1;
 /*
-        for(unsigned int i=tmpAlive->coiCount; i--; )
+
+        for(unsigned int i=tmpAlive->coiCount; i--; ) {
             grid->coiArray[i] = Cell_new(tmpAlive->coiArray[i]->row, tmpAlive->coiArray[i]->col);
             grid->coiArray[i]->state = 1;
             grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = 1;
             grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
             Cell_free(tmpAlive->coiArray[i]);
-        }*/
+        }
+        grid->updated = 1;
+        grid->coiCount = tmpAlive->coiCount ;
 
-    //    grid->coiCount = tmpAlive->coiCount ;
-
-        /*free(tmpAlive->coiArray);
+        free(tmpAlive->coiArray);
         tmpAlive->coiArray = NULL;
         free(tmpAlive);
         tmpAlive = NULL;*/

@@ -116,6 +116,9 @@ void GameModel_save( GameModel *model )
         gchar *bgrn = gdk_rgba_to_string(&model->bgrn_col);
         gchar *cell = gdk_rgba_to_string(&model->cell_col);
 
+        printf("saving bgrn: %s\n", bgrn);
+        printf("saving cell: %s\n", cell);
+
 		JsonObject *object = json_parse(NULL);
 
         char *zoom = (char*)calloc(10, sizeof(char*));

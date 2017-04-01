@@ -58,13 +58,35 @@ void on_ToMenu_clicked( GtkButton *button, gpointer data )
 /* SINGALS FOR GAME VIEW */
 
 G_MODULE_EXPORT
+void on_CellColor_clicked ( GtkButton *button, gpointer data )
+{
+	g_print("Color selected.");
+	ViewObject *object = (ViewObject*)data;
+	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->cell_col );
+	GameModel_save(object->g_model);
+//	gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+}
+
+G_MODULE_EXPORT
+void on_BagckgroundColor_clicked ( GtkButton *button, gpointer data )
+{
+	g_print("Color selected.");
+	ViewObject *object = (ViewObject*)data;
+	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->bgrn_col );
+	GameModel_save(object->g_model);
+	//gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+}
+
+G_MODULE_EXPORT
 void on_SetPlay_clicked ( GtkButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;
     if(model->g_model->timerid != -1) {
+		model->g_model->is_playing = 0;
         g_source_remove(model->g_model->timerid);
         model->g_model->timerid = -1;
     } else {
+		model->g_model->is_playing = 1;
         model->g_model->timerid = g_timeout_add(33, (GSourceFunc) view_timer_update, model->g_model);
 		ViewObject_start_grid_loop(model);
 	}
@@ -224,6 +246,7 @@ gboolean on_drawingarea_key_press_event( GtkWidget *widget, GdkEventKey *event, 
 			gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
 			break;
 		default:
+			g_print("Key press detected.");
 			break;
 	}
 	return TRUE;
@@ -313,7 +336,7 @@ gboolean view_timer_update( GameModel *model )
 {
 	if(model) {
 
-		if(model->updated) {
+		if(model->grid->updated == 1) {
 			//model->updated = 0;
 			GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
 			char str[20];
@@ -327,7 +350,7 @@ gboolean view_timer_update( GameModel *model )
 				maxy = widget_alloc.height;
 			//model->game_frame
 			gtk_widget_queue_draw_area (model->game_frame, 0, 0, maxx, maxy);
-			model->updated = 0;
+			//model->updated = 0;
 		}
 		//gtk_widget_queue_draw(GTK_WIDGET(model->game_frame));
 	}

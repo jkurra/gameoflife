@@ -46,6 +46,8 @@ typedef struct
      */
     PrefModel *p_model;
 
+    pthread_t *gameThread;
+
 } ViewObject;
 
 /** @brief Allocate new ViewObject.

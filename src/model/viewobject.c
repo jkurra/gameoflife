@@ -40,6 +40,18 @@ ViewObject *ViewObject_new( const char *co, const char *th )
     return rtn;
 }
 
+void ViewObject_init( ViewObject *object )
+{
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GError *error = NULL;
+    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  &error);
+
+    GdkDisplay *display = gdk_display_get_default();
+    GdkScreen  *screen  = gdk_display_get_default_screen(display);
+
+    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
 void ViewObject_select( ViewObject *object, int view )
 {
     if(object) {
@@ -70,18 +82,6 @@ void ViewObject_select( ViewObject *object, int view )
     }
 }
 
-void ViewObject_init( ViewObject *object )
-{
-    GtkCssProvider *provider = gtk_css_provider_new();
-    GError *error = NULL;
-    gtk_css_provider_load_from_path (provider, object->theme->sel_path,  &error);
-
-    GdkDisplay *display = gdk_display_get_default();
-    GdkScreen  *screen  = gdk_display_get_default_screen(display);
-
-    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-}
-
 void *gameLoopThread(void *arg)
 {
     ViewObject *object = (ViewObject*)arg;
@@ -92,7 +92,7 @@ void *gameLoopThread(void *arg)
         Grid_next(object->g_model->grid, object->g_model->ruleset);
         //grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
         object->g_model->c_step++;
-        object->g_model->updated = 1;
+        //object->g_model->updated = 1;
         usleep(10000);
     }
     return NULL;
@@ -100,9 +100,9 @@ void *gameLoopThread(void *arg)
 
 void ViewObject_start_grid_loop( ViewObject *object )
 {
-    pthread_t *thread;
+    //pthread_t *gameThread;
     object->g_model->is_playing = 1;
-    pthread_create(&thread, NULL, gameLoopThread, object);
+    pthread_create(&object->gameThread, NULL, gameLoopThread, object);
     //pthread_join(thread, NULL);
 }
 
@@ -110,6 +110,10 @@ void ViewObject_quit( ViewObject *object )
 {
     g_print("calling viewvobject quit...\n");
     if(object) {
+        if(object->g_model->is_playing) {
+            object->g_model->is_playing = 0;
+        }
+        pthread_join(object->gameThread, NULL);
         if(object->g_model){
             view_destroy((Model*)object->g_model);
         }
@@ -122,12 +126,10 @@ void ViewObject_quit( ViewObject *object )
         /*
         theme_free(object->theme );
         config_free(object->conf );
-*/
+        */
         //g_object_unref(object->m_model->builder);
         //g_object_unref(object->g_model->builder);
         //g_object_unref(object->p_model->builder);
-
-
         MenuModel_free(object->m_model);
         GameModel_free(object->g_model);
         PrefModel_free(object->p_model);

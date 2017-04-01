@@ -10,6 +10,32 @@
 
 #include "../../model/model.h"
 
-void on_next_button_clicked ( GtkButton *button, gpointer data );
+/** @brief
+ *
+ *  @param
+ */
+G_MODULE_EXPORT
+void on_MainWindow_destroy( GtkWidget *widget, gpointer data );
+
+/** @brief
+ *
+ *  @param
+ */
+G_MODULE_EXPORT
+void on_ToMenu_clicked( GtkButton *button, gpointer data );
+
+/** @brief
+ *
+ *  @param
+ */
+G_MODULE_EXPORT
+void on_ToGame_clicked( GtkButton *button, gpointer data );
+
+/** @brief
+ *
+ *  @param
+ */
+G_MODULE_EXPORT
+void on_ToPref_clicked( GtkButton *button, gpointer data );
 
 #endif /* SIGNAL_H_ */

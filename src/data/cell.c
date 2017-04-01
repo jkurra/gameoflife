@@ -21,6 +21,9 @@ Cell *Cell_new( int row, int col )
 void Cell_free( Cell *cell )
 {
     if(cell) {
+        /*
+         *
+         */
         free(cell);
         cell = NULL;
     }
@@ -29,6 +32,9 @@ void Cell_free( Cell *cell )
 int Cell_prev( Cell *cell, RuleSet *rules )
 {
     int i=0, n_state = 0; // next state of the cell, assumed dead, turned alive if necessary
+    /*
+     *
+     */
     switch (cell->state) {
         case 0:
             break;

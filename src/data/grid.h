@@ -35,6 +35,7 @@ typedef struct
      *
      */
     int coiCount;
+    int updated;
 
 } Grid;
 
@@ -80,6 +81,12 @@ void Grid_free( Grid *grid );
  *
  */
 void Grid_empty( Grid *grid );
+
+/** @brief Copy grid pointer and free old one
+ *
+ *
+ */
+void Grid_replace( Grid *dest, Grid *toCopy );
 
 /** @brief Resizes grid with given dimensions.
  *
