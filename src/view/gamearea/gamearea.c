@@ -75,6 +75,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
     }      //  g_print("button pressed on game1 %f: x_min:%f, x_max:%f\n",y, x_min, x_max);
     return pos;
 }
+
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 {    time_t start,end;
     start=clock();
@@ -109,10 +110,12 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 
 				switch (area1->grid->g_grid[cur_x][cur_y]->state) {
 					case 0:
-						clr = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
-						color_lighter1( clr, 0.1);
-						gdk_cairo_set_source_rgba(cr, clr);
-						cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
+						if(area1->visible == 1) {
+							clr = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
+							color_lighter1( clr, 0.1);
+							gdk_cairo_set_source_rgba(cr, clr);
+							cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
+						}
 						break;
 					case 1:
 						clr = cell_col;//gdk_rgba_copy(cell_col);

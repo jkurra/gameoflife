@@ -754,9 +754,10 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch">
+                          <object class="GtkSwitch" id="DeadCellSwitch">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <signal name="state-set" handler="on_DeadCellSwitch_state_set" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

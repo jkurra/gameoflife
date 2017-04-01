@@ -1,32 +1,37 @@
 #include "view.h"
-#include <GL/gl.h>
 
 void GameView_show( GameModel *model )
 {
     if(model) {
+        /*
+         * Save main widgets that are modified using values in model, so we don't
+         * have to look for them every time they are needed.
+         */
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
         model->game_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "drawingarea1"));
-        /* Search UI-elements that are programmatically modified. */
+        /* Search local UI-elements that are programmatically modified. */
         GtkWidget *overlay    = GTK_WIDGET(gtk_builder_get_object(model->builder, "overlay3"));
         GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
         GtkWidget *row_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetRows"));
         GtkWidget *col_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetCols"));
         GtkWidget *int_button = GTK_WIDGET(gtk_builder_get_object(model->builder, "SetInterval"));
+        GtkWidget *dead_switch = GTK_WIDGET(gtk_builder_get_object(model->builder, "DeadCellSwitch"));
 
         GtkWidget *color_bb = GTK_WIDGET(gtk_builder_get_object(model->builder, "BagckgroundColor"));
         GtkWidget *color_bc = GTK_WIDGET(gtk_builder_get_object(model->builder, "CellColor"));
 
-        /* Assign UI spinbutton values from model */
+        /* Get step value as character string from step counter from model. */
         char str[20];
         sprintf(str, "%d", model->c_step);
+        /* Assign UI spinbutton values from model */
         gtk_label_set_text(GTK_LABEL(step_count), str);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
-
-        gtk_color_chooser_set_rgba ( GTK_COLOR_CHOOSER(color_bb), &model->bgrn_col );
-        gtk_color_chooser_set_rgba ( GTK_COLOR_CHOOSER(color_bc), &model->cell_col );
-
+        gtk_switch_set_state(GTK_SWITCH(dead_switch), model->visible);
+        /* Assign UI color chooser values from model */
+        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(color_bb), &model->bgrn_col);
+        gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(color_bc), &model->cell_col);
         /* Show all widgets under main_frame */
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
     }
@@ -35,7 +40,14 @@ void GameView_show( GameModel *model )
 void MenuView_show( MenuModel *model )
 {
     if(model) {
+        /*
+         * Save main widgets that are modified using values in model, so we don't
+         * have to look for them every time they are needed.
+         */
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
+        model->game_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "menuBackground"));
+        /* Search UI-elements that are programmatically modified. */
+
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));
     }
 }

@@ -85,7 +85,7 @@ typedef struct
 	GtkWidget *game_frame;
 
 	time_t *timer;
-	
+
 } GameModel;
 
 /*
@@ -98,7 +98,8 @@ typedef struct
 	Manager *conf;
 
 	GtkBuilder *builder;
-	GtkWidget  *main_frame;
+	GtkWidget *main_frame;
+	GtkWidget *game_frame;
 } MenuModel;
 
 /*

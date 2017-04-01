@@ -1,7 +1,7 @@
 {
 "gridRows":"990",
 "gridCols":"990",
-"tickInterval":"400",
+"tickInterval":"300",
 "gridVisible":"1",
 "backgroundColor":"rgb(0,0,0)",
 "cellColor":"rgb(204,0,0)",

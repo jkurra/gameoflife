@@ -144,6 +144,19 @@ void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
 }
 
 G_MODULE_EXPORT
+void on_DeadCellSwitch_state_set( GtkSwitch *widget, gboolean state, gpointer data )
+{
+	g_print("State set.");
+	ViewObject *object = (ViewObject*)data;
+
+	if(state == 1) {
+		object->g_model->visible = 1;
+	} else { object->g_model->visible = 0; }
+	GameModel_save(object->g_model);
+	gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+}
+
+G_MODULE_EXPORT
 void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;

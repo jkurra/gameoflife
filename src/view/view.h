@@ -2,14 +2,8 @@
 #define VIEW_H_INCLUDED
 
 #include <gtk/gtk.h>
-/* OpenGL imports */
-#include <GL/glut.h>
-#include <GL/glu.h>
-#include <GL/glx.h>
-#include <GL/gl.h>
 
 #include "gamearea/gamearea.h"
-
 #include "../model/model.h"
 #include "../output/log.h"
 #include "../model/viewobject.h"
