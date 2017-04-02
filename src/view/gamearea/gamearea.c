@@ -77,7 +77,8 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
 }
 
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
-{    time_t start,end;
+{
+	time_t start,end;
     start=clock();
 	//printf("redraw game model : %d\n", clock());
     GameModel *area1 = (GameModel*)data;
@@ -132,8 +133,8 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
                 x_point += area1->spacing;
 				if(y_point >= maxy) { break; }
         }
-			//gdk_cairo_set_source_rgba(cr, clr);
-		//	cairo_fill(cr);
+		// gdk_cairo_set_source_rgba(cr, clr);
+		// cairo_fill(cr);
         x_point = 5;
         /* add size of the cell and space between each cell to the columns */
         y_point += area1->cell_s*area1->zoom;

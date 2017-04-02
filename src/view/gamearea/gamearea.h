@@ -1,10 +1,10 @@
 #ifndef GAMEAREA_H_INCLUDED
 #define GAMEAREA_H_INCLUDED
 
+#include <gtk/gtk.h>
+
 #include "../../model/model.h"
 #include "../../model/viewobject.h"
-
-#include <gtk/gtk.h>
 
 /*
  *

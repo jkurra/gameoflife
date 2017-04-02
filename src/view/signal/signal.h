@@ -2,13 +2,13 @@
 #define SIGNAL_H_INCLUDED
 
 #include <gtk/gtk.h>
-/* OpenGL imports */
-#include <GL/glut.h>
-#include <GL/glu.h>
-#include <GL/glx.h>
-#include <GL/gl.h>
 
 #include "../../model/model.h"
+
+/** @brief Connects values in glade .file with values in model.
+ *
+ */
+int signal_connect( GtkBuilder *builder, Model *model );
 
 /** @brief
  *

@@ -42,20 +42,21 @@ void theme_select( Manager *manager, char *name )
 {
     if(manager && name) {
         theme_list(manager);
+        /* Free existing path & name variables from structure if found. */
+        if(manager->sel_path) {
+            free(manager->sel_path);
+            manager->sel_path = NULL;
+        }
+        if(manager->sel_name) {
+            free(manager->sel_name);
+            manager->sel_name = NULL;
+        }
+
         int found = 0;
         for(int i=0; i<manager->dir_size; i++) {
             //printf("%s : %s\n", c->dir_list[i], name);
             if(strcmp (manager->dir_list[i], name) == 0) {
                 //printf("%s : %s\n", c->dir_list[i], name);
-                if(manager->sel_path) {
-                    free(manager->sel_path);
-                    manager->sel_path = NULL;
-                }
-                if(manager->sel_name) {
-                    free(manager->sel_name);
-                    manager->sel_name = NULL;
-                }
-
                 int nlen = strlen(manager->dir_list[i]);
                 int plen = (strlen(manager->dir_list[i])*2)+strlen(manager->dir_path)+6;
 

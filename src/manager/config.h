@@ -4,9 +4,8 @@
 #include <dirent.h>
 #include <string.h>
 
-#include "json/file.h"
-#include "json/json.h"
 #include "manager.h"
+#include "json/file.h"
 #include "../output/log.h"
 
 /** @brief Initialize new configuration from path.

@@ -4,9 +4,9 @@
 #include <gtk/gtk.h>
 
 #include "gamearea/gamearea.h"
+#include "../model/viewobject.h"
 #include "../model/model.h"
 #include "../output/log.h"
-#include "../model/viewobject.h"
 
 /* Types of views that may be used */
 #define MENU  0

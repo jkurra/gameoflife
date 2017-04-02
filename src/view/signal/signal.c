@@ -2,6 +2,73 @@
 #include "../view.h"
 #include "../../model/viewobject.h"
 
+int signal_GameView_connect( GtkBuilder *builder, GameModel *model )
+{
+	int err = 1; //TODO: change value if value init fails
+
+	if(builder && model) {
+		GtkWidget *overlay    = GTK_WIDGET(gtk_builder_get_object(builder, "overlay3"));
+		GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(builder, "step_counter"));
+		GtkWidget *row_button = GTK_WIDGET(gtk_builder_get_object(builder, "SetRows"));
+		GtkWidget *col_button = GTK_WIDGET(gtk_builder_get_object(builder, "SetCols"));
+		GtkWidget *int_button = GTK_WIDGET(gtk_builder_get_object(builder, "SetInterval"));
+		GtkWidget *dead_switch = GTK_WIDGET(gtk_builder_get_object(builder, "DeadCellSwitch"));
+
+		GtkWidget *color_bb = GTK_WIDGET(gtk_builder_get_object(builder, "BagckgroundColor"));
+		GtkWidget *color_bc = GTK_WIDGET(gtk_builder_get_object(builder, "CellColor"));
+
+		/* Get step value as character string from step counter from model. */
+		char str[20];
+		sprintf(str, "%d", model->c_step);
+		/* Assign UI spinbutton values from model */
+		gtk_label_set_text(GTK_LABEL(step_count), str);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
+		gtk_switch_set_state(GTK_SWITCH(dead_switch), model->visible);
+		/* Assign UI color chooser values from model */
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(color_bb), &model->bgrn_col);
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(color_bc), &model->cell_col);
+	}
+
+	return err;
+}
+
+int signal_MenuView_connect( GtkBuilder *builder, GameModel *model )
+{
+	int err = 1; //TODO: change value if value init fails
+	//TODO: add widget updates as needed.
+	return err;
+}
+
+int signal_PrefView_connect( GtkBuilder *builder, GameModel *model )
+{
+	int err = 1; //TODO: change value if value init fails
+	//TODO: add widget updates as needed.
+	return err;
+}
+
+int signal_connect( GtkBuilder *builder, Model *model )
+{
+	int err = 1;
+
+	switch (model->type) {
+		case GAME: /* Initialize game view */
+			err = signal_GameView_connect(builder, (GameModel*)model);
+            break;
+        case MENU:
+			err = signal_MenuView_connect(builder, (GameModel*)model);
+            break;
+        case PREF:
+			err = signal_PrefView_connect(builder, (GameModel*)model);
+            break;
+        default:
+            break;
+	}
+
+	return err;
+}
+
 gboolean view_timer_update( GameModel *model );
 
 /* COMMON SIGNALS */

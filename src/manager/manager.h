@@ -2,12 +2,12 @@
 #define MANAGER_H_INCLUDED
 
 /** @brief  Structure of Manager.
- *  TODO: replace with description of manager
- *  Each theme lists multiple available themes that are within theme directory.
- *  These themes may be used as a selected theme, which may be quickly accessed,
- *  using struct variables. All changes to theme, should be done using available
- *  functions instead of directly manipulating theme. This ensures that all values
- *  are updated correctly.
+ *
+ *  Main structure for every manager object. Managers may be any objects which
+ *  need to list items in directory. One of these items is selected as item to
+ *  be used and accessed externally. sel_path and sel_name are used to store
+ *  currently selected item. If directory doesn't contain any files or directories
+ *  NULL values are assigned to both sel_path and sel_name.
  */
 typedef struct
 {

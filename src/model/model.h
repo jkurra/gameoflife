@@ -88,7 +88,7 @@ typedef struct
 
 } GameModel;
 
-/*
+/** @brief
  *
  */
 typedef struct
@@ -100,9 +100,10 @@ typedef struct
 	GtkBuilder *builder;
 	GtkWidget *main_frame;
 	GtkWidget *game_frame;
+
 } MenuModel;
 
-/*
+/** @brief
  *
  */
 typedef struct
@@ -113,14 +114,15 @@ typedef struct
 
 	GtkBuilder *builder;
 	GtkWidget  *main_frame;
+
 } PrefModel;
 
-/*
+/** @brief
  *
  */
 Model *model_new();
 
-/*
+/** @brief
  *
  */
 void model_free( Model *model );
