@@ -1,6 +1,42 @@
 #include "grid.h"
 #include <time.h>
 
+/** @brief Count current neighbours for a cell.
+ *
+ * Each cell in the grid has 0-8 neighbours. This function calculates those
+ * neighbours using current x and y location of the cell. This is usefull since
+ * it is often necessary to know how many neighbours certain cell has, for
+ * example to predict their future state. This function doesn't have safety
+ * checks for x and y, so make sure they are within maximum limits.
+ *
+ * @return  Count of neighbours for the given cell.
+ */
+int Grid_nbrs( Grid *grid, Cell *cell);
+/** @brief Update grid to next values.
+ *
+ * Given two dimensional grid is updated to next state, using current states
+ * of each "cell" and given rules to apply. Previous values in the grid are
+ * deleted and therefore lost, so don't use this to "peek" next values, with an
+ * array that you don't want to update. Rules are given as integer arrays. Each
+ * item in array represents number of neighbours that gives or retains life for
+ * the cell.
+ *
+ * @param x   Amount of columns in the array.
+ * @param y   Amount of rows in the array.
+ * @param arr array to be initalized.
+ * @param live_a rules to apply when cell is currently alive.
+ * @param live_d rules to apply when cell is currently dead.
+ */
+void Grid_next( Grid *grid, RuleSet *rules );
+
+/** @brief Update grid to previous values.
+ *
+ * @param x   Amount of columns in the array.
+ * @param y   Amount of rows in the array.
+ * @param arr Array to update.
+ */
+void Grid_prev( Grid *grid, RuleSet *rules );
+
 /** @brief Print two dimensional array to console.
  *
  */
@@ -50,9 +86,6 @@ void Grid_free( Grid *grid )
             free(grid->g_grid[i]);
             grid->g_grid[i] = NULL;
        }
-
-       free(grid->g_grid);
-       grid->g_grid = NULL;
     }
 
     for(int i=0; i<grid->coiCount; i++) {
@@ -68,6 +101,32 @@ void Grid_free( Grid *grid )
     free(grid);
     grid = NULL;
 
+}
+
+void Grid_mod( Grid *grid, int operation, Grid_ptr *data )
+{
+    switch (operation) {
+        case EMPTY:
+            Grid_empty(grid);
+            break;
+        case RESIZE:
+            Grid_resize(grid, data->row, data->col);
+            break;
+        case RANDOM:
+            Grid_rand(grid);
+            break;
+        case SWITCH:
+            Grid_switch(grid, data->row, data->col);
+            break;
+        case NEXT:
+            Grid_next(grid, data->rules);
+            break;
+        case PREV:
+            Grid_prev(grid, data->rules);
+            break;
+        default:
+            break;
+    }
 }
 
 Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize );
@@ -337,8 +396,10 @@ void *nbrUpdateThread(void *arg)
     for(unsigned int i=tmp->tmpAlive->coiCount; i--; ) { /* Add new values to coiArray */
         tmp->grid->coiArray[i] = Cell_new(tmp->tmpAlive->coiArray[i]->row, tmp->tmpAlive->coiArray[i]->col);
         tmp->grid->coiArray[i]->state = 1;
+        if(tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]) {
         tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]->state = 1;
         tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]->checked = 0;
+        }
         Cell_free(tmp->tmpAlive->coiArray[i]);
     }
     tmp->grid->coiCount = tmp->tmpAlive->coiCount ;
@@ -356,8 +417,10 @@ void *gridClearThread(void *arg)
 
     for(unsigned int i=grid->rows; i--; ) {
         for(int k=grid->cols; k--; ) {
-            grid->g_grid[i][k]->state = 0;
-            grid->g_grid[i][k]->checked = 0;
+            if(grid->g_grid[i][k]) {
+                grid->g_grid[i][k]->state = 0;
+                grid->g_grid[i][k]->checked = 0;
+            }
         }
     }
 
@@ -387,11 +450,9 @@ void Grid_next( Grid *grid, RuleSet *rules )
     //printf("We have %d cells to check\n", grid->coiCount );
     if(grid) {
         /* This array is used to store tmp values of living cells. */
-//grid->updated = 0;
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
         time_t start,end;
         start=clock();
-        //for(int i=0; i<grid->coiCount; i++) {
 
         GridAndTmp *tmp1 = (GridAndTmp*)calloc(1, sizeof(GridAndTmp));
         tmp1->grid = grid;
@@ -401,29 +462,11 @@ void Grid_next( Grid *grid, RuleSet *rules )
         pthread_t *thread2 ;
         pthread_create(&thread2, NULL, gridCheckArrayThread, tmp1);
         pthread_join(thread2, NULL);
-/*
-        for(unsigned int i=grid->coiCount; i--; ) {
-        //for(unsigned int i=0;i<grid->coiCount; i+=2 ) {
-            grid->coiArray[i]->nbrs_count = Grid_nbrs( grid, grid->coiArray[i] );
-            if(Cell_next( grid->coiArray[i], rules )) { // Next state is alive.
-                grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 1;
-                tmpAlive->coiArray = addCell1( tmpAlive->coiArray , Cell_new(grid->coiArray[i]->row, grid->coiArray[i]->col), tmpAlive->coiCount );
-                tmpAlive->coiCount++;
-            }
-            grid->coiArray[i]->checked = 1;
-            Grid_Nbrs_check( tmpAlive, grid, grid->coiArray[i], rules );
-        }*/
+
         end = clock();
         time_t t = (end-start);
         printf("array update time: %d\n", t);
-/*
-        for(unsigned int i=grid->rows; i--; ) {
-            for(int k=grid->cols; k--; ) {
-                grid->g_grid[i][k]->state = 0;
-                grid->g_grid[i][k]->checked = 0;
-            }
-        }
-*/
+
         pthread_t *thread1;
         pthread_create(&thread1, NULL, gridClearThread, grid);
         pthread_join(thread1, NULL);
@@ -437,26 +480,8 @@ void Grid_next( Grid *grid, RuleSet *rules )
 
         pthread_t *thread;
         //object->g_model->is_playing = 1;
-
         pthread_create(&thread, NULL, nbrUpdateThread, tmp);
         pthread_join(thread, NULL);
-        //grid->updated = 1;
-/*
-
-        for(unsigned int i=tmpAlive->coiCount; i--; ) {
-            grid->coiArray[i] = Cell_new(tmpAlive->coiArray[i]->row, tmpAlive->coiArray[i]->col);
-            grid->coiArray[i]->state = 1;
-            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = 1;
-            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
-            Cell_free(tmpAlive->coiArray[i]);
-        }
-        grid->updated = 1;
-        grid->coiCount = tmpAlive->coiCount ;
-
-        free(tmpAlive->coiArray);
-        tmpAlive->coiArray = NULL;
-        free(tmpAlive);
-        tmpAlive = NULL;*/
     }
 
 }
@@ -509,7 +534,7 @@ int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, i
 
     for(grid_x=finalX;grid_x<max_ROW ; grid_x++) {
         for(grid_y=finalY; grid_y<max_COL; grid_y++) {
-            if( grid->g_grid[grid_x][grid_y]->state == 1 ) {
+            if( grid->g_grid[grid_x][grid_y] && grid->g_grid[grid_x][grid_y]->state == 1 ) {
                 if(grid_x != cell->row || grid_y != cell->col) { /* We are not middle cell.*/
                     c++;
                 }

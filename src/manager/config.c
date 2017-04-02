@@ -81,6 +81,9 @@ void config_select( Manager *conf, const char *name )
     if(conf && name) {
         config_list(conf); /* Update file listing to make sure we are up to date */
         /* Free existing path & name variables from structure if found. */
+        // TODO: check if dir_size <= 0 and set paths and set path & name to NULL.
+        // selected value must be set to previous value if dir_size > 0 but name
+        // was not found.
         if(conf->sel_path) {
             free(conf->sel_path);
             conf->sel_path = NULL;

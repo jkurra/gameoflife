@@ -29,9 +29,11 @@ ViewObject *ViewObject_new( const char *co, const char *th )
     rtn->p_model->conf = rtn->conf;
     rtn->p_model->themes = rtn->theme;
 
-    MenuModel_read(rtn->m_model, rtn->conf->sel_path);
-    GameModel_read(rtn->g_model, rtn->conf->sel_path);
-    PrefModel_read(rtn->p_model, rtn->conf->sel_path);
+    if(rtn->conf->sel_path) {
+        MenuModel_read(rtn->m_model, rtn->conf->sel_path);
+        GameModel_read(rtn->g_model, rtn->conf->sel_path);
+        PrefModel_read(rtn->p_model, rtn->conf->sel_path);
+    }
 
     rtn->m_model->builder = gtk_builder_new_from_file("src/view/gui/gof_menu.glade");
     rtn->g_model->builder = gtk_builder_new_from_file("src/view/gui/gof_game.glade");

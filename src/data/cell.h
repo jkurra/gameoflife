@@ -74,6 +74,7 @@ void Cell_free(Cell *cell);
 
 /** @brief Checks state of the cell in previous turn.
  *
+ * TODO: NOT YET IMPLEMENTED
  * Based on current state of the cell, it is possible to peek previous state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not
@@ -87,17 +88,14 @@ void Cell_free(Cell *cell);
  * are really only ones that matter since everything else is seen as under or
  * overpopulation, or stagnant state.
  *
- * @param c_state current state of the cell. Alive = 1, Dead = 0
- * @param nbrs    Current amount of neighbours for the cell (between 0-8).
- * @param live_a  Set of rules that apply if cell is currently dead.
- * @param live_d  Set of rules that aplly if cell is currently alive.
+ * @param cell
+ * @param rules 
  * @return state of the cell in previous turn.
  */
 int Cell_prev( Cell *cell, RuleSet *rules );
 
 /** @brief Checks state of the cell in next turn.
  *
- * TODO: NOT YET IMPLEMENTED
  * Based on current state of the cell, it is possible to peek future state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not
@@ -110,10 +108,8 @@ int Cell_prev( Cell *cell, RuleSet *rules );
  * are really only ones that matter since everything else is seen as under or
  * overpopulation, or stagnant state.
  *
- * @param c_state current state of the cell. Alive = 1, Dead = 0
- * @param nbrs    Current amount of neighbours for the cell (between 0-8).
- * @param live_a  Set of rules that apply if cell is currently dead.
- * @param live_d  Set of rules that aplly if cell is currently alive.
+ * @param cell
+ * @param rules
  * @return state of the cell in next turn.
  */
 int Cell_next( Cell *cell, RuleSet *rules );

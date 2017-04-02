@@ -243,9 +243,10 @@ void on_SetInterval_value_changed( GtkSpinButton *button, gpointer data )
 	model->g_model->interval = interval;
 
 	if(model->g_model->timerid != -1) {
-		g_source_remove(model->g_model->timerid);
-		model->g_model->timerid = -1;
-		model->g_model->timerid = g_timeout_add(model->g_model->interval, (GSourceFunc) view_timer_update, model->g_model);
+		//TODO: set game model update value here. Refresh value is always same.
+		//g_source_remove(model->g_model->timerid);
+	//	model->g_model->timerid = -1;
+		//model->g_model->timerid = g_timeout_add(33, (GSourceFunc) view_timer_update, model->g_model);
 		//model->g_model->timerid = g_timeout_add(model->g_model->interval, (GSourceFunc)view_timer_update, model);
 	}
 	GameModel_save(model->g_model);
@@ -387,6 +388,17 @@ void on_QuitAll_clicked( GtkButton *button, gpointer data )
 /* SINGALS FOR PREF VIEW */
 
 G_MODULE_EXPORT
+void on_themebox_changed( GtkComboBox *box, gpointer data )
+{
+	ViewObject *object = (ViewObject*)data;
+
+	if(object) {
+		// TODO: set selected value in combobox to selected in theme manager.
+	//	theme_select(object->theme, box->);
+	}
+}
+
+G_MODULE_EXPORT
 void on_SetBgColor_color_set( GtkColorButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
@@ -415,7 +427,6 @@ void on_ShowGrid_state_set( GtkSwitch *widget, gboolean   state, gpointer data )
 gboolean view_timer_update( GameModel *model )
 {
 	if(model) {
-
 		if(model->grid->updated == 1) {
 			//model->updated = 0;
 			GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
