@@ -12,6 +12,7 @@
  * @return  Count of neighbours for the given cell.
  */
 int Grid_nbrs( Grid *grid, Cell *cell);
+
 /** @brief Update grid to next values.
  *
  * Given two dimensional grid is updated to next state, using current states
@@ -202,7 +203,6 @@ void Grid_coiEmpty( Grid *grid )
 
 void Grid_resize( Grid *grid, int new_rows, int new_cols )
 {
-
 //    printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
     grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows+1)*sizeof(Cell**));
     for(int i=0; i<new_rows; i++) {
@@ -445,12 +445,32 @@ void *gridCheckArrayThread(void *arg)
     return NULL;
 }
 
+Cell ***Grid_copy_array( Cell ***grid, int rows, int cols )
+{
+
+    Cell ***g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
+    for(int i=0; i<rows; i++) {
+        g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
+    }
+
+    for(int i=0; i<rows; i++) {
+        for(int k=0; k<cols; k++) {
+            g_grid[i][k] = Cell_new(i, k);
+            g_grid[i][k]->state = grid[i][k]->state;
+            g_grid[i][k]->checked  = grid[i][k]->checked;
+        }
+    }
+
+}
+
 void Grid_next( Grid *grid, RuleSet *rules )
 {
     //printf("We have %d cells to check\n", grid->coiCount );
     if(grid) {
         /* This array is used to store tmp values of living cells. */
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
+        //Cell ***g_grid = Grid_copy_array( grid->g_grid, grid->rows, grid->cols );
+
         time_t start,end;
         start=clock();
 
@@ -482,6 +502,8 @@ void Grid_next( Grid *grid, RuleSet *rules )
         //object->g_model->is_playing = 1;
         pthread_create(&thread, NULL, nbrUpdateThread, tmp);
         pthread_join(thread, NULL);
+
+    //    grid = Grid_copy_array( grid, grid->rows, grid->cols );
     }
 
 }
