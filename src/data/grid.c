@@ -1,6 +1,8 @@
 #include "grid.h"
 #include <time.h>
 
+GridArray *GridArray_new( int rows, int cols );
+CellArray *CellArray_new( int count );
 /** @brief Count current neighbours for a cell.
  *
  * Each cell in the grid has 0-8 neighbours. This function calculates those
@@ -47,6 +49,10 @@ Grid *Grid_new( int rows, int cols )
 {
     /* */
     Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
+
+    rtn->lArray = GridArray_new(rows, cols);
+    rtn->gArray = CellArray_new(0);
+
     /*
      *
      */
@@ -463,11 +469,72 @@ Cell ***Grid_copy_array( Cell ***grid, int rows, int cols )
 
 }
 
+CellArray *CellArray_new( int count )
+{
+    CellArray *arr = (CellArray*)calloc(count+1, sizeof(CellArray));
+    arr->count =count;
+    for(int i=0; i<count; i++) {
+        arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
+        arr->c_array[i]->state   = 0;
+        arr->c_array[i]->checked = 0;
+    }
+
+    return arr;
+}
+
+CellArray *CellArray_copy( CellArray *toCopy )
+{
+    CellArray *arr = CellArray_new( toCopy->count ); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
+    //arr->count =toCopy->count;
+    for(int i=0; i<toCopy->count; i++) {
+    //    arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
+        arr->c_array[i] = toCopy->c_array[i]->state   = 0;
+        arr->c_array[i] = toCopy->c_array[i]->checked = 0;
+    }
+
+    return arr;
+}
+
+GridArray *GridArray_new( int rows, int cols )
+{
+    GridArray *arr = (GridArray *)calloc(rows+1, sizeof(GridArray));
+    arr->g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
+    for(int i=0; i<rows; i++) {
+        arr->g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
+    }
+    for(int i=0; i<rows; i++) {
+        for(int k=0; k<cols; k++) {
+            arr->g_grid[i][k] = Cell_new(i, k);
+            arr->g_grid[i][k]->state   = 0;
+            arr->g_grid[i][k]->checked = 0;
+        }
+    }
+    return arr;
+}
+
+GridArray *GridArray_copy( GridArray *grid )
+{
+    GridArray *arr = GridArray_new( grid->rows, grid->cols );// (GridArray *)calloc(grid->rows+1, sizeof(GridArray));
+    //arr->g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
+    //for(int i=0; i<rows; i++) {
+    //    arr->g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
+    //}
+    for(int i=0; i<grid->rows; i++) {
+        for(int k=0; k<grid->cols; k++) {
+            arr->g_grid[i][k] = Cell_new(i, k);
+            arr->g_grid[i][k]->state    = grid->g_grid[i][k]->state;
+            arr->g_grid[i][k]->checked  = grid->g_grid[i][k]->checked;
+        }
+    }
+    return arr;
+}
+
 void Grid_next( Grid *grid, RuleSet *rules )
 {
     //printf("We have %d cells to check\n", grid->coiCount );
     if(grid) {
         /* This array is used to store tmp values of living cells. */
+
         CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
         //Cell ***g_grid = Grid_copy_array( grid->g_grid, grid->rows, grid->cols );
 

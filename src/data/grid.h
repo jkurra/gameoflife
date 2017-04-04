@@ -14,6 +14,19 @@
 #define NEXT 4
 #define PREV 5
 
+typedef struct
+{
+    int rows, cols;
+    Cell ***g_grid;
+} GridArray;
+
+typedef struct
+{
+    int count;
+    Cell **c_array;
+
+} CellArray;
+
 /** @brief Structure for updating Grid.
  *
  *  Structure intended to be used for grid modifications.
@@ -30,6 +43,9 @@ typedef struct
  */
 typedef struct
 {
+    GridArray *gArray;
+    CellArray *lArray;
+
     /** @brief
      *
      */
