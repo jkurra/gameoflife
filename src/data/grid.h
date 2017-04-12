@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 #include <time.h>
-
+#include "array/cellarray.h"
+#include "array/gridarray.h"
 #include "cell.h"
 
 /* Grid modify functions. */
@@ -13,19 +14,6 @@
 #define SWITCH 3
 #define NEXT 4
 #define PREV 5
-
-typedef struct
-{
-    int rows, cols;
-    Cell ***g_grid;
-} GridArray;
-
-typedef struct
-{
-    int count;
-    Cell **c_array;
-
-} CellArray;
 
 /** @brief Structure for updating Grid.
  *
@@ -49,48 +37,27 @@ typedef struct
     /** @brief
      *
      */
-    Cell ***g_grid;
+    //Cell **coiArray;
 
     /** @brief
      *
      */
-    int rows;
-
-    /** @brief
-     *
-     */
-    int cols;
-
-    /** @brief
-     *
-     */
-    Cell **coiArray;
-
-    /** @brief
-     *
-     */
-    int coiCount;
+    //int coiCount;
     int updated;
 
 } Grid;
 
-/** @brief
- *
- */
+/*
 typedef struct
 {
-    /** @brief
-     *
-     */
+
     Cell **coiArray;
 
-    /** @brief
-     *
-     */
+
     int coiCount;
 
 } CellGrid;
-
+*/
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new

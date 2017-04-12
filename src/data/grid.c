@@ -1,8 +1,89 @@
 #include "grid.h"
 #include <time.h>
 
-GridArray *GridArray_new( int rows, int cols );
-CellArray *CellArray_new( int count );
+typedef struct
+{
+    /** @brief
+     *
+     */
+    CellArray *tmpAlive;
+    Grid *grid;
+
+    RuleSet *rules;
+    /** @brief
+     *
+     */
+    //int coiCount;
+
+} GridAndTmp;
+
+Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize );
+
+
+void *nbrUpdateThread(void *arg)
+{
+    GridAndTmp *tmp = (GridAndTmp*)arg;
+
+    for(unsigned int i=tmp->tmpAlive->count; i--; ) {
+        //tmp->grid->lArray->c_array[i] = //Cell_new(tmp->tmpAlive->c_array[i]->row, tmp->tmpAlive->c_array[i]->col);
+
+        tmp->grid->lArray->c_array[i]->state = 1;
+
+        //CellArray_set( tmp->grid->lArray, STATE, i, 1 );
+        if(tmp->grid->gArray->g_grid[tmp->grid->lArray->c_array[i]->row][tmp->grid->lArray->c_array[i]->col]) {
+            tmp->grid->gArray->g_grid[tmp->grid->lArray->c_array[i]->row][tmp->grid->lArray->c_array[i]->col]->state   = 1;
+            tmp->grid->gArray->g_grid[tmp->grid->lArray->c_array[i]->row][tmp->grid->lArray->c_array[i]->col]->checked = 0;
+        }
+        Cell_free(tmp->tmpAlive->c_array[i]);
+    }
+
+    tmp->grid->lArray->count = tmp->tmpAlive->count;
+    free(tmp->tmpAlive->c_array);
+    tmp->tmpAlive->c_array = NULL;
+    free(tmp->tmpAlive);
+    tmp->tmpAlive = NULL;
+
+    return NULL;
+}
+
+void *gridClearThread(void *arg)
+{
+    Grid *grid = (Grid*)arg;
+
+    GridArray_empty(grid->gArray);
+    /*for(unsigned int i=grid->gArray->rows; i--; ) {
+        for(int k=grid->gArray->cols; k--; ) {
+           if(grid->gArray->g_grid[i][k]) {
+                grid->gArray->g_grid[i][k]->state = 0;
+                grid->gArray->g_grid[i][k]->checked = 0;
+            }
+        }
+    }*/
+    return NULL;
+}
+
+void *gridCheckArrayThread(void *arg)
+{
+    GridAndTmp *tmp = (GridAndTmp*)arg;
+    for(unsigned int i=tmp->grid->lArray->count; i--; ) {
+    //for(unsigned int i=0;i<grid->coiCount; i+=2 ) {
+        tmp->grid->lArray->c_array[i]->nbrs_count = Grid_nbrs( tmp->grid, tmp->grid->lArray->c_array[i] );
+        if(Cell_next( tmp->grid->lArray->c_array[i], tmp->rules )) { // Next state is alive.
+            tmp->grid->gArray->g_grid[tmp->grid->lArray->c_array[i]->row][tmp->grid->lArray->c_array[i]->col]->checked = 1;
+            //addCell1( Cell **array, Cell *toAdd, size_t oldSize )
+            //CellArray_add( tmp->tmpAlive, Cell_new(tmp->grid->lArray->c_array[i]->row, tmp->grid->lArray->c_array[i]->col));
+            tmp->tmpAlive->c_array = addCell1( tmp->tmpAlive->c_array , Cell_new(tmp->grid->lArray->c_array[i]->row, tmp->grid->lArray->c_array[i]->col), tmp->tmpAlive->count );
+            tmp->tmpAlive->count++;
+        }
+        CellArray_set( tmp->grid->lArray, CHECK, i, 1 );
+    //    tmp->grid->lArray->c_array[i]->checked = 1;
+        Grid_Nbrs_check( tmp->tmpAlive, tmp->grid, tmp->grid->lArray->c_array[i], tmp->rules );
+    }
+    printf("coicount: %d\n", tmp->tmpAlive->count);
+    return NULL;
+}
+
+
 /** @brief Count current neighbours for a cell.
  *
  * Each cell in the grid has 0-8 neighbours. This function calculates those
@@ -40,73 +121,65 @@ void Grid_next( Grid *grid, RuleSet *rules );
  */
 void Grid_prev( Grid *grid, RuleSet *rules );
 
-/** @brief Print two dimensional array to console.
- *
- */
-void grid_print(Grid *grid );
 
 Grid *Grid_new( int rows, int cols )
 {
-    /* */
     Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
 
-    rtn->lArray = GridArray_new(rows, cols);
-    rtn->gArray = CellArray_new(0);
+    rtn->gArray = GridArray_new(rows, cols);
+    rtn->lArray = CellArray_new(0);
 
-    /*
-     *
-     */
-    rtn->rows = rows;
-    rtn->cols = cols;
-    /*
-     *
-     */
-    rtn->g_grid = (Cell***)calloc(rtn->rows+1, sizeof(Cell**));
-    for(int i=rows; i--;) {
-        rtn->g_grid[i] = (Cell**)calloc(rtn->cols+1, sizeof(Cell*));
-    }
-    /*
-     *
-     */
-    for(int i=rtn->rows; i--;) {
-        for(int k=rtn->cols; k--;) {
-            rtn->g_grid[i][k] = Cell_new(i, k);
-            rtn->g_grid[i][k]->checked = 0;
-        }
-    }
-    /*
-     *
-     */
-    rtn->coiCount = 0;
-    rtn->coiArray = NULL;
-    rtn->updated=1;
+    rtn->updated = 1;
+
     return rtn;
 }
 
 void Grid_free( Grid *grid )
 {
-    if(grid->g_grid) {
-        for(int i=0; i<grid->rows; i++) {
-            for(int k=0; k<grid->cols; k++) {
-                Cell_free(grid->g_grid[i][k]);
-            }
-            free(grid->g_grid[i]);
-            grid->g_grid[i] = NULL;
-       }
-    }
-
-    for(int i=0; i<grid->coiCount; i++) {
-        Cell_free(grid->coiArray[i]);
-    }
-
-    free(grid->coiArray);
-    grid->coiArray = NULL;
-
-    grid->rows = -1;
-    grid->cols = -1;
+    GridArray_free(grid->gArray);
+    CellArray_free(grid->lArray);
 
     free(grid);
     grid = NULL;
+
+}
+
+void GridArray_resize( Grid *grid, int new_rows, int new_cols )
+{
+//    printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
+    grid->gArray->g_grid = (Cell***)realloc(grid->gArray->g_grid, (new_rows+1)*sizeof(Cell**));
+
+    for(int i=0; i<new_rows; i++) {
+        printf("alloc row: %d\n", i);
+        grid->gArray->g_grid[i] = (Cell**)realloc(grid->gArray->g_grid[i], (new_cols+1)*sizeof(Cell*));//(Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_grid, (grid->cols+1)*sizeof(Cell*));
+    }
+
+    for(int i=0; i<new_rows; i++) {
+        for(int k=0; k<new_cols; k++) {
+            grid->gArray->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+            grid->gArray->g_grid[i][k]->checked = 0;
+        }
+    }
+    for(int i=0; i<grid->lArray->count; i++) {
+        if(grid->lArray->c_array[i]->row < new_rows && grid->lArray->c_array[i]->col < new_cols) {
+            grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col] = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
+            grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->state = grid->lArray->c_array[i]->state;
+            grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->checked = 0;
+        }
+    }
+    /// TODO: Add removal of cells outside grid borders here. Otherwise program will crash later.
+    for(int i=0; i<grid->lArray->count; i++) {
+        if(grid->lArray->c_array[i]->row < new_rows && grid->lArray->c_array[i]->col < new_cols) {
+
+        } else {
+            CellArray_rem(grid->lArray, grid->lArray->c_array[i]);
+        //    Grid_coiRem(grid,  Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col));
+            continue;
+        }
+    }
+
+    grid->gArray->rows = new_rows;
+    grid->gArray->cols = new_cols;
 
 }
 
@@ -114,13 +187,24 @@ void Grid_mod( Grid *grid, int operation, Grid_ptr *data )
 {
     switch (operation) {
         case EMPTY:
-            Grid_empty(grid);
+            GridArray_empty(grid->gArray);
             break;
         case RESIZE:
-            Grid_resize(grid, data->row, data->col);
+        //    GridArray_resize( Grid *grid, int new_rows, int new_cols )
+            GridArray_resize(grid, data->row, data->col);
             break;
         case RANDOM:
-            Grid_rand(grid);
+            GridArray_rand(grid->gArray);
+            for(int i=0; i<grid->gArray->rows; i++){
+                for(int k=0; k<grid->gArray->cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
+                   if(grid->gArray->g_grid[i][k]->state == 1) {
+                        Cell *c = Cell_new(i, k);
+                        c->state = 1;
+                        CellArray_add(grid->lArray, c);
+                        //Grid_coiAdd(grid, c);
+                    }
+                }
+            }
             break;
         case SWITCH:
             Grid_switch(grid, data->row, data->col);
@@ -136,406 +220,19 @@ void Grid_mod( Grid *grid, int operation, Grid_ptr *data )
     }
 }
 
-Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize );
-Cell **remCell( Cell **array, size_t size, int x, int y );
-
-int Grid_coiCount( Grid *grid )
-{
-    return grid->coiCount;
-}
-
-void Grid_coiAdd( Grid *grid, Cell *cell )
-{
-    if(grid) {
-        grid->coiArray = realloc(grid->coiArray, (grid->coiCount+1)*sizeof(Cell*));
-        grid->coiArray[grid->coiCount] = cell;
-
-        grid->coiCount++;
-    }
-}
-
-void remElem1( Cell** array, int index, int len )
-{
-    int i=0;
-    for(i=index; i<len-1; i++) {
-        Cell_free(array[i]);
-        array[i] = NULL;
-        array[i] = array[i+1];
-    }
-}
-
-void Grid_coiRealloc( Grid *grid, size_t newSize )
-{
-    for(int i=grid->coiCount; i--; ) {
-        Cell_free(grid->coiArray[i]);
-    }
-    free(grid->coiArray);
-    grid->coiArray = NULL;
-
-    grid->coiArray = (Cell**)calloc(newSize, sizeof(Cell*));
-
-}
-
-void Grid_coiRem( Grid *grid, Cell *cell )
-{
-    if(grid) {
-        for(int i=0; i<grid->coiCount; i++) {
-            //printf("size: %d, %d\n", i, array[i]->x);
-            if(grid->coiArray[i]->row == cell->row && grid->coiArray[i]->col == cell->col) {
-                remElem1(grid->coiArray, i, grid->coiCount);
-                grid->coiArray = realloc(grid->coiArray, (grid->coiCount-1)*sizeof(Cell*));
-                grid->coiCount--;
-                break;
-            }
-        }
-    }
-}
-
-void Grid_coiEmpty( Grid *grid )
-{
-
-    if(grid) {
-        if(grid->coiArray) {
-            //for(int i=0; i<grid->coiCount; i++) {
-            for(int i=grid->coiCount; i--;) {
-                free(grid->coiArray[i]);
-                grid->coiArray[i] = NULL;
-            }
-
-            grid->coiCount = 0;
-        }
-    }
-}
-
-void Grid_resize( Grid *grid, int new_rows, int new_cols )
-{
-//    printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
-    grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows+1)*sizeof(Cell**));
-    for(int i=0; i<new_rows; i++) {
-        printf("alloc row: %d\n", i);
-        grid->g_grid[i] = (Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_grid, (grid->cols+1)*sizeof(Cell*));
-    }
-
-    for(int i=0; i<new_rows; i++) {
-        for(int k=0; k<new_cols; k++) {
-            grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
-            grid->g_grid[i][k]->checked = 0;
-        }
-    }
-    for(int i=0; i<grid->coiCount; i++) {
-        if(grid->coiArray[i]->row < new_rows && grid->coiArray[i]->col < new_cols) {
-            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col] = Cell_new(grid->coiArray[i]->row, grid->coiArray[i]->col);
-            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->state = grid->coiArray[i]->state;
-            grid->g_grid[grid->coiArray[i]->row][grid->coiArray[i]->col]->checked = 0;
-        }
-    }
-    /// TODO: Add removal of cells outside grid borders here. Otherwise program will crash later.
-    for(int i=0; i<grid->coiCount; i++) {
-        if(grid->coiArray[i]->row < new_rows && grid->coiArray[i]->col < new_cols) {
-
-        } else {
-            Grid_coiRem(grid,  Cell_new(grid->coiArray[i]->row, grid->coiArray[i]->col));
-            continue;
-        }
-    }
-    grid->rows = new_rows;
-    grid->cols = new_cols;
-
-}
-
-void Grid_empty( Grid *grid )
-{
-    for(int i=0; i<grid->rows; i++) {
-        for(int k=0; k<grid->cols; k++) {
-            if(grid->g_grid[i][k]) {
-                grid->g_grid[i][k]->state = 0;
-            }
-        }
-    }
-}
-
-
-Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize )
-{
-    Cell **rtn = (Cell**)realloc(array, (oldSize+1)*sizeof(Cell*));//(Cell**)calloc(oldSize+1, sizeof(Cell*));//(Cell**)realloc(array, (oldSize+1)*sizeof(Cell*));
-    rtn[oldSize] = toAdd;
-
-    return rtn;
-}
-
-void remElem( Cell** array, int index, int len )
-{
-    int i=0;
-    for(i=index; i<len-1; i++) {
-        array[i] = array[i+1];
-    }
-}
-
-Cell **remCell( Cell **array, size_t size, int row, int col )
-{
-    for(int i=0; i<size; i++) {
-        //printf("size: %d, %d\n", i, array[i]->x);
-        if(array[i]->row == row && array[i]->col == col) {
-            remElem(array, i, size);
-            array = realloc(array, (size-1)*sizeof(Cell*));
-            break;
-        }
-    }
-
-    return array;
-}
-
-void remAllCells( Cell **array, size_t size )
-{
-    for(int i=0; i<size; i++) {
-        free(array[i]);
-        array[i] = NULL;
-    }
-
-    free(array);
-    array = NULL;
-}
-
-void Grid_rand( Grid *grid )
-{
-    if(grid->g_grid) {
-        int k_count = 0;
-        for(int i=0; i<grid->rows; i++){
-            for(int k=0; k<grid->cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
-                int rval = rand()%2;
-                grid->g_grid[i][k]->state = rval;
-                /*if(rval == 1 && k_count < 500 ) {
-                    k_count++;
-                    grid->g_grid[i][k]->state = rval;
-                }else {
-                    grid->g_grid[i][k]->state = 0;
-                }*/
-
-            }
-        }
-        for(int i=0; i<grid->rows; i++){
-            for(int k=0; k<grid->cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
-                if(grid->g_grid[i][k]->state == 1) {
-                    Cell *c = Cell_new(i, k);
-                    c->state = 1;
-                    Grid_coiAdd(grid, c);
-                }
-            }
-        }
-    }
-}
-
-void Grid_addCell( Grid *grid, Cell *cell )
-{
-    grid->g_grid[cell->row][cell->col] = cell;
-}
-
-CellGrid *addToGrid( CellGrid *cg, Cell *toAdd, size_t oldSize )
-{
-    cg->coiArray = realloc(cg->coiArray, (cg->coiCount+1)*sizeof(Cell*));
-        //printf("added new cell at: %d\n", oldSize);
-    cg->coiArray[cg->coiCount] = toAdd;
-
-    return cg;
-}
-
 void Grid_prev( Grid *grid, RuleSet *rules )
 {
 
 }
 
-void Grid_Nbrs_check( CellGrid *tmpAlive, Grid *grid, Cell *c, RuleSet *rules )
-{
-    unsigned int grid_x=c->row-1, grid_y=c->col-1;
-    unsigned int finalX =c->row-1, finalY =c->col-1;
-
-    if(c->row-1 < 0) {
-        finalX = c->row;
-    }
-    if(c->col-1 < 0) {
-        finalY = c->col;
-    } //printf("row 1 %d:%d\n",grid_x, grid_y);
-    int max_COL =c->col+2, max_ROW = c->row+2;
-
-    if(max_COL > grid->cols) {
-        max_COL = c->col;
-    }
-    if(max_ROW > grid->rows) {
-        max_ROW = c->row;
-    }
-    //for(grid_x=max_ROW-1; grid_x>=finalX; grid_x--) {
-    //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
-    for(grid_x=finalX; grid_x<max_ROW; grid_x++) {
-      for(grid_y=finalY; grid_y<max_COL; grid_y++) {
-            if(grid->g_grid[grid_x][grid_y]->checked == 0 && grid->g_grid[grid_x][grid_y]->state == 0 ) {
-                grid->g_grid[grid_x][grid_y]->nbrs_count = Grid_nbrs(grid, grid->g_grid[grid_x][grid_y]);
-                grid->g_grid[grid_x][grid_y]->checked = 1;
-                if(Cell_next( grid->g_grid[grid_x][grid_y], rules ) == 1) {
-                    tmpAlive->coiArray = addCell1(tmpAlive->coiArray, Cell_new(grid_x,  grid_y), tmpAlive->coiCount);
-                    tmpAlive->coiCount++;
-                }
-            }
-        }
-    }
-}
-
-typedef struct
-{
-    /** @brief
-     *
-     */
-    CellGrid *tmpAlive;
-    Grid *grid;
-
-    RuleSet *rules;
-    /** @brief
-     *
-     */
-    int coiCount;
-
-} GridAndTmp;
-
-void *nbrUpdateThread(void *arg)
-{
-    GridAndTmp *tmp = (GridAndTmp*)arg;
-
-    for(unsigned int i=tmp->tmpAlive->coiCount; i--; ) { /* Add new values to coiArray */
-        tmp->grid->coiArray[i] = Cell_new(tmp->tmpAlive->coiArray[i]->row, tmp->tmpAlive->coiArray[i]->col);
-        tmp->grid->coiArray[i]->state = 1;
-        if(tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]) {
-        tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]->state = 1;
-        tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]->checked = 0;
-        }
-        Cell_free(tmp->tmpAlive->coiArray[i]);
-    }
-    tmp->grid->coiCount = tmp->tmpAlive->coiCount ;
-
-       free(tmp->tmpAlive->coiArray);
-       tmp->tmpAlive->coiArray = NULL;
-       free(tmp->tmpAlive);
-       tmp->tmpAlive = NULL;
-    return NULL;
-}
-
-void *gridClearThread(void *arg)
-{
-    Grid *grid = (Grid*)arg;
-
-    for(unsigned int i=grid->rows; i--; ) {
-        for(int k=grid->cols; k--; ) {
-            if(grid->g_grid[i][k]) {
-                grid->g_grid[i][k]->state = 0;
-                grid->g_grid[i][k]->checked = 0;
-            }
-        }
-    }
-
-
-    return NULL;
-}
-
-void *gridCheckArrayThread(void *arg)
-{
-    GridAndTmp *tmp = (GridAndTmp*)arg;
-    for(unsigned int i=tmp->grid->coiCount; i--; ) {
-    //for(unsigned int i=0;i<grid->coiCount; i+=2 ) {
-        tmp->grid->coiArray[i]->nbrs_count = Grid_nbrs( tmp->grid, tmp->grid->coiArray[i] );
-        if(Cell_next( tmp->grid->coiArray[i], tmp->rules )) { // Next state is alive.
-            tmp->grid->g_grid[tmp->grid->coiArray[i]->row][tmp->grid->coiArray[i]->col]->checked = 1;
-            tmp->tmpAlive->coiArray = addCell1( tmp->tmpAlive->coiArray , Cell_new(tmp->grid->coiArray[i]->row, tmp->grid->coiArray[i]->col), tmp->tmpAlive->coiCount );
-            tmp->tmpAlive->coiCount++;
-        }
-        tmp->grid->coiArray[i]->checked = 1;
-        Grid_Nbrs_check( tmp->tmpAlive, tmp->grid, tmp->grid->coiArray[i], tmp->rules );
-    }
-    return NULL;
-}
-
-Cell ***Grid_copy_array( Cell ***grid, int rows, int cols )
-{
-
-    Cell ***g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
-    for(int i=0; i<rows; i++) {
-        g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
-    }
-
-    for(int i=0; i<rows; i++) {
-        for(int k=0; k<cols; k++) {
-            g_grid[i][k] = Cell_new(i, k);
-            g_grid[i][k]->state = grid[i][k]->state;
-            g_grid[i][k]->checked  = grid[i][k]->checked;
-        }
-    }
-
-}
-
-CellArray *CellArray_new( int count )
-{
-    CellArray *arr = (CellArray*)calloc(count+1, sizeof(CellArray));
-    arr->count =count;
-    for(int i=0; i<count; i++) {
-        arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
-        arr->c_array[i]->state   = 0;
-        arr->c_array[i]->checked = 0;
-    }
-
-    return arr;
-}
-
-CellArray *CellArray_copy( CellArray *toCopy )
-{
-    CellArray *arr = CellArray_new( toCopy->count ); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
-    //arr->count =toCopy->count;
-    for(int i=0; i<toCopy->count; i++) {
-    //    arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
-        arr->c_array[i] = toCopy->c_array[i]->state   = 0;
-        arr->c_array[i] = toCopy->c_array[i]->checked = 0;
-    }
-
-    return arr;
-}
-
-GridArray *GridArray_new( int rows, int cols )
-{
-    GridArray *arr = (GridArray *)calloc(rows+1, sizeof(GridArray));
-    arr->g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
-    for(int i=0; i<rows; i++) {
-        arr->g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
-    }
-    for(int i=0; i<rows; i++) {
-        for(int k=0; k<cols; k++) {
-            arr->g_grid[i][k] = Cell_new(i, k);
-            arr->g_grid[i][k]->state   = 0;
-            arr->g_grid[i][k]->checked = 0;
-        }
-    }
-    return arr;
-}
-
-GridArray *GridArray_copy( GridArray *grid )
-{
-    GridArray *arr = GridArray_new( grid->rows, grid->cols );// (GridArray *)calloc(grid->rows+1, sizeof(GridArray));
-    //arr->g_grid = (Cell***)calloc(rows+1, sizeof(Cell**));
-    //for(int i=0; i<rows; i++) {
-    //    arr->g_grid[i] = (Cell**)calloc(cols+1, sizeof(Cell*));
-    //}
-    for(int i=0; i<grid->rows; i++) {
-        for(int k=0; k<grid->cols; k++) {
-            arr->g_grid[i][k] = Cell_new(i, k);
-            arr->g_grid[i][k]->state    = grid->g_grid[i][k]->state;
-            arr->g_grid[i][k]->checked  = grid->g_grid[i][k]->checked;
-        }
-    }
-    return arr;
-}
-
 void Grid_next( Grid *grid, RuleSet *rules )
 {
-    //printf("We have %d cells to check\n", grid->coiCount );
+    printf("We have %d cells to check\n", grid->lArray->count );
     if(grid) {
         /* This array is used to store tmp values of living cells. */
 
-        CellGrid *tmpAlive = (CellGrid*)calloc(1, sizeof(CellGrid));
+        CellArray *tmpAlive = CellArray_new(0); //(CellGrid*)calloc(1, sizeof(CellGrid));
+        GridArray *tmpArray = GridArray_copy( grid->gArray );
         //Cell ***g_grid = Grid_copy_array( grid->g_grid, grid->rows, grid->cols );
 
         time_t start,end;
@@ -550,16 +247,14 @@ void Grid_next( Grid *grid, RuleSet *rules )
         pthread_create(&thread2, NULL, gridCheckArrayThread, tmp1);
         pthread_join(thread2, NULL);
 
-        end = clock();
-        time_t t = (end-start);
-        printf("array update time: %d\n", t);
-
         pthread_t *thread1;
         pthread_create(&thread1, NULL, gridClearThread, grid);
         pthread_join(thread1, NULL);
 
-        Grid_coiEmpty(grid);
-        Grid_coiRealloc( grid,  tmpAlive->coiCount );
+        CellArray_empty(grid->lArray);
+        CellArray_realloc(grid->lArray, tmpAlive->count);
+    //    Grid_coiEmpty(grid);
+    //    Grid_coiRealloc( grid, tmpAlive->count );
 
         GridAndTmp *tmp = (GridAndTmp*)calloc(1, sizeof(GridAndTmp));
         tmp->grid = grid;
@@ -569,26 +264,74 @@ void Grid_next( Grid *grid, RuleSet *rules )
         //object->g_model->is_playing = 1;
         pthread_create(&thread, NULL, nbrUpdateThread, tmp);
         pthread_join(thread, NULL);
-
+        end = clock();
+        time_t t = (end-start);
+        printf("array update time: %d:: %d\n", t, grid->lArray->count);
     //    grid = Grid_copy_array( grid, grid->rows, grid->cols );
     }
 
 }
 
+Cell **addCell1( Cell **array, Cell *toAdd, size_t oldSize )
+{
+    Cell **rtn = (Cell**)realloc(array, (oldSize+1)*sizeof(Cell*));//(Cell**)calloc(oldSize+1, sizeof(Cell*));//(Cell**)realloc(array, (oldSize+1)*sizeof(Cell*));
+    rtn[oldSize] = toAdd;
+
+    return rtn;
+}
+
+void Grid_Nbrs_check( CellArray *tmpAlive, Grid *grid, Cell *c, RuleSet *rules )
+{
+    unsigned int grid_x=c->row-1, grid_y=c->col-1;
+    unsigned int finalX =c->row-1, finalY =c->col-1;
+
+    if(c->row-1 < 0) {
+        finalX = c->row;
+    }
+    if(c->col-1 < 0) {
+        finalY = c->col;
+    } //printf("row 1 %d:%d\n",grid_x, grid_y);
+    int max_COL =c->col+2, max_ROW = c->row+2;
+
+    if(max_COL > grid->gArray->cols) {
+        max_COL = c->col;
+    }
+    if(max_ROW > grid->gArray->rows) {
+        max_ROW = c->row;
+    }
+    //for(grid_x=max_ROW-1; grid_x>=finalX; grid_x--) {
+    //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
+    for(grid_x=finalX; grid_x<max_ROW; grid_x++) {
+      for(grid_y=finalY; grid_y<max_COL; grid_y++) {
+            if(grid->gArray->g_grid[grid_x][grid_y]->checked == 0 && grid->gArray->g_grid[grid_x][grid_y]->state == 0 ) {
+                grid->gArray->g_grid[grid_x][grid_y]->nbrs_count = Grid_nbrs(grid, grid->gArray->g_grid[grid_x][grid_y]);
+                grid->gArray->g_grid[grid_x][grid_y]->checked = 1;
+                if(Cell_next( grid->gArray->g_grid[grid_x][grid_y], rules ) == 1) {
+                    //CellArray_add(tmpAlive->c_array , Cell_new(grid_x,  grid_y));
+                    tmpAlive->c_array = addCell1(tmpAlive->c_array , Cell_new(grid_x,  grid_y), tmpAlive->count);
+                    tmpAlive->count++;
+                }
+            }
+        }
+    }
+}
+
 void Grid_switch( Grid *grid, int row, int col )
 {
     if(grid) {
-        switch (grid->g_grid[row][col]->state) {
+        switch (grid->gArray->g_grid[row][col]->state) {
             case 1: {
                 //Cell *c = Cell_new( row, col );
-                Grid_coiRem( grid, Cell_new( row, col ) );
-                grid->g_grid[row][col]->state = 0;
+                //Grid_coiRem( grid, Cell_new( row, col ) );
+                CellArray_rem(grid->lArray, Cell_new(row, col));
+                grid->gArray->g_grid[row][col]->state = 0;
                 break;
             }
             case 0: {
                 //Cell *c1 = Cell_new(row,col);
-                Grid_coiAdd( grid, Cell_new( row, col ) );
-                grid->g_grid[row][col]->state = 1;
+                CellArray_add(grid->lArray, Cell_new( row, col ) );
+            //    Grid_coiAdd( grid, Cell_new( row, col ) );
+                grid->gArray->g_grid[row][col]->state = 1;
                 break;
             }
             default:
@@ -612,19 +355,18 @@ int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, i
     } //printf("row 1 %d:%d\n",grid_x, grid_y);
     int max_COL =cell->col+2, max_ROW = cell->row+2;
 
-    if(max_COL > grid->cols) {
+    if(max_COL > grid->gArray->cols) {
         max_COL = cell->col;
     }
-    if(max_ROW > grid->rows) {
+    if(max_ROW > grid->gArray->rows) {
         max_ROW = cell->row;
     }
     //for(grid_x=max_ROW-1; grid_x>=finalX; grid_x--) {
     //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
-
     for(grid_x=finalX;grid_x<max_ROW ; grid_x++) {
         for(grid_y=finalY; grid_y<max_COL; grid_y++) {
-            if( grid->g_grid[grid_x][grid_y] && grid->g_grid[grid_x][grid_y]->state == 1 ) {
-                if(grid_x != cell->row || grid_y != cell->col) { /* We are not middle cell.*/
+            if( grid->gArray->g_grid[grid_x][grid_y] && grid->gArray->g_grid[grid_x][grid_y]->state == 1 ) {
+                if(grid_x != cell->row || grid_y != cell->col) {
                     c++;
                 }
             }
@@ -636,8 +378,8 @@ int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, i
 
 void grid_print( Grid *grid )
 {
-  printf("Printing array[%d][%d]:\n", grid->rows, grid->cols);
-  if(grid->g_grid) {
+  printf("Printing array[%d][%d]:\n", grid->gArray->rows, grid->gArray->cols);
+ /* if(grid->g_grid) {
     for(int i=0; i<grid->rows; i++) {
         printf("r:%d ", i);
         for(int k=0; k<grid->cols; k++) {
@@ -646,31 +388,6 @@ void grid_print( Grid *grid )
             }else {printf("[0]");}
         }
         printf(" \n");
-    }
-  }
-}
-
-/*
-int grid_nbrs( int row, int col, int rows, int cols, int **grid )
-{
-    int c=0;
-    int grid_x=row-1, grid_y=col-1;
-
-    for(grid_x=row-1;grid_x<row+2; grid_x++) {
-        for(grid_y=col-1; grid_y<col+2; grid_y++) {
-
-            if( grid_x >= 0 && grid_x < rows &&
-                grid_y >= 0 && grid_y < cols) {
-                    if(grid[grid_x][grid_y] == 1 ) {
-                        if(grid_x != row || grid_y != col) {
-                            c++;
-                        }
-                    }
-
-            }
-
-        }
-    }
-
-    return c;
+    }*
 }*/
+}

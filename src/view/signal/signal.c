@@ -22,8 +22,8 @@ int signal_GameView_connect( GtkBuilder *builder, GameModel *model )
 		sprintf(str, "%d", model->c_step);
 		/* Assign UI spinbutton values from model */
 		gtk_label_set_text(GTK_LABEL(step_count), str);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->cols);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->rows);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(col_button), model->grid->gArray->cols);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(row_button), model->grid->gArray->rows);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(int_button), model->interval);
 		gtk_switch_set_state(GTK_SWITCH(dead_switch), model->visible);
 		/* Assign UI color chooser values from model */
@@ -165,7 +165,8 @@ void on_RandGrid_clicked ( GtkButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;
     //grid_rand( model->g_model->rows, model->g_model->cols, model->g_model->grid );
-	Grid_rand( model->g_model->grid );
+	Grid_mod(model->g_model->grid, RANDOM,  NULL);
+	//Grid_rand( model->g_model->grid );
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -173,8 +174,8 @@ G_MODULE_EXPORT
 void on_ClearGrid_clicked ( GtkButton *button, gpointer data )
 {
     ViewObject *model = (ViewObject*)data;
-    Grid_empty(model->g_model->grid );
-
+    //GridArray_empty(model->g_model->grid );
+	Grid_mod( model->g_model->grid, EMPTY, NULL );
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -204,7 +205,13 @@ void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
 
     int tmpRows = gtk_spin_button_get_value (button);
-    Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
+
+	Grid_ptr data1;
+	data1.row = tmpRows; //model->g_model->grid->gArray->rows;
+	data1.col = model->g_model->grid->gArray->cols;
+//	data.rules = model->g_model->grid->gArray->rules;
+	Grid_mod( model->g_model->grid, RESIZE, &data1);
+//    Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
     //model->g_model->grid->rows = tmpRows;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
@@ -229,7 +236,13 @@ void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
 
     int tmpCols = gtk_spin_button_get_value (button);
-    Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
+
+		Grid_ptr data1;
+		data1.row = model->g_model->grid->gArray->rows; //model->g_model->grid->gArray->rows;
+		data1.col = tmpCols;
+	//	data.rules = model->g_model->grid->gArray->rules;
+		Grid_mod( model->g_model->grid, RESIZE, &data1);
+    //Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
     //model->g_model->grid->cols = tmpCols;
     GameModel_save(model->g_model);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));

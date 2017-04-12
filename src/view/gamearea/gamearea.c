@@ -20,7 +20,7 @@ int GameArea_x_pos( gpointer data, float x, float width, float height )
     int pos = -1;
     ViewObject *model = (ViewObject*)data;
 
-    int max_x = model->g_model->grid->rows,
+    int max_x = model->g_model->grid->gArray->rows,
 		cur_x = 0;
 
     float x_start = 5.0;
@@ -51,7 +51,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
     int pos = -1;
     ViewObject *model = (ViewObject*)data;
 
-    int	max_y = model->g_model->grid->cols, cur_x = 0;
+    int	max_y = model->g_model->grid->gArray->cols, cur_x = 0;
 
     float y_start = 5.0;
     int   x_cell = 0;
@@ -84,7 +84,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
     GameModel *area1 = (GameModel*)data;
 	//printf("Drawing area again. \n" );
     if(area1) {
-		//g_print("Found area");
+
         GtkAllocation widget_alloc;
         /* Get current allocation for widget to know draw size. */
         gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
@@ -104,14 +104,14 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	    cairo_rectangle(cr, 0, 0, maxx, maxy);
 	    gdk_cairo_set_source_rgba(cr, bgrn_col);
 	    cairo_fill(cr);
-
-        for(int cur_x=area1->startX; cur_x<area1->grid->rows; cur_x++) {GdkRGBA *clr = NULL;
+//g_print("Found area %d", area1->grid->gArray->rows);
+        for(int cur_x=area1->startX; cur_x<area1->grid->gArray->rows; cur_x++) { GdkRGBA *clr = NULL;
             if(x_point >= maxx) { break; }
-            for(int cur_y=area1->startY; cur_y<area1->grid->cols; cur_y++) {
+            for(int cur_y=area1->startY; cur_y<area1->grid->gArray->cols; cur_y++) {
 
-				switch (area1->grid->g_grid[cur_x][cur_y]->state) {
+				switch (area1->grid->gArray->g_grid[cur_x][cur_y]->state) {
 					case 0:
-						if(area1->visible == 1) {
+						if(area1->visible == 1) {//g_print("Found area");
 							clr = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
 							color_lighter1( clr, 0.1);
 							gdk_cairo_set_source_rgba(cr, clr);

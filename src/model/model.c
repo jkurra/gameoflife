@@ -108,8 +108,8 @@ void GameModel_save( GameModel *model )
         char *t_time = (char*) calloc(10, sizeof(char*));
         char *vis =    (char*) calloc(10, sizeof(char*));
 
-        sprintf(rows, "%d",   model->grid->rows);
-        sprintf(cols, "%d",   model->grid->cols);
+        sprintf(rows, "%d",   model->grid->gArray->rows);
+        sprintf(cols, "%d",   model->grid->gArray->cols);
         sprintf(t_time, "%d", model->interval);
         sprintf(vis, "%d",    model->visible);
 
