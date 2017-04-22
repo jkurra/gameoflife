@@ -47,6 +47,8 @@ typedef struct
 
 } Grid;
 
+int Grid_count( Grid *grid, int type );
+
 /*
 typedef struct
 {
@@ -71,6 +73,8 @@ typedef struct
  * @return pointer to  created two-dimensional array
  */
 Grid *Grid_new( int rows, int cols );
+
+Grid *Grid_copy( Grid *grid );
 
 /** @brief Frees given grid and all its member values.
  *

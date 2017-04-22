@@ -46,7 +46,7 @@ typedef struct
      */
     PrefModel *p_model;
 
-    pthread_t *gameThread;
+    pthread_t gameThread;
 
 } ViewObject;
 

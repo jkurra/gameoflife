@@ -1,23 +1,63 @@
 #include "cellarray.h"
 
-CellArray *CellArray_new( int count )
+CellArray *CellArray_new()
 {
     CellArray *arr = (CellArray*)calloc(1, sizeof(CellArray));
-    arr->count =count;
 
-    arr->c_array = (Cell**)calloc(count+1, sizeof(Cell*));
-    for(int i=0; i<count; i++) {
-        arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
-    //    arr->c_array[i]->state   = 0;
-    //    arr->c_array[i]->checked = 0;
-    }
+    arr->count = 0;
+    arr->c_array = NULL;
 
     return arr;
 }
 
 void CellArray_free(CellArray *array)
 {
+    if(array) {
+        for(int i=0; i<array->count; i++) {
+            Cell_free(array->c_array[i]);
+        }
+        free(array->c_array);
+        array->c_array = NULL;
 
+        array->count = 0;
+
+        free(array);
+        array = NULL;
+    }
+}
+
+CellArray *CellArray_copy( CellArray *toCopy )
+{
+    CellArray *arr = CellArray_new(); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
+
+    arr->c_array = (Cell**)calloc(toCopy->count, sizeof(Cell*));
+    for(int i=0; i<toCopy->count; i++) {
+        arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
+        arr->c_array[i]->state = toCopy->c_array[i]->state;
+        arr->c_array[i]->checked = toCopy->c_array[i]->checked;
+    }
+    arr->count= toCopy->count;
+    return arr;
+}
+
+void CellArray_clear( CellArray *array )
+{
+    for(int i=0; i<array->count; i++) {
+        Cell_free(array->c_array[i]);
+    }
+    free(array->c_array);
+    array->c_array = NULL;
+    //array->c_array = (Cell**)calloc(1, sizeof(Cell*));
+
+    array->count = 0;
+}
+
+void CellArray_empty( CellArray *array )
+{
+    for(int i=0; i<array->count; i++) {
+        array->c_array[i]->state   = 0;
+        array->c_array[i]->checked = 0;
+    }
 }
 
 void CellArray_set( CellArray *array, int val, int index, int new_state )
@@ -31,19 +71,7 @@ void CellArray_set( CellArray *array, int val, int index, int new_state )
             break;
     }
 }
-
-CellArray *CellArray_copy( CellArray *toCopy )
-{
-    CellArray *arr = CellArray_new( toCopy->count ); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
-    //arr->count =toCopy->count;
-    for(int i=0; i<toCopy->count; i++) {
-    //    arr->c_array[i] = (Cell*)calloc(1, sizeof(Cell));
-        arr->c_array[i] = toCopy->c_array[i]->state   = 0;
-        arr->c_array[i] = toCopy->c_array[i]->checked = 0;
-    }
-
-    return arr;
-}
+/*
 void CellArray_realloc( CellArray *array, size_t newSize )
 {
     for(int i=array->count; i--; ) {
@@ -53,13 +81,14 @@ void CellArray_realloc( CellArray *array, size_t newSize )
     array->c_array = NULL;
 
     array->c_array = (Cell**)calloc(newSize, sizeof(Cell*));
-}
+}*/
 
 void CellArray_add( CellArray *array, Cell *cell )
 {
-    if(array) {
+    if(array && cell) {
         array->c_array = (Cell**)realloc(array->c_array, (array->count+1)*sizeof(Cell*));
         array->c_array[array->count] = cell;
+        //printf("add cell: %d\n", array->c_array[array->count]->state);
         //array->c_array = addCell1( array->c_array, cell, array->count );
         array->count++;
     }
@@ -88,10 +117,14 @@ void CellArray_rem( CellArray *array, Cell *cell ) {
     }
 }
 
-void CellArray_empty( CellArray *array )
+
+Cell *CellArray_get( CellArray *array, int index )
 {
-    for(int i=0; i<array->count; i++) {
-        array->c_array[i]->state = 0;
-        array->c_array[i]->checked = 0;
+    Cell *rtn = NULL;
+
+    if(array && index < array->count && index >= 0) {
+        rtn = array->c_array[index];
     }
+
+    return rtn;
 }

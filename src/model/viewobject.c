@@ -89,13 +89,12 @@ void *gameLoopThread(void *arg)
     ViewObject *object = (ViewObject*)arg;
 
     while(object->g_model->is_playing) {
-        //sleep(1);
-        //printf("game update called.\n");
         Grid_next(object->g_model->grid, object->g_model->ruleset);
         //grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
         object->g_model->c_step++;
+        //object->g_model->interval;
         //object->g_model->updated = 1;
-        usleep(10000);
+        usleep(object->g_model->interval*1000);
     }
     return NULL;
 }
@@ -115,7 +114,9 @@ void ViewObject_quit( ViewObject *object )
         if(object->g_model->is_playing) {
             object->g_model->is_playing = 0;
         }
+
         pthread_join(object->gameThread, NULL);
+
         if(object->g_model){
             view_destroy((Model*)object->g_model);
         }

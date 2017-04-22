@@ -1,10 +1,10 @@
 {
-"gridRows":"100",
-"gridCols":"100",
-"tickInterval":"500",
+"gridRows":"1000",
+"gridCols":"1000",
+"tickInterval":"100",
 "gridVisible":"1",
 "backgroundColor":"rgb(0,0,0)",
-"cellColor":"rgb(173,127,168)",
+"cellColor":"rgb(245,121,0)",
 "defaultTheme":"default",
 "zoom":"0,200000"
 }

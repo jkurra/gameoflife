@@ -10,22 +10,38 @@
 #define STATE 0
 #define CHECK 1
 
+/**
+ *
+ */
 typedef struct
 {
-    int count;
+    /**
+     *
+     */
     Cell **c_array;
+
+    /**
+     *
+     */
+    int count;
 
 } CellArray;
 
 /** @brief Initialize new array with given size.
  *
  */
-CellArray *CellArray_new( int count );
+CellArray *CellArray_new();
 
 /** @brief Free given CellArray.
  *
  */
 void CellArray_free( CellArray *array );
+
+/** @brief Set values to 0 in every cell in array.
+ *
+ *  Set array size to 0 and free pointers.   
+ */
+void CellArray_clear( CellArray *array );
 
 /** @brief Set values to 0 in every cell in array.
  *
@@ -47,5 +63,9 @@ void CellArray_add( CellArray *array, Cell *cell );
  */
 void CellArray_set( CellArray *array, int val, int index, int new_state );
 
+/** @brief
+ *
+ */
+Cell *CellArray_get( CellArray *array, int index );
 
 #endif /* GRID_H_ */
