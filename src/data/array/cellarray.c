@@ -74,14 +74,29 @@ void CellArray_set( CellArray *array, int val, int index, int new_state )
 /*
 void CellArray_realloc( CellArray *array, size_t newSize )
 {
+    /*
     for(int i=array->count; i--; ) {
         Cell_free(array->c_array[i]);
     }
     free(array->c_array);
     array->c_array = NULL;
 
-    array->c_array = (Cell**)calloc(newSize, sizeof(Cell*));
-}*/
+    array->c_array = (Cell**)calloc(newSize, sizeof(Cell*));*/
+//}
+
+int CellArray_has( CellArray *array, Cell *cell )
+{
+    int rtn = 0;
+
+    for(int i=0; i<array->count; i++) {
+        if(array->c_array[i]->row == cell->row && array->c_array[i]->col == cell->col) {
+            rtn = 1;
+            break;
+        }
+    }
+
+    return rtn;
+}
 
 void CellArray_add( CellArray *array, Cell *cell )
 {

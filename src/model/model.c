@@ -162,16 +162,6 @@ void GameModel_free( GameModel *model )
         if(model->conf) {
             config_free(model->conf);
         }
-
-
-        //if(model->main_frame) {
-            //gtk_widget_destroy(GTK_WIDGET(model->main_frame));
-            //model->main_frame = NULL;
-        //}
-        //if(model->game_frame) {
-            //gtk_widget_destroy(GTK_WIDGET(model->game_frame));
-            //model->game_frame = NULL;
-        //}
         if(model->grid) {
             Grid_free(model->grid);
         }

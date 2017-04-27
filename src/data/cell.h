@@ -89,7 +89,7 @@ void Cell_free(Cell *cell);
  * overpopulation, or stagnant state.
  *
  * @param cell
- * @param rules 
+ * @param rules
  * @return state of the cell in previous turn.
  */
 int Cell_prev( Cell *cell, RuleSet *rules );

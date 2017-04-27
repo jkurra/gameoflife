@@ -18,6 +18,17 @@ GridArray *GridArray_new( int rows, int cols )
     for(int i=0; i<rows; i++) {
         arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
     }
+    // TODO: this array replaces ol one
+    arr->grid_arr = (int**)calloc(rows, sizeof(int*));
+    for(int i=0; i<rows; i++) {
+        arr->grid_arr[i] = (int*)calloc(cols, sizeof(int));
+    }
+
+    for(int i=0; i<rows; i++) {
+        for(int k=0; k<cols; k++) {
+            arr->g_grid[i][k] = 0;
+        }
+    }
     /*
      *  create new cells for allocated spaces in grid and assing cells with default
      *  values which are always 0.
@@ -57,6 +68,43 @@ void GridArray_free( GridArray *array )
 
     free(array);
     array = NULL;
+}
+
+// TODO: remove 1 and replace function in grid.c
+void GridArray_resize1( GridArray *grid, int new_rows, int new_cols )
+{
+    /*
+     * First free all cells outside new borders, if new grid is smaller than previous.
+     */
+    if(new_rows < grid->rows) {
+        for(int i=new_cols; i<grid->rows; i++) {
+            Cell_free(grid->g_grid[i]);
+        }
+    }
+    if(new_rows < grid->cols) {
+        for(int i=new_cols; i<grid->cols; i++) {
+            Cell_free(grid->g_grid[i]);
+        }
+    }
+    /*
+     * Reallocate grid with new values.
+     */
+    grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows)*sizeof(Cell**));
+    for(int i=0; i<new_rows; i++) {
+        grid->g_grid[i] = (Cell**)realloc(grid->g_grid[i], (new_cols)*sizeof(Cell*));
+    }
+    /*
+     * If new grid is bigger than previous, fill newly allocated spaces with empty cells.
+     */
+    for(int i=grid->rows; i<new_rows; i++) {
+        for(int k=grid->cols; k<new_cols; k++) {
+            grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+            grid->g_grid[i][k]->checked = 0;
+        }
+    }
+
+    grid->rows = new_rows;
+    grid->cols = new_cols;
 }
 
 GridArray *GridArray_copy( GridArray *grid )

@@ -88,11 +88,12 @@ void Grid_free( Grid *grid )
 void GridArray_resize( Grid *grid, int new_rows, int new_cols )
 {
     // printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
-    grid->gArray->g_grid = (Cell***)realloc(grid->gArray->g_grid, (new_rows+1)*sizeof(Cell**));
+    grid->gArray->g_grid = (Cell***)realloc(grid->gArray->g_grid, (new_rows)*sizeof(Cell**));
 
     for(int i=0; i<new_rows; i++) {
-        printf("alloc row: %d\n", i);
-        grid->gArray->g_grid[i] = (Cell**)realloc(grid->gArray->g_grid[i], (new_cols+1)*sizeof(Cell*));//(Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_grid, (grid->cols+1)*sizeof(Cell*));
+        //printf("alloc row: %d\n", i);
+        grid->gArray->g_grid[i] = (Cell**)realloc(grid->gArray->g_grid[i], (new_cols)*sizeof(Cell*)); //(Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_grid, (grid->cols+1)*sizeof(Cell*));
+        //printf("alloc row: %d\n", i);
     }
 
     for(int i=0; i<new_rows; i++) {
@@ -105,7 +106,7 @@ void GridArray_resize( Grid *grid, int new_rows, int new_cols )
         if(grid->lArray->c_array[i]->row < new_rows && grid->lArray->c_array[i]->col < new_cols) {
             grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col] = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
             grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->state = grid->lArray->c_array[i]->state;
-            grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->checked = 0;
+            //grid->gArray->g_grid[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->checked = 0;
         }
     }
     /// TODO: Add removal of cells outside grid borders here. Otherwise program will crash later.
@@ -228,7 +229,7 @@ void *checkArrays(void *arg)
             Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
             Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
             c->state = 1;
-        //    c->checked = 1;
+
             CellArray_add(tmp_grid->lArray,c);
         }
         CellArray_set( grid->lArray, CHECK, i, 1 );
@@ -248,18 +249,18 @@ void *checkGridThread(void *arg)
     pthread_t thread1;
     pthread_create(&thread1, NULL, checkArrays, tmp);
     pthread_join(thread1, NULL);
-
+/*
     pthread_t thread;
     pthread_create(&thread, NULL, clearArrays, tmp);
     pthread_join(thread, NULL);
+*/
 
-/*
     GridArray_empty(grid->gArray);
 
     GridArray_set_with_cellarray( grid->gArray, tmp_grid->lArray );
     CellArray_clear(grid->lArray);
-*/
-    //grid->lArray = CellArray_copy(tmp_grid->lArray);
+
+    grid->lArray = CellArray_copy(tmp_grid->lArray);
 
     return NULL;
 }
@@ -322,6 +323,10 @@ void Grid_Nbrs_check( CellArray *tmpAlive, Grid *grid, Cell *c, RuleSet *rules )
     //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
     for(grid_x=finalX; grid_x<max_ROW; grid_x++) {
       for(grid_y=finalY; grid_y<max_COL; grid_y++) {
+          Cell *c2 = Cell_new(grid_x, grid_y);
+         /* if(!CellArray_has(grid->gArray->checked_cells, c2) && grid->gArray->grid_arr[grid_x][grid_y] == 0) {
+
+         }*/
           if(GridArray_get(grid->gArray, grid_x, grid_y)->checked == 0 && GridArray_get(grid->gArray, grid_x, grid_y)->state == 0) {
               //GridArray_set(grid->gArray, grid_x, grid_y, 1);
               GridArray_get(grid->gArray, grid_x, grid_y)->checked = 1;
@@ -333,6 +338,7 @@ void Grid_Nbrs_check( CellArray *tmpAlive, Grid *grid, Cell *c, RuleSet *rules )
                   CellArray_add(tmpAlive, c);
               }
           }
+          Cell_free(c2);
         }
     }
 }

@@ -39,7 +39,7 @@ void CellArray_free( CellArray *array );
 
 /** @brief Set values to 0 in every cell in array.
  *
- *  Set array size to 0 and free pointers.   
+ *  Set array size to 0 and free pointers.
  */
 void CellArray_clear( CellArray *array );
 
@@ -62,6 +62,8 @@ void CellArray_add( CellArray *array, Cell *cell );
  *
  */
 void CellArray_set( CellArray *array, int val, int index, int new_state );
+
+int CellArray_has( CellArray *array, Cell *cell );
 
 /** @brief
  *

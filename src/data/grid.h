@@ -31,35 +31,22 @@ typedef struct
  */
 typedef struct
 {
+    /** @brief Contains two dimensional grid with pointers to cells.
+     *
+     */
     GridArray *gArray;
+
+    /** @brief Contains currently living cells in grid.
+     *
+     */
     CellArray *lArray;
 
-    /** @brief
-     *
-     */
-    //Cell **coiArray;
-
-    /** @brief
-     *
-     */
-    //int coiCount;
     int updated;
 
 } Grid;
 
 int Grid_count( Grid *grid, int type );
 
-/*
-typedef struct
-{
-
-    Cell **coiArray;
-
-
-    int coiCount;
-
-} CellGrid;
-*/
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new
@@ -74,6 +61,10 @@ typedef struct
  */
 Grid *Grid_new( int rows, int cols );
 
+/** @brief Copy grid and return pointer to newly allocated Grid.
+ *
+ *  TODO: Not yet fully implemented.
+ */
 Grid *Grid_copy( Grid *grid );
 
 /** @brief Frees given grid and all its member values.
