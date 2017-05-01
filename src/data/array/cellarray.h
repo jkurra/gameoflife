@@ -63,7 +63,7 @@ void CellArray_add( CellArray *array, Cell *cell );
  */
 void CellArray_set( CellArray *array, int val, int index, int new_state );
 
-int CellArray_has( CellArray *array, Cell *cell );
+int CellArray_has( CellArray *array, Cell *cell);
 
 /** @brief
  *

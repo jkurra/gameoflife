@@ -109,26 +109,27 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 		//	 GdkRGBA *clr = NULL;
             if(x_point >= maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->gArray->cols; cur_y++) {
-
-				switch (area1->grid->gArray->g_grid[cur_x][cur_y]->state) {
-					case 0:
-						if(area1->visible == 1) {//g_print("Found area");
-							 GdkRGBA *clr1 = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
-							color_lighter1( clr1, 0.1);
-							gdk_cairo_set_source_rgba(cr, clr1);
+				if(GridArray_get(area1->grid->gArray, cur_x, cur_y )) {//;area1->grid->gArray->g_grid[cur_x][cur_y]) {
+					switch (area1->grid->gArray->g_grid[cur_x][cur_y]->state) {
+						case 0:
+							if(area1->visible == 1) {//g_print("Found area");
+								 GdkRGBA *clr1 = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
+								color_lighter1( clr1, 0.1);
+								gdk_cairo_set_source_rgba(cr, clr1);
+								cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
+								gdk_rgba_free(clr1);
+							}
+							break;
+						case 1:{
+						 	GdkRGBA *clr2 = gdk_rgba_copy(cell_col);
+							gdk_cairo_set_source_rgba(cr, clr2);
 							cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-							gdk_rgba_free(clr1);
+							gdk_rgba_free(clr2);
 						}
-						break;
-					case 1:{
-					 	GdkRGBA *clr2 = gdk_rgba_copy(cell_col);
-						gdk_cairo_set_source_rgba(cr, clr2);
-						cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-						gdk_rgba_free(clr2);
+							break;
+						default:
+							break;
 					}
-						break;
-					default:
-						break;
 				}
 				cairo_fill(cr);
 			//	gdk_cairo_set_source_rgba(cr, clr);

@@ -8,9 +8,6 @@
 #include "cellarray.h"
 #include "../cell.h"
 
-/** @brief Set value of a cell property in given index.
- *
- */
 typedef struct
 {
     /**
@@ -18,7 +15,7 @@ typedef struct
      */
     Cell ***g_grid;
 
-    CellArray **checked_cells;
+    //CellArray **checked_cells;
 
 
     /** @brief Array representing two dimensional plane with cells.
@@ -28,14 +25,13 @@ typedef struct
      *  used to create Cell structures.
      *  TODO: replace g_grid with this array to be more effeci.
      */
-    int **grid_arr;
+    //int **grid_arr;
     /**
      *
      */
     int rows, cols;
 
 } GridArray;
-
 
 /** @brief Set value of a cell property in given index.
  *

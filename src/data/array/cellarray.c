@@ -87,26 +87,40 @@ void CellArray_realloc( CellArray *array, size_t newSize )
 int CellArray_has( CellArray *array, Cell *cell )
 {
     int rtn = 0;
-
+    int row = cell->row, col = cell->col;
+    //printf("Checking array started.\n" );
     for(int i=0; i<array->count; i++) {
-        if(array->c_array[i]->row == cell->row && array->c_array[i]->col == cell->col) {
+        if(array->c_array[i]->row == row && array->c_array[i]->col == col) {
             rtn = 1;
             break;
         }
     }
+    //printf("Checking array: DONE.\n" );
 
     return rtn;
 }
 
 void CellArray_add( CellArray *array, Cell *cell )
 {
+    //printf("Adding to array\n" );
     if(array && cell) {
-        array->c_array = (Cell**)realloc(array->c_array, (array->count+1)*sizeof(Cell*));
-        array->c_array[array->count] = cell;
-        //printf("add cell: %d\n", array->c_array[array->count]->state);
-        //array->c_array = addCell1( array->c_array, cell, array->count );
-        array->count++;
+    /*    if(check_doubles == 1) {
+            if(CellArray_has(array, cell) == 0) {
+                array->c_array = (Cell**)realloc(array->c_array, (array->count+1)*sizeof(Cell*));
+                array->c_array[array->count] = cell;
+                //printf("add cell: %d\n", array->c_array[array->count]->state);
+                //array->c_array = addCell1( array->c_array, cell, array->count );
+                array->count++;
+            }
+        } else {*/
+            array->c_array = (Cell**)realloc(array->c_array, (array->count+1)*sizeof(Cell*));
+            array->c_array[array->count] = cell;
+            //printf("add cell: %d\n", array->c_array[array->count]->state);
+            //array->c_array = addCell1( array->c_array, cell, array->count );
+            array->count++;
+        //}
     }
+    //printf("Adding to array:: DONE.\n" );
 }
 
 void remElem1( Cell** array, int index, int len )

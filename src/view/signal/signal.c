@@ -210,6 +210,7 @@ void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
 	data1.row = tmpRows; //model->g_model->grid->gArray->rows;
 	data1.col = model->g_model->grid->gArray->cols;
 //	data.rules = model->g_model->grid->gArray->rules;
+//	printf("new Grid size: x:%d, y:%d \n", data1.row, data1.col);
 	Grid_mod( model->g_model->grid, RESIZE, &data1);
 //    Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
     //model->g_model->grid->rows = tmpRows;

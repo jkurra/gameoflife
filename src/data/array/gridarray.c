@@ -19,10 +19,10 @@ GridArray *GridArray_new( int rows, int cols )
         arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
     }
     // TODO: this array replaces ol one
-    arr->grid_arr = (int**)calloc(rows, sizeof(int*));
+    /*arr->grid_arr = (int**)calloc(rows, sizeof(int*));
     for(int i=0; i<rows; i++) {
         arr->grid_arr[i] = (int*)calloc(cols, sizeof(int));
-    }
+    }*/
 
     for(int i=0; i<rows; i++) {
         for(int k=0; k<cols; k++) {
@@ -77,7 +77,7 @@ void GridArray_resize1( GridArray *grid, int new_rows, int new_cols )
      * First free all cells outside new borders, if new grid is smaller than previous.
      */
     if(new_rows < grid->rows) {
-        for(int i=new_cols; i<grid->rows; i++) {
+        for(int i=new_rows; i<grid->rows; i++) {
             Cell_free(grid->g_grid[i]);
         }
     }
@@ -89,19 +89,48 @@ void GridArray_resize1( GridArray *grid, int new_rows, int new_cols )
     /*
      * Reallocate grid with new values.
      */
+
     grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows)*sizeof(Cell**));
-    for(int i=0; i<new_rows; i++) {
-        grid->g_grid[i] = (Cell**)realloc(grid->g_grid[i], (new_cols)*sizeof(Cell*));
+    //if(new_cols != grid->cols) {
+    if(grid->cols != new_cols) {
+        for(int i=0; i<new_rows; i++) {
+        /*    if(grid->g_grid[i] == NULL ) {
+                grid->g_grid[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
+            } else {*/
+            //arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
+            //if(grid->cols != new_cols) {
+                printf("new cell alloc i:%d=x:%d-%d y:%d:%d\n", i, grid->rows, new_rows, grid->cols, new_cols);
+                grid->g_grid[i] = (Cell**)realloc(grid->g_grid[i], (new_cols)*sizeof(Cell*));
+                for(int k=grid->cols; k<new_cols; k++) {
+                    grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+                    grid->g_grid[i][k]->state = 0;
+                    grid->g_grid[i][k]->checked = 0;
+                }
+            ///}
+            //}
+        }
     }
+    else {
+        for(int i=grid->rows; i<new_rows; i++) {
+            grid->g_grid[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
+            for(int k=0; k<grid->cols; k++) {
+                grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+                grid->g_grid[i][k]->state = 0;
+                grid->g_grid[i][k]->checked = 0;
+            }
+        }
+    }
+    //}
     /*
      * If new grid is bigger than previous, fill newly allocated spaces with empty cells.
      */
-    for(int i=grid->rows; i<new_rows; i++) {
+    /*for(int i=grid->rows; i<new_rows; i++) {
         for(int k=grid->cols; k<new_cols; k++) {
             grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
+            grid->g_grid[i][k]->state = 0;
             grid->g_grid[i][k]->checked = 0;
         }
-    }
+    }*/
 
     grid->rows = new_rows;
     grid->cols = new_cols;
@@ -182,8 +211,11 @@ Cell *GridArray_get( GridArray *array, int row, int col )
 {
     Cell *rtn = NULL;
 
+//    printf("Get cell: x:%d-%d, y:%d-%d\n", array->rows, row, array->cols, col);
     if(array && row < array->rows && row >= 0 && col < array->cols && col >= 0) {
-        rtn = array->g_grid[row][col];
+        if(array->g_grid[row][col]) {
+            rtn = array->g_grid[row][col];
+        }
     }
 
     return rtn;
