@@ -15,6 +15,8 @@
  */
 typedef struct
 {
+    BaseArray base;
+    
     /**
      *
      */

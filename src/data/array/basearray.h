@@ -15,9 +15,26 @@ typedef struct
     /**
      *
      */
-    int type;
+    int row;
 
     /**
+     *
+     */
+    int col;
+
+} arr_dim;
+
+/**
+ *
+ */
+typedef struct
+{
+    /** @brief Type of "subclass" array.
+     *
+     */
+    int type;
+
+    /** @brief count of all cells in array.
      *
      */
     int count;

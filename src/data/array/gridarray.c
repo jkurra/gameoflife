@@ -6,6 +6,7 @@ GridArray *GridArray_new( int rows, int cols )
      *
      */
     GridArray *arr = (GridArray *)calloc(rows, sizeof(GridArray));
+
     /*
      *
      */
@@ -14,9 +15,9 @@ GridArray *GridArray_new( int rows, int cols )
     /*
      *  Allocate space for rows and columns in grid.
      */
-    arr->g_grid = (Cell***)calloc(rows, sizeof(Cell**));
+    arr->g_array = (Cell***)calloc(rows, sizeof(Cell**));
     for(int i=0; i<rows; i++) {
-        arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
+        arr->g_array[i] = (Cell**)calloc(cols, sizeof(Cell*));
     }
     // TODO: this array replaces ol one
     /*arr->grid_arr = (int**)calloc(rows, sizeof(int*));
@@ -26,7 +27,7 @@ GridArray *GridArray_new( int rows, int cols )
 
     for(int i=0; i<rows; i++) {
         for(int k=0; k<cols; k++) {
-            arr->g_grid[i][k] = 0;
+            arr->g_array[i][k] = 0;
         }
     }
     /*
@@ -35,9 +36,9 @@ GridArray *GridArray_new( int rows, int cols )
      */
     for(int i=0; i<rows; i++) {
         for(int k=0; k<cols; k++) {
-            arr->g_grid[i][k] = Cell_new(i, k);
-            arr->g_grid[i][k]->state   = 0;
-            arr->g_grid[i][k]->checked = 0;
+            arr->g_array[i][k] = Cell_new(i, k);
+            arr->g_array[i][k]->state   = 0;
+            arr->g_array[i][k]->checked = 0;
         }
     }
     return arr;
@@ -50,73 +51,96 @@ void GridArray_free( GridArray *array )
      */
     for(int i=0; i<array->rows; i++) {
         for(int k=0; k<array->cols; k++) {
-            if(array->g_grid[i][k]) {
+            if(array->g_array[i][k]) {
             //    printf("freeing cell at %d:%d. \n", i,k);
-                Cell_free(array->g_grid[i][k]);
+                Cell_free(array->g_array[i][k]);
             }
         }
     }
 
     for(int i=0; i<array->rows; i++) {
-        free(array->g_grid[i]);
-        array->g_grid[i] = NULL;
-        //arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
+        free(array->g_array[i]);
+        array->g_array[i] = NULL;
     }
 
-    free(array->g_grid);
-    array->g_grid = NULL;
+    free(array->g_array);
+    array->g_array = NULL;
 
     free(array);
     array = NULL;
 }
 
-// TODO: remove 1 and replace function in grid.c
-void GridArray_resize1( GridArray *grid, int new_rows, int new_cols )
+void GridArray_empty( GridArray *array )
 {
+    for(int i=0; i<array->rows; i++) {
+        for(int k=0; k<array->cols; k++) {
+            Cell *tmp = GridArray_get(array, i, k);
+            if(tmp) {
+                tmp->state   = 0;
+                tmp->checked = 0;
+            }
+            /*if(array->g_array[i][k]) {
+                array->g_array[i][k]->state = 0;
+                array->g_array[i][k]->checked = 0;
+            }*/
+        }
+    }
+}
+
+// TODO: remove 1 and replace function in grid.c
+void GridArray_resize( GridArray *grid, int new_rows, int new_cols )
+{
+    int old_rows = grid->rows;
+    int old_cols = grid->cols;
+
+    grid->rows = new_rows;
+    grid->cols = new_cols;
     /*
      * First free all cells outside new borders, if new grid is smaller than previous.
      */
-    if(new_rows < grid->rows) {
-        for(int i=new_rows; i<grid->rows; i++) {
-            Cell_free(grid->g_grid[i]);
+    if(new_rows < old_rows ) {
+        for(int i=new_rows; i<old_rows ; i++) {
+            //GridArray_get();
+            Cell_free(grid->g_array[i]);
         }
     }
-    if(new_rows < grid->cols) {
-        for(int i=new_cols; i<grid->cols; i++) {
-            Cell_free(grid->g_grid[i]);
+    if(new_rows < old_cols) {
+        for(int i=new_cols; i<old_cols; i++) {
+
+            Cell_free(grid->g_array[i]);
         }
     }
     /*
      * Reallocate grid with new values.
      */
 
-    grid->g_grid = (Cell***)realloc(grid->g_grid, (new_rows)*sizeof(Cell**));
+    grid->g_array = (Cell***)realloc(grid->g_array, (new_rows)*sizeof(Cell**));
     //if(new_cols != grid->cols) {
-    if(grid->cols != new_cols) {
+    if(old_rows  != new_cols) {
         for(int i=0; i<new_rows; i++) {
-        /*    if(grid->g_grid[i] == NULL ) {
-                grid->g_grid[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
+        /*    if(grid->g_array[i] == NULL ) {
+                grid->g_array[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
             } else {*/
-            //arr->g_grid[i] = (Cell**)calloc(cols, sizeof(Cell*));
+            //arr->g_array[i] = (Cell**)calloc(cols, sizeof(Cell*));
             //if(grid->cols != new_cols) {
-                printf("new cell alloc i:%d=x:%d-%d y:%d:%d\n", i, grid->rows, new_rows, grid->cols, new_cols);
-                grid->g_grid[i] = (Cell**)realloc(grid->g_grid[i], (new_cols)*sizeof(Cell*));
-                for(int k=grid->cols; k<new_cols; k++) {
-                    grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
-                    grid->g_grid[i][k]->state = 0;
-                    grid->g_grid[i][k]->checked = 0;
+                printf("new cell alloc i:%d=x:%d-%d y:%d:%d\n", i, old_rows , new_rows, old_cols, new_cols);
+                grid->g_array[i] = (Cell**)realloc(grid->g_array[i], (new_cols)*sizeof(Cell*));
+                for(int k=old_cols; k<new_cols; k++) {
+                    grid->g_array[i][k] = Cell_new(i, k);//grid->g_array[i][k];
+                    grid->g_array[i][k]->state = 0;
+                    grid->g_array[i][k]->checked = 0;
                 }
             ///}
             //}
         }
     }
     else {
-        for(int i=grid->rows; i<new_rows; i++) {
-            grid->g_grid[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
-            for(int k=0; k<grid->cols; k++) {
-                grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
-                grid->g_grid[i][k]->state = 0;
-                grid->g_grid[i][k]->checked = 0;
+        for(int i=old_rows; i<new_rows; i++) {
+            grid->g_array[i] = (Cell**)calloc(new_cols, sizeof(Cell*));
+            for(int k=0; k<old_cols; k++) {
+                grid->g_array[i][k] = Cell_new(i, k);//grid->g_array[i][k];
+                grid->g_array[i][k]->state = 0;
+                grid->g_array[i][k]->checked = 0;
             }
         }
     }
@@ -126,14 +150,14 @@ void GridArray_resize1( GridArray *grid, int new_rows, int new_cols )
      */
     /*for(int i=grid->rows; i<new_rows; i++) {
         for(int k=grid->cols; k<new_cols; k++) {
-            grid->g_grid[i][k] = Cell_new(i, k);//grid->g_grid[i][k];
-            grid->g_grid[i][k]->state = 0;
-            grid->g_grid[i][k]->checked = 0;
+            grid->g_array[i][k] = Cell_new(i, k);//grid->g_array[i][k];
+            grid->g_array[i][k]->state = 0;
+            grid->g_array[i][k]->checked = 0;
         }
     }*/
 
-    grid->rows = new_rows;
-    grid->cols = new_cols;
+/*    grid->rows = new_rows;
+    grid->cols = new_cols;*/
 }
 
 GridArray *GridArray_copy( GridArray *grid )
@@ -142,9 +166,9 @@ GridArray *GridArray_copy( GridArray *grid )
 
     for(int i=0; i<grid->rows; i++) {
         for(int k=0; k<grid->cols; k++) {
-            arr->g_grid[i][k] = Cell_new(i, k);
-            arr->g_grid[i][k]->state   = grid->g_grid[i][k]->state;
-            arr->g_grid[i][k]->checked = grid->g_grid[i][k]->checked;
+            arr->g_array[i][k] = Cell_new(i, k);
+            arr->g_array[i][k]->state   = grid->g_array[i][k]->state;
+            arr->g_array[i][k]->checked = grid->g_array[i][k]->checked;
         }
     }
 
@@ -162,9 +186,9 @@ void GridArray_copy_values( GridArray *dest, GridArray *source )
             /*if( i <= dest->cols ) {
                 break;
             }*/
-            //arr->g_grid[i][k] = Cell_new(i, k);
-            dest->g_grid[i][k]->state   = source->g_grid[i][k]->state;
-            dest->g_grid[i][k]->checked = source->g_grid[i][k]->checked;
+            //arr->g_array[i][k] = Cell_new(i, k);
+            dest->g_array[i][k]->state   = source->g_array[i][k]->state;
+            dest->g_array[i][k]->checked = source->g_array[i][k]->checked;
         }
     }
 }
@@ -175,8 +199,13 @@ void GridArray_set_with_cellarray( GridArray *dest, CellArray *source )
     for(int i=0; i<source->count; i++) {
         Cell *c = CellArray_get(source, i);
     //    printf("cellarray set [%d][%d]::%d \n", c->row, c->col, c->state );
-        dest->g_grid[c->row][c->col]->state   = c->state;
-        dest->g_grid[c->row][c->col]->checked = c->checked;
+        Cell *grid_c = GridArray_get(dest, c->row,c->col);
+        if(grid_c) {
+            grid_c->state = c->state;
+            grid_c->checked = c->checked;
+        }
+        //dest->g_array[c->row][c->col]->state   = c->state;
+        //dest->g_array[c->row][c->col]->checked = c->checked;
 
     }
 
@@ -184,24 +213,12 @@ void GridArray_set_with_cellarray( GridArray *dest, CellArray *source )
 
 void GridArray_rand( GridArray *array )
 {
-    if(array->g_grid) {
+    if(array->g_array) {
         int k_count = 0;
         for(int i=0; i<array->rows; i++){
             for(int k=0; k<array->cols; k++) { /* Flip coin for each cell, value is 1 or 0 */
                 int rval = rand()%2;
-                array->g_grid[i][k]->state = rval;
-            }
-        }
-    }
-}
-
-void GridArray_empty( GridArray *array )
-{
-    for(int i=0; i<array->rows; i++) {
-        for(int k=0; k<array->cols; k++) {
-            if(array->g_grid[i][k]) {
-                array->g_grid[i][k]->state = 0;
-                array->g_grid[i][k]->checked = 0;
+                array->g_array[i][k]->state = rval;
             }
         }
     }
@@ -213,8 +230,8 @@ Cell *GridArray_get( GridArray *array, int row, int col )
 
 //    printf("Get cell: x:%d-%d, y:%d-%d\n", array->rows, row, array->cols, col);
     if(array && row < array->rows && row >= 0 && col < array->cols && col >= 0) {
-        if(array->g_grid[row][col]) {
-            rtn = array->g_grid[row][col];
+        if(array->g_array[row][col]) {
+            rtn = array->g_array[row][col];
         }
     }
 
@@ -223,5 +240,5 @@ Cell *GridArray_get( GridArray *array, int row, int col )
 
 void GridArray_set( GridArray *grid, int row, int col, int state )
 {
-    grid->g_grid[row][col]->state = state;
+    grid->g_array[row][col]->state = state;
 }

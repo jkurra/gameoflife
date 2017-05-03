@@ -109,8 +109,8 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 		//	 GdkRGBA *clr = NULL;
             if(x_point >= maxx) { break; }
             for(int cur_y=area1->startY; cur_y<area1->grid->gArray->cols; cur_y++) {
-				if(GridArray_get(area1->grid->gArray, cur_x, cur_y )) {//;area1->grid->gArray->g_grid[cur_x][cur_y]) {
-					switch (area1->grid->gArray->g_grid[cur_x][cur_y]->state) {
+				if(GridArray_get(area1->grid->gArray, cur_x, cur_y )) {//;area1->grid->gArray->g_array[cur_x][cur_y]) {
+					switch (area1->grid->gArray->g_array[cur_x][cur_y]->state) {
 						case 0:
 							if(area1->visible == 1) {//g_print("Found area");
 								 GdkRGBA *clr1 = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
