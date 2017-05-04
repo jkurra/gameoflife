@@ -1,25 +1,69 @@
 #include "cell.h"
 
-int cell_next( int c_state, int nbrs, int live_a[], int live_s, int live_d[], int dead_s )
+Cell *Cell_new( int row, int col )
+{
+    Cell *rtn = (Cell*)calloc(1, sizeof(Cell));
+    /*
+     *
+     */
+    rtn->row = row;
+    rtn->col = col;
+    /*
+     *
+     */
+    rtn->nbrs_count = 0;
+    rtn->checked    = 0;
+    rtn->state      = 0;
+
+    return rtn;
+}
+
+void Cell_free( Cell *cell )
+{
+    if(cell) {
+        /*
+         *
+         */
+        free(cell);
+        cell = NULL;
+    }
+}
+
+int Cell_prev( Cell *cell, RuleSet *rules )
 {
     int i=0, n_state = 0; // next state of the cell, assumed dead, turned alive if necessary
+    /*
+     *
+     */
+    switch (cell->state) {
+        case 0:
+            break;
+        case 1:
+            break;
+        default:
+            break;
+    }
 
-    if( c_state == 1 ) { // cell is currently alive
-        for(i=0; i<live_s; i++) {
-            if(nbrs == live_a[i]) { n_state = 1; }
-        }
-    }
-    else {
-        for(i=0; i<dead_s; i++) {
-            if(nbrs == live_d[i]) { n_state = 1; }
-        }
-    }
     return n_state;
 }
 
-int cell_prev( int c_state, int nbrs, int *live_a, int *live_d )
+int Cell_next( Cell *cell, RuleSet *rules )
 {
-    int p_state = 0; // next state of the cell, assumed dead, turned alive if necessary
+    int i=0, n_state = 0; // next state of the cell, assumed dead, turned alive if necessary
+    switch (cell->state) {
+        case 0:
+            for(i=rules->dead_s; i--; ) {
+                if(cell->nbrs_count == rules->live_d[i]) { n_state = 1; }
+            }
+            break;
+        case 1:
+            for(i=rules->live_s; i--; ) {
+                if(cell->nbrs_count == rules->live_a[i]) { n_state = 1; }
+            }
+            break;
+        default:
+            break;
+    }
 
-    return p_state;
+    return n_state;
 }

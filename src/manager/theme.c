@@ -42,29 +42,36 @@ void theme_select( Manager *manager, char *name )
 {
     if(manager && name) {
         theme_list(manager);
+        /* Free existing path & name variables from structure if found. */
+        // TODO: check if dir_size <= 0 and set paths and set path & name to NULL.
+        // selected value must be set to previous value if dir_size > 0 but name
+        // was not found.
+        if(manager->sel_path) {
+            free(manager->sel_path);
+            manager->sel_path = NULL;
+        }
+        if(manager->sel_name) {
+            free(manager->sel_name);
+            manager->sel_name = NULL;
+        }
+
         int found = 0;
         for(int i=0; i<manager->dir_size; i++) {
-            //printf("%s : %s\n", c->dir_list[i], name);
+            /*
+             *  If matching name is found from list, add its values to currently
+             *  selected values. 
+             */
             if(strcmp (manager->dir_list[i], name) == 0) {
-                //printf("%s : %s\n", c->dir_list[i], name);
-                if(manager->sel_path) {
-                    free(manager->sel_path);
-                    manager->sel_path = NULL;
-                }
-                if(manager->sel_name) {
-                    free(manager->sel_name);
-                    manager->sel_name = NULL;
-                }
-
+                /* Get lenght needed for strings in structure name and path. */
                 int nlen = strlen(manager->dir_list[i]);
                 int plen = (strlen(manager->dir_list[i])*2)+strlen(manager->dir_path)+6;
-
+                /* Allocate space for values in structure. */
                 manager->sel_name = (char*)calloc(nlen+1, sizeof(char));
                 manager->sel_path = (char*)calloc(plen+1, sizeof(char));
-
+                /* Copy selected name and path to strucure values. */
                 strncpy(manager->sel_name, manager->dir_list[i], nlen+1);
                 strncpy(manager->sel_path, manager->dir_path, plen+1);
-                //strcpy(manager->sel_path, manager->dir_path);
+                /* Append rest of the path to selected path string storage. */
                 strcat(manager->sel_path, "/");
                 strcat(manager->sel_path, manager->sel_name);
                 strcat(manager->sel_path, "/");

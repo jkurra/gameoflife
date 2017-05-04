@@ -3,10 +3,18 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <GL/glut.h>
+#include <GL/glu.h>
+#include <GL/glx.h>
+#include <GL/gl.h>
+
 #include "src/manager/theme.h"
 #include "src/manager/config.h"
-#include "src/manager/log.h"
-#include "src/mvc/model.h"
+#include "src/output/log.h"
+#include "src/model/model.h"
+#include "src/view/view.h"
+
+#include "src/model/viewobject.h"
 
 int main(int argc, char *argv[])
 {
@@ -36,21 +44,12 @@ int main(int argc, char *argv[])
     strcpy( th, cwd );
     strcat( th, "/usr/themes" );
 
-    Manager *conf = config_new(co);
-    config_select(conf, "config.json");
+    ViewObject *object = ViewObject_new(co, th);
+    ViewObject_init(object);
+    ViewObject_select(object, MENU);
+    gtk_main();
+    ViewObject_quit( object );
 
-    /* Create new main model for our user interface */
-    view_model *main_model = model_view_new(MENU, conf);
-
-    main_model->game->commons->themes = theme_new(th);
-    theme_select(main_model->game->commons->themes, "default");
-    model_read(main_model->commons, NULL);
-    //theme_select(main_model->game->commons->themes, "default");
-    /* Initialize view free when user quit */
-    view_init(main_model, MENU); /* Init menu and start main GTK loop */
-    model_view_free(main_model); /* User quit. */
-    config_free(conf);
-    //theme_free(th);
     free(co);
     free(th);
     free(result);

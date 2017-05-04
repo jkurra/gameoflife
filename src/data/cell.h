@@ -1,11 +1,80 @@
 #ifndef CELL_H_INCLUDED
 #define CELL_H_INCLUDED
 
-#define X_SIZE 0
-#define Y_SIZE 0
+#include <stdlib.h>
+
+/** @brief Structure for GameGrid object.
+ *
+ */
+typedef struct
+{
+    /** @brief
+     *
+     */
+    int *live_a;
+
+    /** @brief
+     *
+     */
+    int live_s;
+
+    /** @brief
+     *
+     */
+    int *live_d;
+
+    /** @brief
+     *
+     */
+    int dead_s;
+
+} RuleSet;
+
+/** @brief Structure for Cell object.
+ *
+ */
+typedef struct
+{
+    /** @brief
+     *
+     */
+    int row;
+
+    /** @brief
+     *
+     */
+    int col;
+
+    /** @brief
+     *
+     */
+    int nbrs_count;
+
+    /** @brief
+     *
+     */
+    int state;
+
+    /** @brief
+     *
+     */
+    int checked;
+
+} Cell;
+
+/** @brief Structure for Cell object.
+ *
+ */
+Cell *Cell_new( int row, int col );
+
+/** @brief Structure for Cell object.
+ *
+ */
+void Cell_free(Cell *cell);
 
 /** @brief Checks state of the cell in previous turn.
  *
+ * TODO: NOT YET IMPLEMENTED
  * Based on current state of the cell, it is possible to peek previous state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not
@@ -19,16 +88,14 @@
  * are really only ones that matter since everything else is seen as under or
  * overpopulation, or stagnant state.
  *
- * @param c_state current state of the cell. Alive = 1, Dead = 0
- * @param nbrs    Current amount of neighbours for the cell (between 0-8).
- * @param live_a  Set of rules that apply if cell is currently dead.
- * @param live_d  Set of rules that aplly if cell is currently alive.
+ * @param cell
+ * @param rules
  * @return state of the cell in previous turn.
  */
-int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
+int Cell_prev( Cell *cell, RuleSet *rules );
 
 /** @brief Checks state of the cell in next turn.
- * NOT YET IMPLEMENTED
+ *
  * Based on current state of the cell, it is possible to peek future state of
  * it. This is done using amount of neighbours and set of rules that apply. All
  * rules are applied as "live" rules, meaning that if those rules are not
@@ -41,12 +108,10 @@ int cell_prev( int c_state, int nbrs, int *live_a, int *live_d );
  * are really only ones that matter since everything else is seen as under or
  * overpopulation, or stagnant state.
  *
- * @param c_state current state of the cell. Alive = 1, Dead = 0
- * @param nbrs    Current amount of neighbours for the cell (between 0-8).
- * @param live_a  Set of rules that apply if cell is currently dead.
- * @param live_d  Set of rules that aplly if cell is currently alive.
+ * @param cell
+ * @param rules
  * @return state of the cell in next turn.
  */
-int cell_next( int c_state, int nbrs, int live_a[], int live_s, int live_d[], int dead_s ) ;
+int Cell_next( Cell *cell, RuleSet *rules );
 
 #endif /* CELL_H_ */

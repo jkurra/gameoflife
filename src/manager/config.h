@@ -6,8 +6,7 @@
 
 #include "manager.h"
 #include "json/file.h"
-#include "json/json.h"
-#include "log.h"
+#include "../output/log.h"
 
 /** @brief Initialize new configuration from path.
  *

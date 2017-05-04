@@ -8,8 +8,8 @@ all: subsystem manag
 subsystem:
 	cd json && $(MAKE)
 
-manag: manager.c config.c theme.c log.c
-	$(CC) $(CFLAGS) $(PKGCONFIG) manager.c config.c theme.c log.c
+manag: manager.c config.c theme.c
+	$(CC) $(CFLAGS) $(PKGCONFIG) manager.c config.c theme.c
 
 clean:
 	cd json && $(MAKE) clean
