@@ -11,6 +11,9 @@
 #include "../output/log.h"
 #include "../model/model.h"
 
+#include "../model/prefmodel.h"
+#include "../model/gamemodel.h"
+#include "../model/menumodel.h"
 /** @brief Object containing view data.
  *
  */
