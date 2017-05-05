@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <time.h>
+
 #include "array/cellarray.h"
 #include "array/gridarray.h"
+
 #include "cell.h"
 
 /* Grid modify functions. */
@@ -45,8 +47,6 @@ typedef struct
 
 } Grid;
 
-int Grid_count( Grid *grid, int type );
-
 /** @brief Initalizes grid with 0 values.
  *
  * Takes in desired constraint values of two dimensional grid and allocates new
@@ -61,22 +61,28 @@ int Grid_count( Grid *grid, int type );
  */
 Grid *Grid_new( int rows, int cols );
 
-/** @brief Copy grid and return pointer to newly allocated Grid.
- *
- *  TODO: Not yet fully implemented.
- */
-Grid *Grid_copy( Grid *grid );
-
 /** @brief Frees given grid and all its member values.
  *
  *  TODO: Not yet implemented.
  */
 void Grid_free( Grid *grid );
 
+/** @brief Copy grid and return pointer to newly allocated Grid.
+ *
+ *  TODO: Not yet fully implemented.
+ */
+Grid *Grid_copy( Grid *grid );
+
 /** @brief Modify grid dimensions and data.
  *
  *
  */
 void Grid_mod( Grid *grid, int operation, Grid_ptr *data );
+
+/** @brief Get count of cells in grid.
+ *
+ *
+ */
+int Grid_count( Grid *grid, int type );
 
 #endif /* GRID_H_ */

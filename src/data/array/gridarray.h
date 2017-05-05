@@ -8,6 +8,9 @@
 #include "cellarray.h"
 #include "../cell.h"
 
+/**
+ *
+ */
 typedef struct
 {
     /**
@@ -29,20 +32,38 @@ typedef struct
      */
     int rows, cols;
 
+    /** @brief Dimensions of g_array.
+     *
+     */
+    arr_dim *dim;
+
 } GridArray;
 
-/** @brief Set value of a cell property in given index.
+/** @brief Initialize GridArray with given dimensions.
  *
+ *  Allocates new GridArray with size of given rows and columns. All cells in
+ *  grid are initialized to 0 values. Returned GridArray must be freed with
+ *  GridArray_free().
+ *
+ *  @param rows Amount of rows in grid.
+ *  @param cols Amount of columns in grid.
+ *  @return Dynamically allocated GridArray.
  */
 GridArray *GridArray_new( int rows, int cols );
 
 /** @brief Free allocated memory for grid and cells.
  *
+ *  Deallocates given GridArray and frees all member values.
+ *
+ *  @param array GridArray to be freed.
  */
 void GridArray_free( GridArray *array );
 
 /** @brief Reset every cell in grid to 0 values.
  *
+ *  Iterates trough GridArray and sets all values to 0.
+ *
+ *  @param array GridArray to empty.
  */
 void GridArray_empty( GridArray *array );
 
@@ -50,6 +71,11 @@ void GridArray_empty( GridArray *array );
  *
  */
 GridArray *GridArray_copy( GridArray *grid );
+
+/** @brief Copy values from given grid to array.
+ *
+ */
+void GridArray_copy_values( GridArray *dest, GridArray *toCopy );
 
 /** @brief Get value of a cell property in given index.
  *

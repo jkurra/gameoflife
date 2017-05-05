@@ -63,6 +63,16 @@ Grid *Grid_new( int rows, int cols )
     return rtn;
 }
 
+void Grid_free( Grid *grid )
+{
+    GridArray_free(grid->gArray);
+    CellArray_free(grid->lArray);
+
+    free(grid);
+    grid = NULL;
+
+}
+
 Grid *Grid_copy( Grid *grid )
 {
     Grid *rtn = (Grid*)calloc(1, sizeof(Grid));
@@ -75,56 +85,6 @@ Grid *Grid_copy( Grid *grid )
     return rtn;
 }
 
-void Grid_free( Grid *grid )
-{
-    GridArray_free(grid->gArray);
-    CellArray_free(grid->lArray);
-
-    free(grid);
-    grid = NULL;
-
-}
-/*
-void GridArray_resize( Grid *grid, int new_rows, int new_cols )
-{
-    // printf("alloc new grid:[%d][%d]\n", new_rows, new_cols);
-    grid->gArray->g_array = (Cell***)realloc(grid->gArray->g_array, (new_rows)*sizeof(Cell**));
-
-    for(int i=0; i<new_rows; i++) {
-        //printf("alloc row: %d\n", i);
-        grid->gArray->g_array[i] = (Cell**)realloc(grid->gArray->g_array[i], (new_cols)*sizeof(Cell*)); //(Cell**)calloc((new_cols+1), sizeof(Cell*));///malloc((grid->cols+1)*sizeof(Cell*)); //(Cell**)realloc(grid->g_array, (grid->cols+1)*sizeof(Cell*));
-        //printf("alloc row: %d\n", i);
-    }
-
-    for(int i=0; i<new_rows; i++) {
-        for(int k=0; k<new_cols; k++) {
-            grid->gArray->g_array[i][k] = Cell_new(i, k);//grid->g_array[i][k];
-            grid->gArray->g_array[i][k]->checked = 0;
-        }
-    }
-    for(int i=0; i<grid->lArray->count; i++) {
-        if(grid->lArray->c_array[i]->row < new_rows && grid->lArray->c_array[i]->col < new_cols) {
-            grid->gArray->g_array[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col] = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
-            grid->gArray->g_array[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->state = grid->lArray->c_array[i]->state;
-            //grid->gArray->g_array[grid->lArray->c_array[i]->row][grid->lArray->c_array[i]->col]->checked = 0;
-        }
-    }
-    /// TODO: Add removal of cells outside grid borders here. Otherwise program will crash later.
-    for(int i=0; i<grid->lArray->count; i++) {
-        if(grid->lArray->c_array[i]->row < new_rows && grid->lArray->c_array[i]->col < new_cols) {
-
-        } else {
-            CellArray_rem(grid->lArray, grid->lArray->c_array[i]);
-        //    Grid_coiRem(grid,  Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col));
-            continue;
-        }
-    }
-
-    grid->gArray->rows = new_rows;
-    grid->gArray->cols = new_cols;
-
-}
-*/
 void Grid_mod( Grid *grid, int operation, Grid_ptr *data )
 {
     switch (operation) {
@@ -173,7 +133,7 @@ int Grid_count( Grid *grid, int type )
             rtn = grid->gArray->rows*grid->gArray->cols;
             break;
         case 1:
-            rtn = grid->lArray->count;
+            rtn = grid->lArray->base.count;
             break;
         default:
             break;

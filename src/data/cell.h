@@ -3,32 +3,7 @@
 
 #include <stdlib.h>
 
-/** @brief Structure for GameGrid object.
- *
- */
-typedef struct
-{
-    /** @brief
-     *
-     */
-    int *live_a;
-
-    /** @brief
-     *
-     */
-    int live_s;
-
-    /** @brief
-     *
-     */
-    int *live_d;
-
-    /** @brief
-     *
-     */
-    int dead_s;
-
-} RuleSet;
+#include "ruleset.h"
 
 /** @brief Structure for Cell object.
  *
@@ -62,15 +37,15 @@ typedef struct
 
 } Cell;
 
-/** @brief Structure for Cell object.
+/** @brief Initialize new cell with given rows.
  *
  */
 Cell *Cell_new( int row, int col );
 
-/** @brief Structure for Cell object.
+/** @brief Deallocate given cell.
  *
  */
-void Cell_free(Cell *cell);
+void Cell_free( Cell *cell );
 
 /** @brief Checks state of the cell in previous turn.
  *

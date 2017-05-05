@@ -167,6 +167,13 @@ void on_RandGrid_clicked ( GtkButton *button, gpointer data )
     //grid_rand( model->g_model->rows, model->g_model->cols, model->g_model->grid );
 	Grid_mod(model->g_model->grid, RANDOM,  NULL);
 	//Grid_rand( model->g_model->grid );
+			GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
+	char str1[20];
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
+
+//	printf("count: %s\n", str1);
+	gtk_label_set_text(GTK_LABEL(cell_count), str1);
+	gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -176,6 +183,12 @@ void on_ClearGrid_clicked ( GtkButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
     //GridArray_empty(model->g_model->grid );
 	Grid_mod( model->g_model->grid, EMPTY, NULL );
+			GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
+	char str1[20];
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
+
+//	printf("count: %s\n", str1);
+	gtk_label_set_text(GTK_LABEL(cell_count), str1);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -185,12 +198,21 @@ void on_NextTurn_clicked( GtkButton *button, gpointer data )
 	ViewObject *model = (ViewObject*)data;
 	model->g_model->c_step++;
 	GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "step_counter"));
+	GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
 	char str[20];
 	sprintf(str, "%d", model->g_model->c_step);
 	gtk_label_set_text(GTK_LABEL(step_count), str);
 	Grid_next(model->g_model->grid, model->g_model->ruleset);
+
+	char str1[20];
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
+
+	//printf("count: %s\n", str1);
+	gtk_label_set_text(GTK_LABEL(cell_count), str1);
+	gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 //    grid_next(model->g_model->rows, model->g_model->cols, model->g_model->grid, model->g_model->live_a, 2, model->g_model->live_d, 1);
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
+
 }
 
 G_MODULE_EXPORT
@@ -237,10 +259,10 @@ void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
     ViewObject *model = (ViewObject*)data;
 
     int tmpCols = gtk_spin_button_get_value (button);
-
-		Grid_ptr data1;
-		data1.row = model->g_model->grid->gArray->rows; //model->g_model->grid->gArray->rows;
-		data1.col = tmpCols;
+	GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
+	Grid_ptr data1;
+	data1.row = model->g_model->grid->gArray->rows; //model->g_model->grid->gArray->rows;
+	data1.col = tmpCols;
 	//	data.rules = model->g_model->grid->gArray->rules;
 		Grid_mod( model->g_model->grid, RESIZE, &data1);
     //Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
@@ -416,7 +438,7 @@ G_MODULE_EXPORT
 void on_SetBgColor_color_set( GtkColorButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
-	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->bgrn_col );
+	gtk_color_chooser_get_rgba( GTK_COLOR_CHOOSER(button), &object->g_model->bgrn_col );
 
 }
 
@@ -424,7 +446,7 @@ G_MODULE_EXPORT
 void on_SetCellColor_color_set( GtkColorButton *button, gpointer data )
 {
 	ViewObject *object = (ViewObject*)data;
-	gtk_color_chooser_get_rgba ( GTK_COLOR_CHOOSER(button), &object->g_model->cell_col );
+	gtk_color_chooser_get_rgba( GTK_COLOR_CHOOSER(button), &object->g_model->cell_col );
 }
 
 G_MODULE_EXPORT
@@ -444,9 +466,17 @@ gboolean view_timer_update( GameModel *model )
 		if(model->grid->updated == 1) {
 			//model->updated = 0;
 			GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "step_counter"));
+			GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->builder, "cell_counter"));
+
 			char str[20];
 			sprintf(str, "%d", model->c_step);
 			gtk_label_set_text(GTK_LABEL(step_count), str);
+
+			char str1[20];
+			sprintf(str1, "%d", model->grid->lArray->base.count);
+
+			//printf("count: %s\n", str1);
+			gtk_label_set_text(GTK_LABEL(cell_count), str1);
 
 			GtkAllocation widget_alloc;
 			/* Get current allocation for widget to know draw size. */

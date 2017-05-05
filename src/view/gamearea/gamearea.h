@@ -6,6 +6,9 @@
 #include "../../model/model.h"
 #include "../../model/viewobject.h"
 
+#include "../../model/prefmodel.h"
+#include "../../model/gamemodel.h"
+#include "../../model/menumodel.h"
 /*
  *
  */
