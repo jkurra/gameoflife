@@ -51,7 +51,7 @@ void ViewObject_init( ViewObject *object )
     GdkDisplay *display = gdk_display_get_default();
     GdkScreen  *screen  = gdk_display_get_default_screen(display);
 
-    gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 void ViewObject_select( ViewObject *object, int view )

@@ -15,8 +15,11 @@
  */
 typedef struct
 {
+    /**
+     *
+     */
     BaseArray base;
-    
+
     /**
      *
      */
@@ -55,6 +58,11 @@ void CellArray_empty( CellArray *array );
  */
 CellArray *CellArray_copy( CellArray *toCopy );
 
+/** @brief Copy values from given grid to array.
+ *
+ */
+void CellArray_copy_values( CellArray *dest, CellArray *toCopy );
+
 /** @brief Add new cell to the end of cell-array.
  *
  */
@@ -65,6 +73,9 @@ void CellArray_add( CellArray *array, Cell *cell );
  */
 void CellArray_set( CellArray *array, int val, int index, int new_state );
 
+/** @brief Set value of a cell property in given index.
+ *
+ */
 int CellArray_has( CellArray *array, Cell *cell);
 
 /** @brief

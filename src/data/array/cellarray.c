@@ -40,6 +40,20 @@ CellArray *CellArray_copy( CellArray *toCopy )
     return arr;
 }
 
+void CellArray_copy_values( CellArray *dest, CellArray *toCopy )
+{
+    //CellArray *arr = CellArray_new(); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
+
+    //arr->c_array = (Cell**)calloc(toCopy->count, sizeof(Cell*));
+    for(int i=0; i<toCopy->count; i++) {
+        //arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
+        dest->c_array[i]->state = toCopy->c_array[i]->state;
+        dest->c_array[i]->checked = toCopy->c_array[i]->checked;
+    }
+    //arr->count = toCopy->count;
+    //return arr;
+}
+
 void CellArray_clear( CellArray *array )
 {
     for(int i=0; i<array->count; i++) {

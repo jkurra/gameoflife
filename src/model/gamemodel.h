@@ -60,9 +60,24 @@ typedef struct
 
 } GameModel;
 
+/** @brief
+ *
+ */
 GameModel *GameModel_new();
+
+/** @brief
+ *
+ */
 void GameModel_free( GameModel *model );
-void GameModel_save( GameModel *model );
+
+/** @brief
+ *
+ */
 void GameModel_read( GameModel *model, const char *file );
+
+/** @brief
+ *
+ */
+void GameModel_save( GameModel *model );
 
 #endif /* MODEL_H_ */
