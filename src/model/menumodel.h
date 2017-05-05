@@ -15,7 +15,8 @@ typedef struct
 	GtkBuilder *builder;
 	GtkWidget *main_frame;
 	GtkWidget *game_frame;
-
+	
+	Grid *grid;
 } MenuModel;
 
 /** @brief

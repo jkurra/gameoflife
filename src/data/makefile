@@ -6,8 +6,8 @@ all: gridsystem subsystem
 subsystem:
 	cd array && $(MAKE)
 
-gridsystem: cell.c grid.c
-	$(CC) $(CFLAGS) cell.c grid.c
+gridsystem: cell.c grid.c ruleset.c
+	$(CC) $(CFLAGS) cell.c grid.c ruleset.c
 
 clean:
 	rm -rf *o *~ all
