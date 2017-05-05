@@ -133,7 +133,7 @@ int Grid_count( Grid *grid, int type )
             rtn = grid->gArray->rows*grid->gArray->cols;
             break;
         case 1:
-            rtn = grid->lArray->count;
+            rtn = grid->lArray->base.count;
             break;
         default:
             break;

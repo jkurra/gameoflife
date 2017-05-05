@@ -25,11 +25,6 @@ typedef struct
      */
     Cell **c_array;
 
-    /**
-     *
-     */
-    int count;
-
 } CellArray;
 
 /** @brief Initialize new array with given size.

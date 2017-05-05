@@ -28,6 +28,11 @@ typedef struct
      *
      */
     int rows, cols;
+    
+    /** @brief Dimensions of g_array.
+     *
+     */
+    arr_dim *dim;
 
 } GridArray;
 

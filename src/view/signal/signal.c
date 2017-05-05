@@ -169,7 +169,7 @@ void on_RandGrid_clicked ( GtkButton *button, gpointer data )
 	//Grid_rand( model->g_model->grid );
 			GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
 	char str1[20];
-	sprintf(str1, "%d", model->g_model->grid->lArray->count);
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
 
 //	printf("count: %s\n", str1);
 	gtk_label_set_text(GTK_LABEL(cell_count), str1);
@@ -185,7 +185,7 @@ void on_ClearGrid_clicked ( GtkButton *button, gpointer data )
 	Grid_mod( model->g_model->grid, EMPTY, NULL );
 			GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
 	char str1[20];
-	sprintf(str1, "%d", model->g_model->grid->lArray->count);
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
 
 //	printf("count: %s\n", str1);
 	gtk_label_set_text(GTK_LABEL(cell_count), str1);
@@ -205,7 +205,7 @@ void on_NextTurn_clicked( GtkButton *button, gpointer data )
 	Grid_next(model->g_model->grid, model->g_model->ruleset);
 
 	char str1[20];
-	sprintf(str1, "%d", model->g_model->grid->lArray->count);
+	sprintf(str1, "%d", model->g_model->grid->lArray->base.count);
 
 	//printf("count: %s\n", str1);
 	gtk_label_set_text(GTK_LABEL(cell_count), str1);
@@ -473,7 +473,7 @@ gboolean view_timer_update( GameModel *model )
 			gtk_label_set_text(GTK_LABEL(step_count), str);
 
 			char str1[20];
-			sprintf(str1, "%d", model->grid->lArray->count);
+			sprintf(str1, "%d", model->grid->lArray->base.count);
 
 			//printf("count: %s\n", str1);
 			gtk_label_set_text(GTK_LABEL(cell_count), str1);
