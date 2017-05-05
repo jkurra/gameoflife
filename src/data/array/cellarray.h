@@ -10,18 +10,30 @@
 #define STATE 0
 #define CHECK 1
 
-/**
+/** @brief CellArray structure.
  *
+ *  Structure describing a CellArray, which consists of storage with cells
+ *  in it and counter that keeps track of the size of the array. Other values
+ *  may be added as needed. All values of CellArray may only be accessed using
+ *  member functions to keep things coherent. CellArray creation and deletion
+ *  are done using specialized _new() and _free() functions that handle all
+ *  memory management and pointers.
  */
 typedef struct
 {
-    /**
+    /** @brief Properties of BaseArray.
      *
+     *  Provides access to BaseArray properties for CellArray structure, which
+     *  means this class needs less private values.
      */
     BaseArray base;
 
-    /**
+    /** @brief Pointer to array of cells.
      *
+     *  Provides access to array, which may be used to store cell pointers.
+     *  Array is created, deleted, accessed and dynamically resized
+     *  using member functions and only member functions. This is done in
+     *  order to ensure safe and efficient memory management.
      */
     Cell **c_array;
 

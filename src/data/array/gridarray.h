@@ -8,6 +8,9 @@
 #include "cellarray.h"
 #include "../cell.h"
 
+/**
+ *
+ */
 typedef struct
 {
     /**
@@ -28,7 +31,7 @@ typedef struct
      *
      */
     int rows, cols;
-    
+
     /** @brief Dimensions of g_array.
      *
      */
