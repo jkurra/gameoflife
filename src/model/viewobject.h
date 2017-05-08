@@ -6,14 +6,15 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 
-#include "../manager/theme.h"
 #include "../manager/config.h"
-#include "../output/log.h"
+#include "../manager/theme.h"
 #include "../model/model.h"
+#include "../output/log.h"
 
 #include "../model/prefmodel.h"
 #include "../model/gamemodel.h"
 #include "../model/menumodel.h"
+
 /** @brief Object containing view data.
  *
  */

@@ -7,6 +7,10 @@
 
 /** @brief Structure for Cell object.
  *
+ *  Describes structure of cell, which is located in a position in Grid.
+ *  Therefore most important values of cell are row & col, which can be used
+ *  to quickly check position of cell. It can also contain data about whether
+ *  cell has already been checked. 
  */
 typedef struct
 {

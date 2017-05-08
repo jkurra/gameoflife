@@ -32,14 +32,5 @@ typedef struct
 
 } Model;
 
-/** @brief
- *
- */
-Model *model_new();
-
-/** @brief
- *
- */
-void model_free( Model *model );
 
 #endif /* MODEL_H_ */
