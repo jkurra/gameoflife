@@ -50,6 +50,9 @@ int Cell_prev( Cell *cell, RuleSet *rules )
 int Cell_next( Cell *cell, RuleSet *rules )
 {
     int i=0, n_state = 0; // next state of the cell, assumed dead, turned alive if necessary
+    /*
+     *
+     */
     switch (cell->state) {
         case 0:
             for(i=rules->dead_s; i--; ) {
