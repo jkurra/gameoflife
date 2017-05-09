@@ -81,7 +81,7 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	MenuModel *area1 = (MenuModel*)data;
 
 	if(area1) {
-		printf("grid has rows : %d\n", area1->grid->gArray->rows);
+		//printf("grid has rows : %d\n", area1->grid->gArray->rows);
 		GtkAllocation widget_alloc;
         /* Get current allocation for widget to know draw size. */
         gtk_widget_get_allocation(GTK_WIDGET(area), &widget_alloc);
@@ -92,23 +92,25 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
         float x_point = 5.0,//area->margin,
               y_point = 5.0;// area->margin;
         /* Draw background */
-        GdkRGBA *bgrn_col = NULL; /* Background color of the grid */
-        GdkRGBA *cell_col = NULL; /* Color of each cell in grid */
+        GdkRGBA bgrn_col; /* Background color of the grid */
+        GdkRGBA cell_col; /* Color of each cell in grid */
 
-        gdk_rgba_parse(cell_col, "#fffffffff" );
-        gdk_rgba_parse(bgrn_col, "#fffffffff");
+        gdk_rgba_parse(&cell_col, "rgb(46,52,54)" );
+        gdk_rgba_parse(&bgrn_col, "rgb(46,52,54)");
 
 	    cairo_rectangle(cr, 0, 0, maxx, maxy);
-	    gdk_cairo_set_source_rgba(cr, bgrn_col);
+	    gdk_cairo_set_source_rgba(cr, &bgrn_col);
 	    cairo_fill(cr);
+
         for(int cur_x=0; cur_x<area1->grid->gArray->rows; cur_x++) {
             if(x_point >= maxx) { break; }
             for(int cur_y=0; cur_y<area1->grid->gArray->cols; cur_y++) {
 				if(GridArray_get(area1->grid->gArray, cur_x, cur_y )) {//;area1->grid->gArray->g_array[cur_x][cur_y]) {
 					switch (area1->grid->gArray->g_array[cur_x][cur_y]->state) {
 						case 0: {
-							//if(area1->visible == 1) {//g_print("Found area");
-								GdkRGBA *clr1 = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
+							//if(area1->visible == 1) {
+								//g_print("Found area");
+								GdkRGBA *clr1 = gdk_rgba_copy(&bgrn_col); // gdk_rgba_copy(area->bgrn_col);
 								color_lighter1( clr1, 0.1);
 								gdk_cairo_set_source_rgba(cr, clr1);
 								cairo_rectangle(cr, x_point, y_point, 5*1, 5*1);
@@ -116,7 +118,7 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 							//}
 							break;}
 						case 1:{
-						 	GdkRGBA *clr2 = gdk_rgba_copy(cell_col);
+						 	GdkRGBA *clr2 = gdk_rgba_copy(&cell_col);
 							gdk_cairo_set_source_rgba(cr, clr2);
 							cairo_rectangle(cr, x_point, y_point, 5*1, 5*1);
 							gdk_rgba_free(clr2);
@@ -137,7 +139,7 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
         y_point +=1;
     }
 }
-	cairo_fill(cr);
+//	cairo_fill(cr);
 //	gdk_rgba_free(cell_col);
 //	gdk_rgba_free(bgrn_col);
 
