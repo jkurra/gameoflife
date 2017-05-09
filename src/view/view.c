@@ -56,11 +56,12 @@ void PrefView_hide( PrefModel *model );
 
 void view_show( Model *model )
 {
+    printf("grid has rows : %d \n", model->type);
     switch (model->type) {
         case GAME: /* Initialize game view */
             GameView_show((GameModel*)model);
             break;
-        case MENU:
+        case MENU:printf("grid has rows : \n");
             MenuView_show((MenuModel*)model);
             break;
         case PREF:
@@ -140,6 +141,7 @@ void MenuView_show( MenuModel *model )
          * Add data from model to widgets in glade files so that they are
          * passed to UI when user first opens window.
          */
+         printf("Moel aha rows : %d\n", model->grid->gArray->rows);
         int error = signal_connect(model->builder, model);
         /* Show all widgets under main_frame */
         gtk_widget_show_all(GTK_WIDGET(model->main_frame));

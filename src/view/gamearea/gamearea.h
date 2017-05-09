@@ -13,7 +13,7 @@
  *
  */
 void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data);
-
+void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   );
 /*
  *
  */
