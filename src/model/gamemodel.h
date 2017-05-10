@@ -24,7 +24,6 @@ typedef struct
      */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
-	//int rows, cols; /* Maximum dimensions of the game grid */
 	/** @brief
 	 *
      */
