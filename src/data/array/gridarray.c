@@ -64,11 +64,35 @@ void GridArray_free( GridArray *array )
     free(array);
     array = NULL;
 }
+typedef struct
+{
+    GridArray *arr;
+    int i, k;
+} RowStruct;
+
+void freeRow(void *arg)
+{
+    RowStruct *arr = (RowStruct*)arg;
+    Cell *tmp = GridArray_get(arr->arr, arr->i, arr->k);
+    if(tmp) {
+        printf("free tmp\n");
+        tmp->state   = 0;
+        tmp->checked = 0;
+    }
+
+}
 
 void GridArray_empty( GridArray *array )
 {
+
     for(int i=0; i<array->rows; i++) {
+
         for(int k=0; k<array->cols; k++) {
+            RowStruct rs;
+            rs.arr = array;
+            rs.i = i;
+            rs.k = k;
+
             Cell *tmp = GridArray_get(array, i, k);
             if(tmp) {
                 tmp->state   = 0;

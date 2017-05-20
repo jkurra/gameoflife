@@ -8,8 +8,19 @@
  */
 typedef struct
 {
+	/** @brief
+	 *
+	 */
 	Model base;
+	
+	/** @brief
+	 *
+	 */
 	Manager *themes;
+
+	/** @brief
+	 *
+	 */
 	Manager *conf;
 
 	GtkBuilder *builder;

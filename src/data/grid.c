@@ -10,7 +10,7 @@ typedef struct
     Grid *grid;
 
     RuleSet *rules;
-
+    int index;
 } GridAndTmp;
 
 /** @brief Count current neighbours for a cell.
@@ -177,7 +177,29 @@ void *clearArrays(void *arg)
 
 }
 
-
+void *arrays(void *arg)
+{
+    GridAndTmp *tmp = (GridAndTmp*)arg;
+    Grid *tmp_grid = tmp->tmp_grid;
+    Grid*grid = tmp->grid;
+    RuleSet *rules = tmp->rules;
+    int i = tmp->index;
+    printf("Index: %d::%d\n", i, grid->lArray->base.count);
+        //Grid_set_nbrs( grid, i, Grid_nbrs(grid, CellArray_get(grid->lArray, i)));// tmp_grid->lArray->c_array[i] ) );
+    Cell *c = CellArray_get(grid->lArray, i);
+    int nbrs = Grid_nbrs(grid, c);
+    c->nbrs_count = nbrs;
+    printf("Index: %d::%d\n", i, grid->lArray->base.count);
+    if(Cell_next(c, rules) == 1) { //tmp1->grid->lArray->c_array[i], tmp1->rules )) {
+            //printf("Moving to next round!\n");
+        Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
+        Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
+        c->state = 1;
+        CellArray_add(tmp_grid->lArray,c);
+    }
+    CellArray_set( grid->lArray, CHECK, i, 1 );
+    Grid_Nbrs_check( tmp_grid->lArray, grid, grid->lArray->c_array[i], rules );
+}
 
 void *checkArrays(void *arg)
 {
@@ -185,19 +207,21 @@ void *checkArrays(void *arg)
     Grid *tmp_grid = tmp->tmp_grid;
     Grid*grid = tmp->grid;
     RuleSet *rules = tmp->rules;
+
+    int count = Grid_count(grid, 1);
+    pthread_t thread1[count];
+
     for(unsigned int i=Grid_count(grid, 1); i--; ) {
-        //Grid_set_nbrs( grid, i, Grid_nbrs(grid, CellArray_get(grid->lArray, i)));// tmp_grid->lArray->c_array[i] ) );
         Cell *c = CellArray_get(grid->lArray, i);
         int nbrs = Grid_nbrs(grid, c);
         c->nbrs_count = nbrs;
-
+        printf("Index: %d::%d\n", i, grid->lArray->base.count);
         if(Cell_next(c, rules) == 1) { //tmp1->grid->lArray->c_array[i], tmp1->rules )) {
-            //printf("Moving to next round!\n");
+                //printf("Moving to next round!\n");
             Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
             Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
             c->state = 1;
-
-            CellArray_add(tmp_grid->lArray,c );
+            CellArray_add(tmp_grid->lArray,c);
         }
         CellArray_set( grid->lArray, CHECK, i, 1 );
         Grid_Nbrs_check( tmp_grid->lArray, grid, grid->lArray->c_array[i], rules );
@@ -238,12 +262,13 @@ void *checkGridThread(void *arg)
     pthread_join(thread1, NULL);
 /*
     pthread_t thread;
-    pthread_create(&thread, NULL, clearArrays, tmp);
+    pthread_create(&thread, NULL, clearArrays, tmp);ar
     pthread_join(thread, NULL);
 */
     pthread_t thread2;
     pthread_create(&thread2, NULL, emptyGridThread, tmp);
     pthread_join(thread2, NULL);
+
 
     pthread_t thread3;
     pthread_create(&thread3, NULL, copyGridThread, tmp);
@@ -282,9 +307,10 @@ void Grid_next( Grid *grid, RuleSet *rules )
         pthread_t thread;
         pthread_create(&thread, NULL, checkGridThread, arrays);
         pthread_join(thread, NULL);
-
-        Grid_free(tmp_grid);
-
+        /*
+        Grid_free(grid);
+        grid = tmp_grid;
+        */
         free(arrays);
         arrays = NULL;
 

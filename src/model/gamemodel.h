@@ -13,6 +13,16 @@ typedef struct
      */
 	Model base;
 
+	/** @brief
+	 *
+     */
+	Manager *themes;
+
+	/** @brief
+	 *
+	 */
+	Manager *conf;
+
 	int is_playing;
 	/** @brief
 	 *
@@ -48,8 +58,7 @@ typedef struct
 	/* RULES */
 	RuleSet *ruleset;
 	//int *live_a, *live_d;
-	Manager *themes;
-	Manager *conf;
+
 	GtkBuilder *builder;
 
 	GtkWidget *main_frame;

@@ -40,15 +40,53 @@ CellArray *CellArray_copy( CellArray *toCopy )
     return arr;
 }
 
+typedef struct
+{
+    /** @brief Pointer to array of cells.
+     *
+     *  Provides access to array, which may be used to store cell pointers.
+     *  Array is created, deleted, accessed and dynamically resized
+     *  using member functions and only member functions. This is done in
+     *  order to ensure safe and efficient memory management.
+     */
+    CellArray *toCopy;
+    CellArray *dest;
+    int i;
+} CellArraystr;
+
+void *setValues( void *arg )
+{
+    CellArraystr *toCo;
+    toCo->dest->c_array[ toCo->i]->state = toCo->toCopy->c_array[ toCo->i]->state;
+    toCo->dest->c_array[ toCo->i]->checked = toCo->toCopy->c_array[ toCo->i]->checked;
+
+}
+
 void CellArray_copy_values( CellArray *dest, CellArray *toCopy )
 {
     //CellArray *arr = CellArray_new(); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
 
     //arr->c_array = (Cell**)calloc(toCopy->count, sizeof(Cell*));
+    CellArraystr *toCo;
+    toCo->dest = dest;
+    toCo->toCopy = toCopy;
+
+    pthread_t thread1[toCopy->base.count];
+    //pthread_create(&thread1, NULL, checkArrays, tmp);
+    //pthread_join(thread1, NULL);
+
+    for(int i=0; i<toCopy->base.count; i++) {
+        toCo->i = i;
+        //arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
+        pthread_create(&thread1[i], NULL, setValues, toCo);
+        //dest->c_array[i]->state = toCopy->c_array[i]->state;
+        //dest->c_array[i]->checked = toCopy->c_array[i]->checked;
+    }
     for(int i=0; i<toCopy->base.count; i++) {
         //arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
-        dest->c_array[i]->state = toCopy->c_array[i]->state;
-        dest->c_array[i]->checked = toCopy->c_array[i]->checked;
+        //dest->c_array[i]->state = toCopy->c_array[i]->state;
+        //dest->c_array[i]->checked = toCopy->c_array[i]->checked;
+        pthread_join(thread1, NULL);
     }
     //arr->count = toCopy->count;
     //return arr;
@@ -66,12 +104,15 @@ void CellArray_clear( CellArray *array )
     array->base.count = 0;
 }
 
+
+
 void CellArray_empty( CellArray *array )
 {
     for(int i=0; i<array->base.count; i++) {
         array->c_array[i]->state   = 0;
         array->c_array[i]->checked = 0;
     }
+
 }
 
 void CellArray_set( CellArray *array, int val, int index, int new_state )
