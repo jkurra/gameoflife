@@ -82,11 +82,50 @@ void freeRow(void *arg)
 
 }
 
+typedef struct
+{
+    /** @brief Pointer to array of cells.
+     *
+     *  Provides access to array, which may be used to store cell pointers.
+     *  Array is created, deleted, accessed and dynamically resized
+     *  using member functions and only member functions. This is done in
+     *  order to ensure safe and efficient memory management.
+     */
+    //Cell *cell;
+    GridArray *array;
+    int i;
+} GridArraystr;
+
+void *GridNull( void *arg )
+{
+    GridArraystr *arr = (GridArraystr*)arg;
+    GridArray *array = arr->array;
+//    printf("Clear row: %d\n", arr->i);
+    for(int k=0; k<array->cols; k++) {
+        GridArray_set( array, arr->i, k, 0 );
+        // printf("Set array to: %d:%d::%d\n", arr->i, k, GridArray_get(array, arr->i, k)->state);
+        /*Cell *tmp = GridArray_get(array, arr->i, k);
+        if(tmp) {
+            tmp->state   = 0;
+            tmp->checked = 0;
+        } else { printf("Found NULL cell at : %d:%d\n", arr->i, k); }*/
+    }//printf("*----------------------------------*\n");
+
+}
+
 void GridArray_empty( GridArray *array )
 {
-
+    pthread_t thread1[array->rows];
     for(int i=0; i<array->rows; i++) {
+        GridArraystr *arrays  = (GridArraystr *)calloc(1, sizeof(GridArraystr ));
+        arrays->i = i;
+        arrays->array = array;
+        //printf("Clear row: %d\n", arrays->i);
+        if(pthread_create(&thread1[i], NULL, GridNull, arrays) != 0) {
+            printf("cannot create thread at %d\n", i);
+        }
 
+/*
         for(int k=0; k<array->cols; k++) {
             RowStruct rs;
             rs.arr = array;
@@ -94,10 +133,21 @@ void GridArray_empty( GridArray *array )
             rs.k = k;
 
             Cell *tmp = GridArray_get(array, i, k);
+            //pthread_create(&thread1[k], NULL, GridNull, tmp);
             if(tmp) {
                 tmp->state   = 0;
                 tmp->checked = 0;
             }
+        }*/
+        /*
+        for(int k=0; k<array->cols; k++) {
+            pthread_join(thread1[k], NULL);
+        }*/
+    }
+    for(int i=0; i<array->rows; i++) {
+        if( pthread_join(thread1[i], NULL) != 0)
+        {
+            printf("cannot joine thread at %d\n", i);
         }
     }
 }
@@ -248,4 +298,5 @@ Cell *GridArray_get( GridArray *array, int row, int col )
 void GridArray_set( GridArray *grid, int row, int col, int state )
 {
     grid->g_array[row][col]->state = state;
+    grid->g_array[row][col]->checked = state;
 }

@@ -19,7 +19,7 @@ subsystem:
 	cd src/output && $(MAKE)
 
 gameoflife: $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -lglut -lGLU -lGL -o bin/gameoflife
+	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -lpthread -lglut -lGLU -lGL -o bin/gameoflife
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(PKGCONFIG) -c $<
