@@ -7,7 +7,7 @@ OBJECTS   = src/model/model.o src/view/view.o main.o src/view/gamearea/gamearea.
 			src/data/cell.o src/data/grid.o src/data/ruleset.o src/manager/config.o src/manager/theme.o \
 			src/manager/json/file.o src/view/signal/signal.o src/model/viewobject.o \
 			src/data/array/basearray.o src/data/array/cellarray.o src/data/array/gridarray.o \
-			src/model/gamemodel.o src/model/menumodel.o src/model/prefmodel.o
+			src/model/gamemodel.o src/model/menumodel.o src/model/prefmodel.o src/engine/gameengine.o
 
 all: subsystem gameoflife
 
@@ -17,6 +17,7 @@ subsystem:
 	cd src/view && $(MAKE)
 	cd src/model && $(MAKE)
 	cd src/output && $(MAKE)
+	cd src/engine && $(MAKE)
 
 gameoflife: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(PKGCONFIG) -lglut -lGLU -lGL -o bin/gameoflife
@@ -31,3 +32,4 @@ clean:
 	cd src/view && $(MAKE) clean
 	cd src/model && $(MAKE) clean
 	cd src/output && $(MAKE) clean
+	cd src/engine && $(MAKE) clean
