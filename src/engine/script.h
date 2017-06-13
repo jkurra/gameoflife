@@ -1,5 +1,5 @@
-#ifndef NODE_H_INCLUDED
-#define NODE_H_INCLUDED
+#ifndef SCRIPT_H_INCLUDED
+#define SCRIPT_H_INCLUDED
 
 #include <time.h>
 #include <stdio.h>
@@ -12,11 +12,8 @@ typedef struct
 {
     int type;
 
-    Position *pos;
-    char *scripts[];
+} script;
 
-} Node;
-
-void Node_update( Node *node );
+void script_update( script *script );
 
 #endif  /*  NODE_H_INCLUDED */

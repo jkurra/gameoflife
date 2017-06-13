@@ -12,8 +12,13 @@
 
 typedef struct
 {
+    int RUNNING;
+    int interval;
+
     int running_scripts;
     int node_count;
+
+    Node **game_grid;
 
     Node *nodes[];
 
