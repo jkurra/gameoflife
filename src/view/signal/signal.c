@@ -196,6 +196,7 @@ G_MODULE_EXPORT
 void on_NextTurn_clicked( GtkButton *button, gpointer data )
 {
 	ViewObject *model = (ViewObject*)data;
+
 	model->g_model->c_step++;
 	GtkWidget *step_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "step_counter"));
 	GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));

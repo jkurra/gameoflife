@@ -4,7 +4,7 @@
  *
  *  @param
  */
-void GameView_show( GameModel *model );
+void GameView_show( GameModel *model, GameEngine *engine );
 
 /** @brief
  *
@@ -58,7 +58,7 @@ void view_show( Model *model )
 {
     switch (model->type) {
         case GAME: /* Initialize game view */
-            GameView_show((GameModel*)model);
+            GameView_show((GameModel*)model, NULL);
             break;
         case MENU:
             MenuView_show((MenuModel*)model);
@@ -107,8 +107,8 @@ void view_destroy( Model *model )
             break;
     }
 }
-
-void GameView_show( GameModel *model )
+/* TODO rename to EditorView */
+void GameView_show( GameModel *model, GameEngine *engine )
 {
     if(model) {
         /*
@@ -121,8 +121,16 @@ void GameView_show( GameModel *model )
          * Add data from model to widgets in glade files so that they are
          * passed to UI when user first opens window.
          */
+         //gamedata *data = (gamedata*)calloc(1, sizeof(gamedata));
+        // data->engine = (GameEngine*)calloc(1, sizeof(GameEngine));
+        // data->game =  (GameModel*)calloc(1, sizeof(GameModel));
+        // if(engine != NULL) {
+        // data->engine = engine;
+    // }
+        // data->game = model;
+
         int success = signal_connect(model->builder, model);
-        
+
         if(success) {
             /* Show all widgets under main_frame */
             gtk_widget_show_all(GTK_WIDGET(model->main_frame));

@@ -65,10 +65,23 @@ void ViewObject_select( ViewObject *object, int view )
                 object->selected = MENU;
                 view_show((Model*)object->m_model);
                 break;
-            case GAME:
+            case GAME: {
                 object->selected = GAME;
-                view_show((Model*)object->g_model);
+
+                printf("Allocation of the engine \n");
+                object->engine = (GameEngine*)calloc(1, sizeof(GameEngine));
+                // object->g_model->engine = object->engine;
+                GameView_show( object->g_model, object->engine );
+                //view_show((Model*)object->g_model);
+                //engine->node_count = 0;
+                object->engine->RUNNING = 1;
+                object->engine->interval = 10000;
+                object->engine->area = GameArea1_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);
+                //object->engine->area->gmodel = object->g_model;
+                object->engine->gmodel = object->g_model;
+                GameEngine_mainloop(object->engine);
                 break;
+            }
             case PREF:
                 object->selected = PREF;
                 view_show((Model*)object->p_model);
@@ -90,6 +103,15 @@ void *gameLoopThread(void *arg)
 
     while(object->g_model->is_playing) {
         Grid_next(object->g_model->grid, object->g_model->ruleset);
+
+        for(int i=0; i<object->g_model->grid->lArray->base.count; i++) {
+            printf("array: %d\n",object->g_model->grid->lArray->base.count );
+            GameArea1_add_node( object->engine->area, Node_new(CellArray_get( object->g_model->grid->lArray, i )->row, CellArray_get( object->g_model->grid->lArray, i )->col));
+        //    CellArray_get( object->g_model->grid->lArray, i )->row;
+        //    CellArray_get( object->g_model->grid->lArray, i )->col;
+
+        }
+        //GameArea1_add_node( GameArea1 *area, Node *node ;
         //grid_next(model->rows, model->cols, model->grid, model->live_a, 2, model->live_d, 1);
         object->g_model->c_step++;
         //object->g_model->interval;
@@ -176,7 +198,7 @@ void ViewObject_connect_signals( ViewObject *object )
                 break;
             case GAME:
                 gtk_builder_connect_signals(object->g_model->builder, object);
-                g_signal_connect( G_OBJECT( object->g_model->game_frame ), "draw", G_CALLBACK(draw_GameArea), object->g_model );
+                g_signal_connect( G_OBJECT( object->g_model->game_frame ), "draw", G_CALLBACK(draw_GameArea), object->engine);
                 break;
             case PREF:
                 gtk_builder_connect_signals(object->p_model->builder, object);

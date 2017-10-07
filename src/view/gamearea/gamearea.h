@@ -9,6 +9,12 @@
 #include "../../model/prefmodel.h"
 #include "../../model/gamemodel.h"
 #include "../../model/menumodel.h"
+
+typedef struct {
+    GameModel *game;
+    GameEngine *engine;
+} gamedata;
+
 /*
  *
  */

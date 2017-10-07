@@ -2,7 +2,6 @@
 #define GAMEMODEL_H_INCLUDED
 
 #include "model.h"
-
 /** @brief
  *
  */

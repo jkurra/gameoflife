@@ -8,12 +8,31 @@
 #include "position.h"
 #include "string.h"
 
+/** @brief
+ *
+ */
 typedef struct
 {
+    /** @brief
+     *
+     */
     int type;
 
-} script;
+} Script;
 
-void script_update( script *script );
+/** @brief
+ *
+ */
+void script_update( Script *script );
+
+/** @brief
+ *
+ */
+void script_start( Script *script );
+
+/** @brief
+ *
+ */
+void script_stop( Script *script );
 
 #endif  /*  NODE_H_INCLUDED */

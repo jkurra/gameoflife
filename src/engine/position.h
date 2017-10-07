@@ -1,9 +1,15 @@
 #ifndef POSITION_H_INCLUDED
 #define POSITION_H_INCLUDED
 
+/** @brief
+ *
+ */
 typedef struct
 {
-    int x, y;
+    /** @brief
+     *
+     */
+    int row, col;
 
 } Position;
 

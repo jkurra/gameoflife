@@ -9,3 +9,9 @@ void Position_new( int x, int y )
 
     return pos;
 }
+
+void Position_free( Position pos )
+{
+    free(pos);
+    pos = NULL;
+}

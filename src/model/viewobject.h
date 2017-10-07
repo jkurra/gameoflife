@@ -15,6 +15,8 @@
 #include "../model/gamemodel.h"
 #include "../model/menumodel.h"
 
+#include "../engine/gameengine.h"
+#include "../engine/node.h"
 /** @brief Object containing view data.
  *
  */
@@ -50,6 +52,7 @@ typedef struct
      */
     PrefModel *p_model;
 
+    GameEngine *engine;
     pthread_t gameThread;
 
 } ViewObject;
