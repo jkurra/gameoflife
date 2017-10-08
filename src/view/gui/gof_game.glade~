@@ -472,7 +472,18 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkSwitch">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">7</property>
+              </packing>
             </child>
             <child>
               <object class="GtkExpander">
@@ -619,18 +630,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkSwitch">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="margin_left">10</property>
-                        <property name="margin_right">10</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                   </object>
                 </child>

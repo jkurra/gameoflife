@@ -172,6 +172,7 @@ void ViewObject_connect_signals( ViewObject *object )
         switch (object->selected) {
             case MENU:
                 gtk_builder_connect_signals(object->m_model->builder, object);
+                g_signal_connect( G_OBJECT( object->m_model->game_frame ), "draw", G_CALLBACK(draw_MenuArea), object->m_model );
                 break;
             case GAME:
                 gtk_builder_connect_signals(object->g_model->builder, object);

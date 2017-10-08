@@ -3,8 +3,9 @@
 MenuModel *MenuModel_new()
 {
     MenuModel *model = (MenuModel*)calloc(1, sizeof(MenuModel));
-    model->base.type  = PREF;
+    model->base.type  = MENU;
     model->main_frame = NULL;
+    model->game_frame = NULL;
     model->builder = NULL;
     return model;
 }
@@ -23,5 +24,6 @@ void MenuModel_free( MenuModel *model )
 
 void MenuModel_read( MenuModel *model, const char *file )
 {
-
+    model->grid = Grid_new(100, 100);
+    //printf("created new grid: %d\n", model->grid->gArray->rows);
 }

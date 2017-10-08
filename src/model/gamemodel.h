@@ -13,6 +13,16 @@ typedef struct
      */
 	Model base;
 
+	/** @brief
+	 *
+     */
+	Manager *themes;
+
+	/** @brief
+	 *
+	 */
+	Manager *conf;
+
 	int is_playing;
 	/** @brief
 	 *
@@ -24,7 +34,6 @@ typedef struct
      */
 	GdkRGBA cell_col; /* Color of each cell in grid */
 
-	//int rows, cols; /* Maximum dimensions of the game grid */
 	/** @brief
 	 *
      */
@@ -49,8 +58,7 @@ typedef struct
 	/* RULES */
 	RuleSet *ruleset;
 	//int *live_a, *live_d;
-	Manager *themes;
-	Manager *conf;
+
 	GtkBuilder *builder;
 
 	GtkWidget *main_frame;

@@ -10,7 +10,7 @@ typedef struct
     Grid *grid;
 
     RuleSet *rules;
-
+    int index;
 } GridAndTmp;
 
 /** @brief Count current neighbours for a cell.
@@ -169,7 +169,7 @@ void *clearArrays(void *arg)
     Grid*grid = tmp->grid;
 
     GridArray_empty(grid->gArray);
-
+//    printf("Goint to reset array...\n" );
     GridArray_set_with_cellarray( grid->gArray, tmp_grid->lArray );
     CellArray_clear(grid->lArray);
 
@@ -177,7 +177,29 @@ void *clearArrays(void *arg)
 
 }
 
-
+void *arrays(void *arg)
+{
+    GridAndTmp *tmp = (GridAndTmp*)arg;
+    Grid *tmp_grid = tmp->tmp_grid;
+    Grid*grid = tmp->grid;
+    RuleSet *rules = tmp->rules;
+    int i = tmp->index;
+    //printf("Index: %d::%d\n", i, grid->lArray->base.count);
+        //Grid_set_nbrs( grid, i, Grid_nbrs(grid, CellArray_get(grid->lArray, i)));// tmp_grid->lArray->c_array[i] ) );
+    Cell *c = CellArray_get(grid->lArray, i);
+    int nbrs = Grid_nbrs(grid, c);
+    c->nbrs_count = nbrs;
+    //printf("Index: %d::%d\n", i, grid->lArray->base.count);
+    if(Cell_next(c, rules) == 1) { //tmp1->grid->lArray->c_array[i], tmp1->rules )) {
+            //printf("Moving to next round!\n");
+        Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
+        Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
+        c->state = 1;
+        CellArray_add(tmp_grid->lArray,c);
+    }
+    CellArray_set( grid->lArray, CHECK, i, 1 );
+    Grid_Nbrs_check( tmp_grid->lArray, grid, grid->lArray->c_array[i], rules );
+}
 
 void *checkArrays(void *arg)
 {
@@ -185,22 +207,26 @@ void *checkArrays(void *arg)
     Grid *tmp_grid = tmp->tmp_grid;
     Grid*grid = tmp->grid;
     RuleSet *rules = tmp->rules;
+
+    int count = Grid_count(grid, 1);
+    pthread_t thread1[count];
+
     for(unsigned int i=Grid_count(grid, 1); i--; ) {
-        //Grid_set_nbrs( grid, i, Grid_nbrs(grid, CellArray_get(grid->lArray, i)));// tmp_grid->lArray->c_array[i] ) );
         Cell *c = CellArray_get(grid->lArray, i);
         int nbrs = Grid_nbrs(grid, c);
-        c->nbrs_count = nbrs;
-
-        if(Cell_next(c, rules) == 1) { //tmp1->grid->lArray->c_array[i], tmp1->rules )) {
-            //printf("Moving to next round!\n");
-            Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
-            Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
-            c->state = 1;
-
-            CellArray_add(tmp_grid->lArray,c );
+        if(c){
+            c->nbrs_count = nbrs;
+            //printf("Index: %d::%d\n", i, grid->lArray->base.count);
+            if(Cell_next(c, rules) == 1) { //tmp1->grid->lArray->c_array[i], tmp1->rules )) {
+                    //printf("Moving to next round!\n");
+                Grid_set_checked( tmp_grid, grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col, 1 );
+                Cell *c = Cell_new(grid->lArray->c_array[i]->row, grid->lArray->c_array[i]->col);
+                c->state = 1;
+                CellArray_add(tmp_grid->lArray,c);
+            }
+            CellArray_set( grid->lArray, CHECK, i, 1 );
+            Grid_Nbrs_check( tmp_grid->lArray, grid, grid->lArray->c_array[i], rules );
         }
-        CellArray_set( grid->lArray, CHECK, i, 1 );
-        Grid_Nbrs_check( tmp_grid->lArray, grid, grid->lArray->c_array[i], rules );
     }
 
 }
@@ -238,12 +264,16 @@ void *checkGridThread(void *arg)
     pthread_join(thread1, NULL);
 /*
     pthread_t thread;
-    pthread_create(&thread, NULL, clearArrays, tmp);
+    pthread_create(&thread, NULL, clearArrays, tmp);ar
     pthread_join(thread, NULL);
 */
     pthread_t thread2;
     pthread_create(&thread2, NULL, emptyGridThread, tmp);
     pthread_join(thread2, NULL);
+
+    //printf("starting grid copy...\n" );
+
+    //grid_print( grid );
 
     pthread_t thread3;
     pthread_create(&thread3, NULL, copyGridThread, tmp);
@@ -281,10 +311,14 @@ void Grid_next( Grid *grid, RuleSet *rules )
 
         pthread_t thread;
         pthread_create(&thread, NULL, checkGridThread, arrays);
-        pthread_join(thread, NULL);
 
-        Grid_free(tmp_grid);
-
+        if(thread) {
+            pthread_join(thread, NULL);
+        }
+        /*
+        Grid_free(grid);
+        grid = tmp_grid;
+        */
         free(arrays);
         arrays = NULL;
 
@@ -371,38 +405,40 @@ void Grid_switch( Grid *grid, int row, int col )
 
 int Grid_nbrs( Grid *grid, Cell *cell) //int row, int col, int rows, int cols, int **grid )
 {
-    unsigned int c=0;
-//    int grid_x=cell->row-1, grid_y=cell->col-1;
-    unsigned int grid_x=cell->row-1, grid_y=cell->col-1;
-    unsigned int finalX=cell->row-1, finalY=cell->col-1;
+    unsigned int c=-1;
+    if(grid && cell) {
+        c = 0;
+    //    int grid_x=cell->row-1, grid_y=cell->col-1;
+        unsigned int grid_x=cell->row-1, grid_y=cell->col-1;
+        unsigned int finalX=cell->row-1, finalY=cell->col-1;
 
-    if(cell->row-1 < 0) {
-        finalX = cell->row;
-    }
-    if(cell->col-1 < 0) {
-        finalY = cell->col;
-    } //printf("row 1 %d:%d\n",grid_x, grid_y);
-    int max_COL =cell->col+2, max_ROW = cell->row+2;
+        if(cell->row-1 < 0) {
+            finalX = cell->row;
+        }
+        if(cell->col-1 < 0) {
+            finalY = cell->col;
+        } //printf("row 1 %d:%d\n",grid_x, grid_y);
+        int max_COL =cell->col+2, max_ROW = cell->row+2;
 
-    if(max_COL > grid->gArray->cols) {
-        max_COL = cell->col;
-    }
-    if(max_ROW > grid->gArray->rows) {
-        max_ROW = cell->row;
-    }
-    //for(grid_x=max_ROW-1; grid_x>=finalX; grid_x--) {
-    //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
-    for(grid_x=finalX;grid_x<max_ROW ; grid_x++) {
-        for(grid_y=finalY; grid_y<max_COL; grid_y++) {
-            Cell *tmp = GridArray_get(grid->gArray, grid_x, grid_y);
-            if( tmp && tmp->state == 1 ) {
-                if(grid_x != cell->row || grid_y != cell->col) {
-                    c++;
+        if(max_COL > grid->gArray->cols) {
+            max_COL = cell->col;
+        }
+        if(max_ROW > grid->gArray->rows) {
+            max_ROW = cell->row;
+        }
+        //for(grid_x=max_ROW-1; grid_x>=finalX; grid_x--) {
+        //    for(grid_y=max_COL-1; grid_y>=finalY; grid_y--) {
+        for(grid_x=finalX;grid_x<max_ROW ; grid_x++) {
+            for(grid_y=finalY; grid_y<max_COL; grid_y++) {
+                Cell *tmp = GridArray_get(grid->gArray, grid_x, grid_y);
+                if( tmp && tmp->state == 1 ) {
+                    if(grid_x != cell->row || grid_y != cell->col) {
+                        c++;
+                    }
                 }
             }
         }
     }
-
     return c;
 }
 

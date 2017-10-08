@@ -121,9 +121,12 @@ void GameView_show( GameModel *model )
          * Add data from model to widgets in glade files so that they are
          * passed to UI when user first opens window.
          */
-        int error = signal_connect(model->builder, model);
-        /* Show all widgets under main_frame */
-        gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        int success = signal_connect(model->builder, model);
+        
+        if(success) {
+            /* Show all widgets under main_frame */
+            gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        }
     }
 }
 
@@ -140,9 +143,12 @@ void MenuView_show( MenuModel *model )
          * Add data from model to widgets in glade files so that they are
          * passed to UI when user first opens window.
          */
-        int error = signal_connect(model->builder, model);
-        /* Show all widgets under main_frame */
-        gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        int success = signal_connect(model->builder, model);
+
+        if(success) {
+            /* Show all widgets under main_frame */
+            gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        }
     }
 }
 
@@ -158,9 +164,12 @@ void PrefView_show( PrefModel *model )
          * Add data from model to widgets in glade files so that they are
          * passed to UI when user first opens window.
          */
-        int error = signal_connect(model->builder, model);
-        /* Show all widgets under main_frame */
-        gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        int success = signal_connect(model->builder, model);
+
+        if(success) {
+            /* Show all widgets under main_frame */
+            gtk_widget_show_all(GTK_WIDGET(model->main_frame));
+        }
     }
 }
 

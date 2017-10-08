@@ -25,12 +25,65 @@ void CellArray_free(CellArray *array)
         array = NULL;
     }
 }
+typedef struct
+{
+    /** @brief Pointer to array of cells.
+     *
+     *  Provides access to array, which may be used to store cell pointers.
+     *  Array is created, deleted, accessed and dynamically resized
+     *  using member functions and only member functions. This is done in
+     *  order to ensure safe and efficient memory management.
+     */
+    CellArray *toCopy;
+    CellArray *dest;
+    int i;
+} CellArraystr;
+
+void *setValues( void *arg )
+{
+    CellArraystr *toCo = (CellArraystr *)arg;
+    toCo->dest->c_array[ toCo->i]->state = toCo->toCopy->c_array[ toCo->i]->state;
+    toCo->dest->c_array[ toCo->i]->checked = toCo->toCopy->c_array[ toCo->i]->checked;
+
+}
+
+void *setValues1( void *arg )
+{
+    CellArraystr *toCo = (CellArraystr*)arg;
+//    toCo->dest->c_array[ toCo->i]->state = toCo->toCopy->c_array[ toCo->i]->state;
+//    toCo->dest->c_array[ toCo->i]->checked = toCo->toCopy->c_array[ toCo->i]->checked;
+    /*printf("copy to index %d, with array size: %d\n", toCo->i, toCo->toCopy->base.count);
+    int k = toCo->i;
+    int row = toCo->toCopy->c_array[toCo->i]->row;*/
+    toCo->dest->c_array[toCo->i] = Cell_new(toCo->toCopy->c_array[toCo->i]->row, toCo->toCopy->c_array[toCo->i]->col);
+    toCo->dest->c_array[toCo->i]->state = toCo->toCopy->c_array[ toCo->i]->state;
+    toCo->dest->c_array[toCo->i]->checked = toCo->toCopy->c_array[ toCo->i]->checked;
+}
 
 CellArray *CellArray_copy( CellArray *toCopy )
 {
     CellArray *arr = CellArray_new(); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
-
+    /*
+    arr->c_array = (Cell**)calloc(toCopy->base.count, sizeof(Cell*));*/
+    CellArraystr *toCo = (CellArraystr *)calloc(1, sizeof(CellArraystr));
     arr->c_array = (Cell**)calloc(toCopy->base.count, sizeof(Cell*));
+
+    //arr->c_array;
+    //toCo->dest = arr;
+
+
+/*
+    pthread_t thread1[toCopy->base.count];
+    for(int i=0; i<toCopy->base.count; i++) {
+        toCo->i = i;
+        pthread_create(&thread1[i], NULL, setValues1, toCo);
+    }
+    for(int i=0; i<toCopy->base.count; i++) {
+        if(thread1[i]) {
+        pthread_join(thread1, NULL);
+    }*/
+
+
     for(int i=0; i<toCopy->base.count; i++) {
         arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
         arr->c_array[i]->state = toCopy->c_array[i]->state;
@@ -42,16 +95,18 @@ CellArray *CellArray_copy( CellArray *toCopy )
 
 void CellArray_copy_values( CellArray *dest, CellArray *toCopy )
 {
-    //CellArray *arr = CellArray_new(); //(CellArray*)calloc(arr->count+1, sizeof(CellArray));
+    CellArraystr *toCo;
+    toCo->dest = dest;
+    toCo->toCopy = toCopy;
 
-    //arr->c_array = (Cell**)calloc(toCopy->count, sizeof(Cell*));
+    pthread_t thread1[toCopy->base.count];
     for(int i=0; i<toCopy->base.count; i++) {
-        //arr->c_array[i] = Cell_new(toCopy->c_array[i]->row, toCopy->c_array[i]->col);
-        dest->c_array[i]->state = toCopy->c_array[i]->state;
-        dest->c_array[i]->checked = toCopy->c_array[i]->checked;
+        toCo->i = i;
+        pthread_create(&thread1[i], NULL, setValues, toCo);
     }
-    //arr->count = toCopy->count;
-    //return arr;
+    for(int i=0; i<toCopy->base.count; i++) {
+        pthread_join(thread1, NULL);
+    }
 }
 
 void CellArray_clear( CellArray *array )
@@ -66,12 +121,15 @@ void CellArray_clear( CellArray *array )
     array->base.count = 0;
 }
 
+
+
 void CellArray_empty( CellArray *array )
 {
     for(int i=0; i<array->base.count; i++) {
         array->c_array[i]->state   = 0;
         array->c_array[i]->checked = 0;
     }
+
 }
 
 void CellArray_set( CellArray *array, int val, int index, int new_state )
