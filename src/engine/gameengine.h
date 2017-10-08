@@ -44,14 +44,20 @@ typedef struct
      *
      */
 
-     GameModel *gmodel;
+    GameModel *gmodel;
     GameArea1 *area;
+
 } GameEngine;
 
 /** @brief
  *
  */
 void GameEngine_mainloop( GameEngine *engine );
+
+/** @brief
+ *
+ */
+void GameEngine_step( GameEngine *engine );
 
 /** @brief
  *

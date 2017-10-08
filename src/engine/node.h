@@ -49,6 +49,11 @@ Node *Node_new( int row, int col );
 /** @brief
  *
  */
+void Node_free( Node *node );
+
+/** @brief
+ *
+ */
 int Node_cmp( Node *orig, Node *toCompare );
 
 /** @brief
