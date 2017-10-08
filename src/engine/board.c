@@ -1,6 +1,6 @@
 #include "board.h"
 
-Board *Board_new(int rows, int cols)
+Board *Board_new( int rows, int cols )
 {
     Board *arr = NULL;
 
