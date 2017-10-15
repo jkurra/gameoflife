@@ -2,24 +2,80 @@
 
 Board *Board_new( int rows, int cols )
 {
-    Board *arr = NULL;
+    Board *board = NULL;
 
     /*
      *
      */
-    arr = (Board*)calloc(rows, sizeof(Board));
+    board = (Board*)calloc(rows, sizeof(Board));
 
     /*
      *
      */
-    arr->rows = rows;
-    arr->cols = cols;
+    board->rows = rows;
+    board->cols = cols;
 
     /*
      *
      */
-    arr->nodes = (Node**)calloc(0, sizeof(Node*));
-    arr->node_count = 0;
+    board->nodes = (Node**)calloc(0, sizeof(Node*));
+    board->node_count = 0;
 
-    return arr;
+    return board;
+}
+
+void Board_free( Board *board )
+{
+    /*
+     *
+     */
+    for(int i=0; i<board->node_count; i++) {
+        free(board->nodes[i]);
+        board->nodes[i] = NULL;
+    }
+
+    /*
+     *
+     */
+    free(board);
+    board = NULL;
+}
+
+void Board_add( Board *board, Node *node )
+{
+    board->nodes = (Node*)realloc(board->nodes, (board->node_count+1)*sizeof(Node));
+    board->nodes[board->node_count] = node;
+    board->node_count++;
+}
+
+void Board_remove( Board *board, int id )
+{
+    for(int i=0; i<board->node_count; i++) {
+        if(board->nodes[i]->id == id) {
+
+        }
+    }
+}
+
+void Board_remove_at( Board *board, int x, int y )
+{
+    for(int i=0; i<board->node_count; i++) {
+        if(board->nodes[i]->pos->row == x && board->nodes[i]->pos->col == y ) {
+
+        }
+    }
+}
+
+int Board_has( Board *board, Node *node )
+{
+    int rtn = 0;
+
+    for(int i=0; i<board->node_count; i++) {
+        if(board->nodes[i]->pos->row == node->pos->row && board->nodes[i]->pos->col == node->pos->col ) {// TODO: implement id based identification. if(board->nodes[i]->id == node->id) {
+            rtn = 1;
+            break;
+        }
+    }
+
+    return rtn;
 }
