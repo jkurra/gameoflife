@@ -3,7 +3,7 @@
 void *engineThread(void *arg)
 {
     GameEngine *engine = (GameEngine*)arg;
-
+    //add checks as necessary.
     if(engine->RUNNING) {
         printf("Engine running.\n");
         for(int i=0; i<engine->gmodel->grid->lArray->base.count; i++) {
