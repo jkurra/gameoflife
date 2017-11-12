@@ -42,10 +42,11 @@ void Board_free( Board *board )
 }
 
 void Board_add( Board *board, Node *node )
-{
+{    printf("Adding node..\n");
     board->nodes = (Node*)realloc(board->nodes, (board->node_count+1)*sizeof(Node));
     board->nodes[board->node_count] = node;
     board->node_count++;
+    printf("Node added...\n");
 }
 
 void Board_remove( Board *board, int id )
@@ -78,4 +79,16 @@ int Board_has( Board *board, Node *node )
     }
 
     return rtn;
+}
+
+Node *Board_get( Board *board, int x, int y )
+{
+    Node *rtn = NULL;
+    for(int i=0; i<board->node_count; i++) {
+        if(board->nodes[i]->pos->row == x && board->nodes[i]->pos->col == y ) {
+            rtn = board->nodes[i];
+        }
+    }
+    return rtn;
+
 }

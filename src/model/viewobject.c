@@ -76,7 +76,7 @@ void ViewObject_select( ViewObject *object, int view )
                 //engine->node_count = 0;
                 object->engine->RUNNING = 1;
                 object->engine->interval = 10000;
-                object->engine->area = GameArea1_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);
+                object->engine->area = Grid_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);
                 //object->engine->area->gmodel = object->g_model;
                 object->engine->gmodel = object->g_model;
                 GameEngine_mainloop(object->engine);
@@ -106,7 +106,7 @@ void *gameLoopThread(void *arg)
 
         for(int i=0; i<object->g_model->grid->lArray->base.count; i++) {
             printf("array: %d\n",object->g_model->grid->lArray->base.count );
-            GameArea1_add_node( object->engine->area, Node_new(CellArray_get( object->g_model->grid->lArray, i )->row, CellArray_get( object->g_model->grid->lArray, i )->col));
+            Board_add( object->engine->area, Node_new(CellArray_get( object->g_model->grid->lArray, i )->row, CellArray_get( object->g_model->grid->lArray, i )->col));
         //    CellArray_get( object->g_model->grid->lArray, i )->row;
         //    CellArray_get( object->g_model->grid->lArray, i )->col;
 

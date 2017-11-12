@@ -5,9 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "string.h"
-#include "node.h"
-#include "gamearea1.h"
+#include "board.h"
 #include "../model/gamemodel.h"
+
 
 /* */
 #define SCRIPT 0
@@ -38,14 +38,9 @@ typedef struct
     /** @brief
      *
      */
-    Node **game_grid;
-
-    /** @brief
-     *
-     */
 
     GameModel *gmodel;
-    GameArea1 *area;
+    Board *area;
 
 } GameEngine;
 

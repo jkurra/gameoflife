@@ -7,61 +7,29 @@ void *engineThread(void *arg)
     if(engine->RUNNING) {
         printf("Engine running.\n");
         for(int i=0; i<engine->gmodel->grid->lArray->base.count; i++) {
+            printf("Node created.\n");
             Node *n = Node_new(CellArray_get(engine->gmodel->grid->lArray, i)->row, CellArray_get(engine->gmodel->grid->lArray, i)->col);
-            GameArea1_add_node(engine->area, n);
+            printf("Node created.\n");
+            Board_add(engine->area, n);
             //engine->area->nodes[i]
         }
     }
     while(engine->RUNNING) {
-        // Create tmp array for new node states. Read from original array save to tmp.
 
-        GameArea1_clear(engine->area);
         for(int i=0; i<engine->gmodel->grid->lArray->base.count; i++) {
             Node *n = Node_new(CellArray_get(engine->gmodel->grid->lArray, i)->row, CellArray_get(engine->gmodel->grid->lArray, i)->col);
             //if(!GameArea1_has(engine->area, n)) {
-            if(!GameArea1_has( engine->area, n )) {
-                GameArea1_add_node(engine->area, n);
+            if(!Board_has( engine->area, n )) {
+                Board_add(engine->area, n);
             }
             //}
             //engine->area->nodes[i]
         }
-        //printf("Node count (%d)\n",engine-> area->node_count);
-
-        // All nodes nodes updated... copy them to original array.
-
-        //View is updated using refresh rate.
-
-        //printf("Updating scripts: \n" );
-    //    printf("Updating scripts: %d\n", engine->area->rows);
-
-        /*for(int i=0; i<engine->area->rows; i++) {
-            for(int k=0; k<engine->area->cols; k++) {
-                /**-if(engine->area->nodes[i][k] != NULL) {
-
-                }
-            }
-        }*/
-        /*for(int i=0; i<engine->node_count; i++) {
-        //    printf("Updating scripts: %d\n", i );
-            //GameEngine_runscript(engine, engine->nodes[i]);
-        }*/
-        //GameEngine_update_view(engine);
 
         usleep(engine->interval);
     }
 }
-/*
-int RUNNING;
-int interval;
 
-pthread_t *gameThread;
-int running_scripts;
-int node_count;
-
-Node **game_grid;
-
-Node *nodes[];
-*/
 void GameEngine_mainloop( GameEngine *engine )
 {
     if(!engine) {
@@ -71,14 +39,14 @@ void GameEngine_mainloop( GameEngine *engine )
         //engine->node_count = 0;
         engine->RUNNING = 1;
         engine->interval = 10000;
-        engine->area = GameArea1_new(10,10);
+        engine->area = Board_new(10,10);
 
 
     }
 
     if(engine) {
         pthread_create(&engine->gameThread, NULL, engineThread, engine);
-        GameArea1_print(engine->area );
+        //GameArea1_print(engine->area );
 
         /*
         if(engine->RUNNING) {

@@ -10,6 +10,8 @@
 #include "../../model/gamemodel.h"
 #include "../../model/menumodel.h"
 
+#include "../../engine/board.h"
+
 typedef struct {
     GameModel *game;
     GameEngine *engine;

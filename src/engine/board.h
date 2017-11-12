@@ -23,7 +23,9 @@ typedef struct
      *  may be necessary for some special cases).
      */
     int rows, cols;
+        // Create tmp array for new node states. Read from original array save to tmp.
 
+        //Board_clear(engine->area);
     /** @brief Path to savefile of the original board.
      *
      *  Path to file containing all Nodes and their positions in the original
@@ -94,7 +96,7 @@ void Board_remove_at( Board *board, int x, int y );
 /** @brief Get Node with given id.
  *
  */
-Node *Board_get( Board *board, int id );
+Node *Board_get( Board *board, int x, int y );
 
 /** @brief Check if board contains given node.
  *

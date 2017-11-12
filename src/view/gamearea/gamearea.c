@@ -187,7 +187,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
             for(int cur_y=0; cur_y<engine->area->cols; cur_y++) {
 
 				//printf("Drawing area again. x:%d y:%d \n",cur_x, cur_y  );
-				Node *n = GameArea_get(engine->area, cur_x, cur_y );
+				Node *n = Board_get(engine->area, cur_x, cur_y );
 			/*	if(n) {
 
 					printf("Drawing area again. x:%d y:%d \n",cur_x, cur_y  );

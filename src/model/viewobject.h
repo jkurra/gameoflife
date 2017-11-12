@@ -17,6 +17,7 @@
 
 #include "../engine/gameengine.h"
 #include "../engine/node.h"
+#include "../engine/board.h"
 /** @brief Object containing view data.
  *
  */
