@@ -42,11 +42,11 @@ void Board_free( Board *board )
 }
 
 void Board_add( Board *board, Node *node )
-{    printf("Adding node..\n");
+{   // printf("Adding node..\n");
     board->nodes = (Node*)realloc(board->nodes, (board->node_count+1)*sizeof(Node));
     board->nodes[board->node_count] = node;
     board->node_count++;
-    printf("Node added...\n");
+    //printf("Node added...\n");
 }
 
 void Board_remove( Board *board, int id )

@@ -5,18 +5,23 @@ void *engineThread(void *arg)
     GameEngine *engine = (GameEngine*)arg;
     //add checks as necessary.
     if(engine->RUNNING) {
-        printf("Engine running.\n");
+        /*printf("Engine running.\n");
         for(int i=0; i<engine->gmodel->grid->lArray->base.count; i++) {
-            printf("Node created.\n");
+            //printf("Node created.\n");
             Node *n = Node_new(CellArray_get(engine->gmodel->grid->lArray, i)->row, CellArray_get(engine->gmodel->grid->lArray, i)->col);
-            printf("Node created.\n");
+            //printf("Node created.\n");
             Board_add(engine->area, n);
             //engine->area->nodes[i]
-        }
+        }*/
     }
     while(engine->RUNNING) {
+        for(int i=0; i<engine->board->node_count; i++) {
+            Node_run_scripts(engine->board->nodes[i]);
+        }
 
+/*
         for(int i=0; i<engine->gmodel->grid->lArray->base.count; i++) {
+
             Node *n = Node_new(CellArray_get(engine->gmodel->grid->lArray, i)->row, CellArray_get(engine->gmodel->grid->lArray, i)->col);
             //if(!GameArea1_has(engine->area, n)) {
             if(!Board_has( engine->area, n )) {
@@ -24,7 +29,7 @@ void *engineThread(void *arg)
             }
             //}
             //engine->area->nodes[i]
-        }
+        }*/
 
         usleep(engine->interval);
     }
@@ -39,7 +44,7 @@ void GameEngine_mainloop( GameEngine *engine )
         //engine->node_count = 0;
         engine->RUNNING = 1;
         engine->interval = 10000;
-        engine->area = Board_new(10,10);
+        engine->board = Board_new(10,10);
 
 
     }

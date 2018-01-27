@@ -16,8 +16,8 @@
 #include "../model/menumodel.h"
 
 #include "../engine/gameengine.h"
-#include "../engine/node.h"
-#include "../engine/board.h"
+#include "../engine/board/node.h"
+#include "../engine/board/board.h"
 /** @brief Object containing view data.
  *
  */

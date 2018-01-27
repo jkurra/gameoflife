@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "position.h"
+#include "math/position.h"
 #include "string.h"
 
 /** @brief

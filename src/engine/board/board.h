@@ -1,5 +1,5 @@
-#ifndef GAMEAREA1_H_INCLUDED
-#define GAMEAREA1_H_INCLUDED
+#ifndef BOARD_H_INCLUDED
+#define BOARD_H_INCLUDED
 
 #include "node.h"
 
@@ -18,14 +18,12 @@ typedef struct
     /** @brief Rows and columns tell basic dimension of the board.
      *
      *  Dimensions represent basic viewport in a 2D grid. Rows are same as x
-     *  coordinates and columns are same as y coordinates. Changins either one
+     *  coordinates and columns are same as y coordinates. Changing either one
      *  affects the other as well. Negative values are not allowed (zero values
      *  may be necessary for some special cases).
      */
     int rows, cols;
-        // Create tmp array for new node states. Read from original array save to tmp.
 
-        //Board_clear(engine->area);
     /** @brief Path to savefile of the original board.
      *
      *  Path to file containing all Nodes and their positions in the original

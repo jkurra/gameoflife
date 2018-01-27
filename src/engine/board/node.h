@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "position.h"
+#include "../math/position.h"
 #include "string.h"
-#include "script.h"
+#include "../script.h"
+#include <gtk/gtk.h>
 
 /** @brief
  *
@@ -37,7 +38,9 @@ typedef struct
      *  which they are saved to array.
      */
     int script_count;
-    char *scripts[];
+    //char *scripts[];
+
+    GdkRGBA *draw_color;
 
 } Node;
 
@@ -60,5 +63,7 @@ int Node_cmp( Node *orig, Node *toCompare );
  *
  */
 void Node_update( Node *node );
+
+void Node_run_scripts( Node *node );
 
 #endif  /*  NODE_H_INCLUDED */

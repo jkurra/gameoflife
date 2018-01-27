@@ -42,7 +42,7 @@ int GameArea_x_pos( gpointer data, float x, float width, float height )
         x_start += model->g_model->cell_s*model->g_model->zoom;
         x_start += model->g_model->spacing; // space between cells
     }
-	//g_print("button pressed on game1 %f: x_min:%f, x_max:%f\n",x, x_min, x_max);
+	g_print("button pressed on game1 %f: x_min:%f, x_max:%f = %d\n",x, x_min, x_max, pos);
     return pos;
 }
 
@@ -62,7 +62,7 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
     x_cell += model->g_model->startX;
 
     for(cur_x=model->g_model->startY; cur_x<max_y; cur_x++) {
-		x_max = y_start+(model->g_model->cell_s*model->g_model->zoom);
+		x_max = y_start + (model->g_model->cell_s*model->g_model->zoom);
 		x_min = y_start;
         if(y>x_min && y<x_max) {
             pos = x_cell;
@@ -72,7 +72,8 @@ int GameArea_y_pos( gpointer data, float y, float width, float height )
         y_start += model->g_model->cell_s*model->g_model->zoom;
         y_start += model->g_model->spacing; // space between cells
 
-    }      //  g_print("button pressed on game1 %f: x_min:%f, x_max:%f\n",y, x_min, x_max);
+    }
+	g_print("button pressed on game1 %f: x_min:%f, x_max:%f = %d\n",y, x_min, x_max, pos);
     return pos;
 }
 
@@ -151,12 +152,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 {
 	time_t start,end;
     start=clock();
-//	gamedata *data1 = (gamedata*)data;
-
-	//printf("redraw game model : %d\n", clock());
-    //GameModel *area1 = (GameModel*)data;
 	GameEngine *engine = (GameEngine*)data;
-//	printf("Drawing area again. \n" );
     if(engine) {
 
         GtkAllocation widget_alloc;
@@ -168,94 +164,49 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
         /* How much space is left between first drawn cell and widget border. */
         float x_point = 5.0,//area->margin,
               y_point = 5.0;// area->margin;
-        /* Draw background */
+
+		/* Draw background */
         GdkRGBA bgrn_col; /* Background color of the grid */
-        GdkRGBA cell_col; /* Color of each cell in grid */
+        //GdkRGBA cell_col; /* Color of each cell in grid */
 
         //cell_col = gdk_rgba_copy(&area1->cell_col);
-        //bgrn_col = gdk_rgba_copy(&area1->bgrn_col);
-		gdk_rgba_parse(&cell_col, "rgb(46,52,54)" );
+        //bgrn_col = engine // gdk_rgba_copy(&area1->bgrn_col);
+		//gdk_rgba_parse(&cell_col, "rgb(46,52,54)" );
         gdk_rgba_parse(&bgrn_col, "rgb(40,50,52)");
 
 	    cairo_rectangle(cr, 0, 0, maxx, maxy);
 	    gdk_cairo_set_source_rgba(cr, &bgrn_col);
 	    cairo_fill(cr);
-//g_print("Found area %d", area1->grid->gArray->rows);
-        for(int cur_x=0; cur_x<engine->area->rows; cur_x++) {
-		//	 GdkRGBA *clr = NULL;
+
+        for(int cur_x=0; cur_x<engine->board->rows; cur_x++) {
             if(x_point >= maxx) { break; }
-            for(int cur_y=0; cur_y<engine->area->cols; cur_y++) {
-
-				//printf("Drawing area again. x:%d y:%d \n",cur_x, cur_y  );
-				Node *n = Board_get(engine->area, cur_x, cur_y );
-			/*	if(n) {
-
-					printf("Drawing area again. x:%d y:%d \n",cur_x, cur_y  );
-				}*/
+            for(int cur_y=0; cur_y<engine->board->cols; cur_y++) {
+				Node *n = Board_get(engine->board, cur_x, cur_y );
 				if(n) {
-					//if(area1->visible == 1) {
-						g_print("Found area");
-						GdkRGBA *clr2 = gdk_rgba_copy(&cell_col);
-						gdk_cairo_set_source_rgba(cr, clr2);
-						cairo_rectangle(cr, x_point, y_point, 30, 30);
-						gdk_rgba_free(clr2);
-					}
-					else {g_print("Draw empty cell");
-
-						 GdkRGBA *clr1 = gdk_rgba_copy(&bgrn_col); // gdk_rgba_copy(area->bgrn_col);
-						color_lighter1( clr1, 0.1);
-						gdk_cairo_set_source_rgba(cr, clr1);
-						cairo_rectangle(cr, x_point, y_point, 30, 30);
-						gdk_rgba_free(clr1);
-					}
-					//}
-					//;area1->grid->gArray->g_array[cur_x][cur_y]) {
-				/*	switch (n->)//area1->grid->gArray->g_array[cur_x][cur_y]->state) {
-						case 0:
-							if(area1->visible == 1) {//g_print("Found area");
-								 GdkRGBA *clr1 = gdk_rgba_copy(bgrn_col); // gdk_rgba_copy(area->bgrn_col);
-								color_lighter1( clr1, 0.1);
-								gdk_cairo_set_source_rgba(cr, clr1);
-								cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-								gdk_rgba_free(clr1);
-							}
-							break;
-						case 1:{
-						 	GdkRGBA *clr2 = gdk_rgba_copy(cell_col);
-							gdk_cairo_set_source_rgba(cr, clr2);
-							cairo_rectangle(cr, x_point, y_point, area1->cell_s*area1->zoom, area1->cell_s*area1->zoom);
-							gdk_rgba_free(clr2);
-						}
-							break;
-						default:
-							break;
-					}*/
-				//}
+					GdkRGBA *clr2 = gdk_rgba_copy(n->draw_color);
+					gdk_cairo_set_source_rgba(cr, clr2);
+					cairo_rectangle(cr, x_point, y_point, 30, 30);
+					gdk_rgba_free(clr2);
+				}
+				else {
+					GdkRGBA *clr1 = gdk_rgba_copy(&bgrn_col); // gdk_rgba_copy(area->bgrn_col);
+					color_lighter1( clr1, 0.1);
+					gdk_cairo_set_source_rgba(cr, clr1);
+					cairo_rectangle(cr, x_point, y_point, 30, 30);
+					gdk_rgba_free(clr1);
+				}
 				cairo_fill(cr);
-			//	gdk_cairo_set_source_rgba(cr, clr);
-				//cairo_fill(cr);
                 x_point += 30.0;// area1->cell_s*area1->zoom;
                 x_point += 2.0;// area1->spacing;
-				//if(clr) {
-				//	gdk_rgba_free(clr);
-				//}
 				if(y_point >= maxy) { break; }
-        }
-		// gdk_cairo_set_source_rgba(cr, clr);
-		// cairo_fill(cr);
-        x_point = 5.0;
-        /* add size of the cell and space between each cell to the columns */
-        y_point += 30.0;// area1->cell_s*area1->zoom;
-        y_point += 2.0;// area1->spacing;
-    //}
-	/*cairo_fill(cr);
-	gdk_rgba_free(cell_col);
-	gdk_rgba_free(bgrn_col);*/
-    //free(cell_col);
-    //free(bgrn_col);
-}
-}
-end = clock();
-time_t t = (end-start);
-//printf("redraw game model : %d\n", t);
+        	}
+	        x_point = 5.0;
+
+	        /* add size of the cell and space between each cell to the columns */
+	        y_point += 30.0;// area1->cell_s*area1->zoom;
+	        y_point += 2.0;// area1->spacing;
+		}
+	}
+	end = clock();
+	time_t t = (end-start);
 }

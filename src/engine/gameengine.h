@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "string.h"
-#include "board.h"
+#include "board/board.h"
 #include "../model/gamemodel.h"
 
 
@@ -40,7 +40,8 @@ typedef struct
      */
 
     GameModel *gmodel;
-    Board *area;
+
+    Board *board;
 
 } GameEngine;
 

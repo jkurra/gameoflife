@@ -10,12 +10,27 @@
 #include "../../model/gamemodel.h"
 #include "../../model/menumodel.h"
 
-#include "../../engine/board.h"
+#include "../../engine/board/board.h"
 
 typedef struct {
     GameModel *game;
     GameEngine *engine;
 } gamedata;
+
+/*
+ *
+ */
+int GameArea_clicked_y_pos( gpointer data, float y, float width, float height );
+
+/*
+ *
+ */
+int GameArea_clicked_x_pos( gpointer data, float x, float width, float height );
+
+/*
+ *
+ */
+void  GameArea_draw_nodes();
 
 /*
  *
@@ -31,7 +46,6 @@ int read_row_index( GtkWidget game_area, float x_point, float y_point );
  *
  */
 int read_col_index( GtkWidget game_area, float x_point, float y_point );
-
 /*
  *
  */
@@ -41,5 +55,4 @@ int GameArea_y_pos( gpointer data, float y, float width, float height );
  *
  */
 int GameArea_x_pos( gpointer data, float x, float width, float height );
-
 #endif /* GAMEAREA_H_ */

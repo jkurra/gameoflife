@@ -10,6 +10,8 @@ Node *Node_new( int row, int col )
 
     node->pos->row = row;
     node->pos->col = col;
+    node->draw_color = (GdkRGBA *)calloc(1, sizeof(GdkRGBA));
+    gdk_rgba_parse(node->draw_color, "rgb(245,121,0)");
 
     return node;
 }
@@ -40,8 +42,7 @@ void Node_set_pos( Node *node, Position *pos )
     node->pos = pos;
 }
 
-void Node_run_script( Node *node, Script *script )
+void Node_run_scripts( Node *node )
 {
-//    script_start(script);
-//    script_update(script);
+    printf("Running scripts in node...\n");
 }

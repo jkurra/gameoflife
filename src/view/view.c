@@ -166,6 +166,8 @@ void PrefView_show( PrefModel *model )
         /*
          * Save main widgets that are modified using values in model, so we don't
          * have to look for them every time they are needed.
+FI
+
          */
         model->main_frame = GTK_WIDGET(gtk_builder_get_object(model->builder, "MainWindow"));
         /*
