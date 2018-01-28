@@ -10,6 +10,7 @@
 #include "../script.h"
 #include <gtk/gtk.h>
 
+#include "../../manager/json/json.h"
 /** @brief
  *
  */
@@ -65,5 +66,7 @@ int Node_cmp( Node *orig, Node *toCompare );
 void Node_update( Node *node );
 
 void Node_run_scripts( Node *node );
+
+char *Node_json( Node *node );
 
 #endif  /*  NODE_H_INCLUDED */

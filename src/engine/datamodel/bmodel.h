@@ -2,6 +2,7 @@
 #define BMODEL_H_INCLUDED
 #include <gtk/gtk.h>
 
+#include "../../manager/json/json.h"
 /** @brief
  *
  */
@@ -40,5 +41,7 @@ void BModel_save( BModel *model );
  *
  */
 void BModel_read( BModel *model );
+
+char *BModel_json( BModel *bmodel );
 
 #endif /* MODEL_H_ */

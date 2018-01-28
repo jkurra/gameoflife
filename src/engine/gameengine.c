@@ -79,19 +79,6 @@ void GameEngine_update_view( GameEngine *engine )
 
 }
 
-/*void GameEngine_add_node( GameEngine *engine, Node *node )
-{
-    //array->c_array = (Cell**)realloc(array->c_array, (array->base.count+1)*sizeof(Cell*));
-    engine->nodes = (Node**)realloc(engine->nodes, (engine->node_count+1)*sizeof(Node*));
-    engine->nodes[engine->node_count+1] = node;
-    engine->node_count++;
-}*/
-/*
-void GameEngine_remove_node(GameEngine *engine, int index)
-{
-
-}*/
-
 int GameEngine_count( GameEngine *engine, int type )
 {
     int rtn = 0;
@@ -110,4 +97,23 @@ int GameEngine_count( GameEngine *engine, int type )
     }
 
     return rtn;
+}
+
+char *GameEngine_json( GameEngine *engine )
+{
+    JsonObject *engineObject = json_parse(NULL);
+
+    char *iv =   (char*) calloc(10, sizeof(char*));
+/*    char *cols =   (char*) calloc(10, sizeof(char*));
+    char *t_time = (char*) calloc(10, sizeof(char*));
+    char *vis =    (char*) calloc(10, sizeof(char*));*/
+
+    sprintf(iv,"%d",engine->interval);
+
+    //JsonKeypair interval = json_keypair_create( "interval", iv);
+	json_add_value(engineObject, json_keypair_create( "interval", iv));
+    json_add_object(engineObject, json_parse(Board_json(engine->board)));
+    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)));
+    //json_add(engineObject, json_tok());
+    return engineObject->main_object;
 }

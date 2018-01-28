@@ -4,12 +4,11 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "string.h"
+
 #include "board/board.h"
 #include "datamodel/bmodel.h"
-
+#include "../manager/json/json.h"
 #include "../model/gamemodel.h"
-
 
 /* */
 #define SCRIPT 0
@@ -24,7 +23,7 @@ typedef struct
      *
      */
     int RUNNING;
-    
+
     /** @brief
      *
      */
@@ -35,14 +34,12 @@ typedef struct
      */
     pthread_t *gameThread;
 
-
     Board  *board;
     BModel *bmodel;
 
     /** @brief
      *
      */
-
     GameModel *gmodel;
 
 
@@ -67,5 +64,7 @@ void GameEngine_runscript( GameEngine *engine, Node *node );
  *
  */
 int GameEngine_count( GameEngine *engine, int type );
+
+char *GameEngine_json( GameEngine *engine );
 
 #endif  /* GAMEENGINE_H_INCLUDED */

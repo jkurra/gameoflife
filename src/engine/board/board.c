@@ -68,7 +68,7 @@ void Board_remove_at( Board *board, int x, int y )
 {
     for(int i=0; i<board->node_count; i++) {
         if(board->nodes[i]->pos->x == x && board->nodes[i]->pos->y == y ) {
-            
+
         }
     }
 }
@@ -98,5 +98,26 @@ Node *Board_get( Board *board, int x, int y )
     }
 
     return rtn;
+}
 
+char *Board_json( Board *board )
+{
+    JsonObject *boardObject = json_parse(NULL);
+
+    char *cols = (char*) calloc(10, sizeof(char*));
+    char *rows = (char*) calloc(10, sizeof(char*));
+
+    sprintf(rows,"%d",board->rows);
+    sprintf(cols,"%d",board->cols);
+
+    //JsonKeypair interval = json_keypair_create( "interval", iv);
+    json_add_value(boardObject, json_keypair_create("rows", rows));
+    json_add_value(boardObject, json_keypair_create("cols", cols));
+
+    for(int i=0; i<board->node_count; i++) {
+        json_add_object(boardObject, json_parse(Node_json(board->nodes[i])));
+        //Node_json(
+    }
+    //json_add(engineObject, json_tok());
+    return boardObject->main_object;
 }

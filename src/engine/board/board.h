@@ -2,6 +2,7 @@
 #define BOARD_H_INCLUDED
 
 #include "node.h"
+#include "../../manager/json/json.h"
 
 /** @brief Structure for Board which can hold Nodes.
  *
@@ -100,5 +101,7 @@ Node *Board_get( Board *board, int x, int y );
  *
  */
 int Board_has( Board *board, Node *node );
+
+char *Board_json( Board *board );
 
 #endif  /* GAMEENGINE_H_INCLUDED */

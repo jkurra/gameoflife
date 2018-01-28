@@ -314,6 +314,7 @@ void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *even
 			if(Board_get(engine->board, posy, posx) == NULL) {
 				Board_add(engine->board, Node_new(posy, posx));
 				gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+				printf("json: \n%s\n", GameEngine_json(engine));
 			} else { printf("position already has Node, ignoring add.\n"); }
 			break;
 		case 2:

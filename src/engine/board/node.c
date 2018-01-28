@@ -4,6 +4,7 @@ Node *Node_new( int row, int col )
 {
     Node *node = (Node*)calloc(1, sizeof(Node));
 
+    node->id = -1;
     node->pos = (Position*)calloc(1, sizeof(Position));
     node->type = -1;
     node->script_count = 0;
@@ -54,4 +55,33 @@ void Node_set_pos( Node *node, Position *pos )
 void Node_run_scripts( Node *node )
 {
     //printf("Running scripts in node...\n");
+}
+
+char *Node_json( Node *node )
+{
+    JsonObject *nodeObject = json_parse(NULL);
+
+    char *type = (char*) calloc(10, sizeof(char*));
+    char *id = (char*) calloc(10, sizeof(char*));
+    char *script_count = (char*) calloc(10, sizeof(char*));
+    char *x = (char*) calloc(10, sizeof(char*));
+    char *y = (char*) calloc(10, sizeof(char*));
+
+    sprintf(id,"%d", node->id);
+
+    sprintf(x,"%d", node->pos->x);
+    sprintf(y,"%d", node->pos->y);
+/*    sprintf(script_count,"%d", node->script_count);
+*/
+
+    //JsonKeypair interval = json_keypair_create( "interval", iv);
+    json_add_value(nodeObject, json_keypair_create("id", id));
+    json_add_value(nodeObject, json_keypair_create("x", x));
+    json_add_value(nodeObject, json_keypair_create("y", y));
+//    json_add_value(nodeObject, json_keypair_create("id", node->type));
+//    json_add_value(nodeObject, json_keypair_create("script_counts", node->script_count));
+
+
+    //json_add(engineObject, json_tok());
+    return nodeObject->main_object;
 }
