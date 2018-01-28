@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "board/board.h"
-#include "datamodel/bmodel.h"
 #include "../manager/json/json.h"
 #include "../model/gamemodel.h"
+#include "datamodel/bmodel.h"
+#include "board/board.h"
 
 /* */
 #define SCRIPT 0
@@ -65,6 +65,9 @@ void GameEngine_runscript( GameEngine *engine, Node *node );
  */
 int GameEngine_count( GameEngine *engine, int type );
 
+/** @brief
+ *
+ */
 char *GameEngine_json( GameEngine *engine );
 
 #endif  /* GAMEENGINE_H_INCLUDED */

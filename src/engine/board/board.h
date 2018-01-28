@@ -102,6 +102,9 @@ Node *Board_get( Board *board, int x, int y );
  */
 int Board_has( Board *board, Node *node );
 
+/** @brief Full json representation of the board.
+ *
+ */
 char *Board_json( Board *board );
 
 #endif  /* GAMEENGINE_H_INCLUDED */

@@ -11,8 +11,8 @@ Node *Node_new( int row, int col )
 
     node->pos->x = row;
     node->pos->y = col;
-    node->draw_color = (GdkRGBA *)calloc(1, sizeof(GdkRGBA));
-    gdk_rgba_parse(node->draw_color, "rgb(245,121,0)");
+    //node->draw_color = //(GdkRGBA *)calloc(1, sizeof(GdkRGBA));
+    //gdk_rgba_parse(node->draw_color, "rgb(245,121,0)");
 
     return node;
 }
@@ -36,25 +36,23 @@ int Node_cmp( Node *orig, Node *toCompare )
     return rtn;
 }
 
-void Node_update( Node *node )
+void Node_set_pos( Node *node, Position *new_pos )
 {
-    printf("Updating script...\n" );
-    /*
-    for(int i=0; i<node->script_count; i++) {
-    //    Node_run_script()
-}*/
-}
-
-void Node_set_pos( Node *node, Position *pos )
-{
+    /* Free current position from memory. */
     free(node->pos);
     node->pos = NULL;
-    node->pos = pos;
+    /* Replace position in node with new position */
+    node->pos = new_pos;
 }
 
 void Node_run_scripts( Node *node )
 {
     //printf("Running scripts in node...\n");
+    /* TODO: run each script in node.
+    for(int i=0; i<node->script_count; i++) {
+    //    Node_run_script()
+    }
+    */
 }
 
 char *Node_json( Node *node )
@@ -78,8 +76,6 @@ char *Node_json( Node *node )
     json_add_value(nodeObject, json_keypair_create("id", id));
     json_add_value(nodeObject, json_keypair_create("x", x));
     json_add_value(nodeObject, json_keypair_create("y", y));
-//    json_add_value(nodeObject, json_keypair_create("id", node->type));
-//    json_add_value(nodeObject, json_keypair_create("script_counts", node->script_count));
 
 
     //json_add(engineObject, json_tok());

@@ -8,9 +8,9 @@
 #include "../math/position.h"
 #include "string.h"
 #include "../script.h"
-#include <gtk/gtk.h>
 
 #include "../../manager/json/json.h"
+
 /** @brief
  *
  */
@@ -41,7 +41,7 @@ typedef struct
     int script_count;
     //char *scripts[];
 
-    GdkRGBA *draw_color;
+    char *draw_color; /* Color to be used in game board for this node. */
 
 } Node;
 
@@ -58,15 +58,16 @@ void Node_free( Node *node );
 /** @brief
  *
  */
+void Node_run_scripts( Node *node );
+
+/** @brief
+ *
+ */
 int Node_cmp( Node *orig, Node *toCompare );
 
 /** @brief
  *
  */
-void Node_update( Node *node );
-
-void Node_run_scripts( Node *node );
-
 char *Node_json( Node *node );
 
 #endif  /*  NODE_H_INCLUDED */

@@ -30,7 +30,7 @@ void BModel_save( BModel *model )
         char *m_up = (char*) calloc(10, sizeof(char*));
         char *m_down = (char*) calloc(10, sizeof(char*));
 
-        gchar *bgrn = NULL;
+        char *bgrn = NULL;
 
         //sprintf(rows, "%d",   model->cell_s);
         //sprintf(rows, "%d",   model->zoom);
