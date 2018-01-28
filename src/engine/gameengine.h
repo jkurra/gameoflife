@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "string.h"
 #include "board/board.h"
+#include "datamodel/bmodel.h"
+
 #include "../model/gamemodel.h"
 
 
@@ -22,18 +24,20 @@ typedef struct
      *
      */
     int RUNNING;
+    
     /** @brief
      *
      */
     int interval;
+
     /** @brief
      *
      */
     pthread_t *gameThread;
-    /** @brief
-     *
-     */
-    int running_scripts;
+
+
+    Board  *board;
+    BModel *bmodel;
 
     /** @brief
      *
@@ -41,7 +45,6 @@ typedef struct
 
     GameModel *gmodel;
 
-    Board *board;
 
 } GameEngine;
 

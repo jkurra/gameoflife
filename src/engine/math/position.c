@@ -4,8 +4,8 @@ Position *Position_new( int x, int y )
 {
     Position *pos = (Position*)calloc(1, sizeof(Position));
 
-    pos->row = x;
-    pos->col = y;
+    pos->x = x;
+    pos->y = y;
 
     return pos;
 }

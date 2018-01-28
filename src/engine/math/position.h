@@ -11,8 +11,10 @@ typedef struct
     /** @brief
      *
      */
-    int row, col;
+    int x, y;
 
 } Position;
+
+void Position_free( Position *pos );
 
 #endif  /* POSITION_H_INCLUDED */

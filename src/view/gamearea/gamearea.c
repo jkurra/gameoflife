@@ -15,23 +15,22 @@ void color_lighter1( GdkRGBA *rgba, float level )
     rgba->green += level;
     rgba->blue  += level;
 }
-int GameArea_x_pos( gpointer data, float x, float width, float height )
+
+int GameArea_x_pos( GameEngine *engine, float x )
 {
     int pos = -1;
-    ViewObject *model = (ViewObject*)data;
 
-    int max_x = model->g_model->grid->gArray->rows,
+    int max_x = engine->board->rows,
 		cur_x = 0;
 
-    float x_start = 5.0;
+    float x_start = engine->bmodel->margin_left;
     int x_cell = 0;
 
     float x_max = 0;
     float x_min = 0;
-    x_cell += model->g_model->startY;
 
-    for(cur_x=model->g_model->startX; cur_x<max_x; cur_x++) {
-		x_max = x_start+(model->g_model->cell_s*model->g_model->zoom);
+    for(cur_x=0; cur_x<max_x; cur_x++) {
+		x_max = x_start+engine->bmodel->cell_s;
 		x_min = x_start;
         if(x>x_min && x<x_max) {
             pos = x_cell;
@@ -39,41 +38,41 @@ int GameArea_x_pos( gpointer data, float x, float width, float height )
         }
         x_cell++;
         //cur_x = x_cell;
-        x_start += model->g_model->cell_s*model->g_model->zoom;
-        x_start += model->g_model->spacing; // space between cells
+        x_start += engine->bmodel->cell_s;
+        x_start += engine->bmodel->space; // space between cells
     }
 	g_print("button pressed on game1 %f: x_min:%f, x_max:%f = %d\n",x, x_min, x_max, pos);
+
     return pos;
 }
 
-int GameArea_y_pos( gpointer data, float y, float width, float height )
+int GameArea_y_pos( GameEngine *engine, float y )
 {
-    int pos = -1;
-    ViewObject *model = (ViewObject*)data;
+	int pos = -1;
 
-    int	max_y = model->g_model->grid->gArray->cols, cur_x = 0;
+    int max_y = engine->board->rows,
+		cur_y = 0;
 
-    float y_start = 5.0;
-    int   x_cell = 0;
+    float y_start = engine->bmodel->margin_up;
+    int y_cell = 0;
 
-    float x_max = 0;
-    float x_min = 0;
+    float y_max = 0;
+    float y_min = 0;
 
-    x_cell += model->g_model->startX;
-
-    for(cur_x=model->g_model->startY; cur_x<max_y; cur_x++) {
-		x_max = y_start + (model->g_model->cell_s*model->g_model->zoom);
-		x_min = y_start;
-        if(y>x_min && y<x_max) {
-            pos = x_cell;
+    for(cur_y=0; cur_y<max_y; cur_y++) {
+		y_max = y_start+engine->bmodel->cell_s;
+		y_min = y_start;
+        if(y>y_min && y<y_max) {
+            pos = y_cell;
             break;
         }
-        x_cell++;
-        y_start += model->g_model->cell_s*model->g_model->zoom;
-        y_start += model->g_model->spacing; // space between cells
+        y_cell++;
 
+        y_start += engine->bmodel->cell_s;
+        y_start += engine->bmodel->space; // space between cells
     }
-	g_print("button pressed on game1 %f: x_min:%f, x_max:%f = %d\n",y, x_min, x_max, pos);
+	g_print("button pressed on game1 %f: x_min:%f, x_max:%f = %d\n",y, y_min, y_max, pos);
+
     return pos;
 }
 
@@ -107,6 +106,7 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
             if(x_point >= maxx) { break; }
             for(int cur_y=0; cur_y<area1->grid->gArray->cols; cur_y++) {
 				if(GridArray_get(area1->grid->gArray, cur_x, cur_y )) {//;area1->grid->gArray->g_array[cur_x][cur_y]) {
+
 					switch (area1->grid->gArray->g_array[cur_x][cur_y]->state) {
 						case 0: {
 							//if(area1->visible == 1) {
@@ -140,10 +140,10 @@ void draw_MenuArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
         y_point +=1;
     }
 }
-//	cairo_fill(cr);
-//	gdk_rgba_free(cell_col);
-//	gdk_rgba_free(bgrn_col);
+}
 
+GameArea_draw_nodes( GtkDrawingArea *area, cairo_t *cr, gpointer data )
+{
 
 
 }
@@ -153,6 +153,7 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 	time_t start,end;
     start=clock();
 	GameEngine *engine = (GameEngine*)data;
+
     if(engine) {
 
         GtkAllocation widget_alloc;
@@ -161,50 +162,56 @@ void draw_GameArea( GtkDrawingArea *area, cairo_t *cr, gpointer data   )
 
         int maxx = widget_alloc.width,
             maxy = widget_alloc.height;
-        /* How much space is left between first drawn cell and widget border. */
-        float x_point = 5.0,//area->margin,
-              y_point = 5.0;// area->margin;
 
+	    float margin_up    = engine->bmodel->margin_up;
+		float margin_down  = engine->bmodel->margin_down;
+		float margin_left  = engine->bmodel->margin_left;
+		float margin_right = engine->bmodel->margin_right;
+
+		float cell_s = engine->bmodel->cell_s;
+		float x_point = margin_left ,//area->margin,
+			  y_point = margin_up ;// area->margin;
+
+		float spacing =engine->bmodel->space;
+
+		int rows = engine->board->rows,
+			cols = engine->board->cols;
 		/* Draw background */
         GdkRGBA bgrn_col; /* Background color of the grid */
-        //GdkRGBA cell_col; /* Color of each cell in grid */
-
-        //cell_col = gdk_rgba_copy(&area1->cell_col);
-        //bgrn_col = engine // gdk_rgba_copy(&area1->bgrn_col);
-		//gdk_rgba_parse(&cell_col, "rgb(46,52,54)" );
         gdk_rgba_parse(&bgrn_col, "rgb(40,50,52)");
 
 	    cairo_rectangle(cr, 0, 0, maxx, maxy);
 	    gdk_cairo_set_source_rgba(cr, &bgrn_col);
 	    cairo_fill(cr);
 
-        for(int cur_x=0; cur_x<engine->board->rows; cur_x++) {
+        for(int cur_x=0; cur_x<rows; cur_x++) {
             if(x_point >= maxx) { break; }
-            for(int cur_y=0; cur_y<engine->board->cols; cur_y++) {
+            for(int cur_y=0; cur_y<cols; cur_y++) {
 				Node *n = Board_get(engine->board, cur_x, cur_y );
 				if(n) {
-					GdkRGBA *clr2 = gdk_rgba_copy(n->draw_color);
-					gdk_cairo_set_source_rgba(cr, clr2);
-					cairo_rectangle(cr, x_point, y_point, 30, 30);
-					gdk_rgba_free(clr2);
+					GdkRGBA clr2;
+					gdk_rgba_parse(&clr2, "rgb(20,12,54)");
+					gdk_cairo_set_source_rgba(cr, &clr2);
+					cairo_rectangle(cr, x_point, y_point, cell_s, cell_s );
+					//gdk_rgba_free(clr2);
 				}
 				else {
 					GdkRGBA *clr1 = gdk_rgba_copy(&bgrn_col); // gdk_rgba_copy(area->bgrn_col);
 					color_lighter1( clr1, 0.1);
 					gdk_cairo_set_source_rgba(cr, clr1);
-					cairo_rectangle(cr, x_point, y_point, 30, 30);
+					cairo_rectangle(cr, x_point, y_point, cell_s , cell_s );
 					gdk_rgba_free(clr1);
 				}
 				cairo_fill(cr);
-                x_point += 30.0;// area1->cell_s*area1->zoom;
-                x_point += 2.0;// area1->spacing;
+                x_point += cell_s ;// area1->cell_s*area1->zoom;
+                x_point += spacing;// area1->spacing;
 				if(y_point >= maxy) { break; }
         	}
-	        x_point = 5.0;
+	        x_point = margin_left;
 
 	        /* add size of the cell and space between each cell to the columns */
-	        y_point += 30.0;// area1->cell_s*area1->zoom;
-	        y_point += 2.0;// area1->spacing;
+	        y_point += cell_s ;// area1->cell_s*area1->zoom;
+	        y_point += spacing;// area1->spacing;
 		}
 	}
 	end = clock();

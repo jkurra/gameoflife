@@ -8,7 +8,7 @@ OBJECTS   = src/model/model.o src/view/view.o main.o src/view/gamearea/gamearea.
 			src/manager/json/file.o src/view/signal/signal.o src/model/viewobject.o \
 			src/data/array/basearray.o src/data/array/cellarray.o src/data/array/gridarray.o \
 			src/model/gamemodel.o src/model/menumodel.o src/model/prefmodel.o src/engine/gameengine.o \
-			src/engine/board/node.o src/engine/board/board.o src/engine/board/idspace.o
+			src/engine/board/node.o src/engine/math/position.o src/engine/datamodel/bmodel.o src/engine/board/board.o src/engine/board/idspace.o
 
 all: subsystem gameoflife
 

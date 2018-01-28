@@ -41,6 +41,12 @@ void Board_free( Board *board )
     board = NULL;
 }
 
+void Board_resize( Board *board, int newX, int newY )
+{
+    board->rows = newX;
+    board->cols = newY;
+}
+
 void Board_add( Board *board, Node *node )
 {   // printf("Adding node..\n");
     board->nodes = (Node*)realloc(board->nodes, (board->node_count+1)*sizeof(Node));
@@ -61,8 +67,8 @@ void Board_remove( Board *board, int id )
 void Board_remove_at( Board *board, int x, int y )
 {
     for(int i=0; i<board->node_count; i++) {
-        if(board->nodes[i]->pos->row == x && board->nodes[i]->pos->col == y ) {
-
+        if(board->nodes[i]->pos->x == x && board->nodes[i]->pos->y == y ) {
+            
         }
     }
 }
@@ -72,7 +78,7 @@ int Board_has( Board *board, Node *node )
     int rtn = 0;
 
     for(int i=0; i<board->node_count; i++) {
-        if(board->nodes[i]->pos->row == node->pos->row && board->nodes[i]->pos->col == node->pos->col ) {// TODO: implement id based identification. if(board->nodes[i]->id == node->id) {
+        if(board->nodes[i]->pos->x == node->pos->x && board->nodes[i]->pos->y == node->pos->y ) {// TODO: implement id based identification. if(board->nodes[i]->id == node->id) {
             rtn = 1;
             break;
         }
@@ -84,11 +90,13 @@ int Board_has( Board *board, Node *node )
 Node *Board_get( Board *board, int x, int y )
 {
     Node *rtn = NULL;
+
     for(int i=0; i<board->node_count; i++) {
-        if(board->nodes[i]->pos->row == x && board->nodes[i]->pos->col == y ) {
+        if(board->nodes[i]->pos->x == x && board->nodes[i]->pos->y == y ) {
             rtn = board->nodes[i];
         }
     }
+
     return rtn;
 
 }

@@ -20,12 +20,12 @@ typedef struct {
 /*
  *
  */
-int GameArea_clicked_y_pos( gpointer data, float y, float width, float height );
+int GameArea_clicked_y_pos( gpointer data, float y );
 
 /*
  *
  */
-int GameArea_clicked_x_pos( gpointer data, float x, float width, float height );
+int GameArea_clicked_x_pos( gpointer data, float x );
 
 /*
  *
@@ -46,13 +46,15 @@ int read_row_index( GtkWidget game_area, float x_point, float y_point );
  *
  */
 int read_col_index( GtkWidget game_area, float x_point, float y_point );
-/*
- *
- */
-int GameArea_y_pos( gpointer data, float y, float width, float height );
 
 /*
  *
  */
-int GameArea_x_pos( gpointer data, float x, float width, float height );
+int GameArea_y_pos( GameEngine *engine, float y );
+
+/*
+ *
+ */
+int GameArea_x_pos( GameEngine *engine, float x );
+
 #endif /* GAMEAREA_H_ */

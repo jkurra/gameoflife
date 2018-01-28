@@ -1,14 +1,13 @@
 #ifndef BMODEL_H_INCLUDED
 #define BMODEL_H_INCLUDED
 #include <gtk/gtk.h>
-#include "stdlib.h"
 
 /** @brief
  *
  */
 typedef struct
 {
-	GdkRGBA bgrn_col;
+	GdkRGBA *bgrn_col;
 
 	float cell_s;		/* Size of each cell in the screen. */
 	float space;
@@ -19,7 +18,6 @@ typedef struct
 	float margin_down;
 
 	float zoom; 		/* User defined modifier for size of the cells	*/
-
 
 } BModel;
 

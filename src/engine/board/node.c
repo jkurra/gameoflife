@@ -8,12 +8,21 @@ Node *Node_new( int row, int col )
     node->type = -1;
     node->script_count = 0;
 
-    node->pos->row = row;
-    node->pos->col = col;
+    node->pos->x = row;
+    node->pos->y = col;
     node->draw_color = (GdkRGBA *)calloc(1, sizeof(GdkRGBA));
     gdk_rgba_parse(node->draw_color, "rgb(245,121,0)");
 
     return node;
+}
+
+void Node_free( Node *node ) {
+
+    Position_free(node->pos);
+
+    free(node);
+    node = NULL;
+
 }
 
 int Node_cmp( Node *orig, Node *toCompare )
@@ -44,5 +53,5 @@ void Node_set_pos( Node *node, Position *pos )
 
 void Node_run_scripts( Node *node )
 {
-    printf("Running scripts in node...\n");
+    //printf("Running scripts in node...\n");
 }

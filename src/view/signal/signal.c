@@ -225,19 +225,46 @@ void on_PrevTurn_clicked( GtkButton *button, gpointer data )
 G_MODULE_EXPORT
 void on_SetRows_value_changed( GtkSpinButton *button, gpointer data )
 {
+	/*
+	 *	TODO: pointer data should propably be engine.
+	 */
     ViewObject *model = (ViewObject*)data;
 
-    int tmpRows = gtk_spin_button_get_value (button);
+	/*
+	 *	Read value in gtk_spin_button using gtk function.
+	 */
+    int tmp_rows = gtk_spin_button_get_value (button);
 
-	Grid_ptr data1;
-	data1.row = tmpRows; //model->g_model->grid->gArray->rows;
-	data1.col = model->g_model->grid->gArray->cols;
-//	data.rules = model->g_model->grid->gArray->rules;
-//	printf("new Grid size: x:%d, y:%d \n", data1.row, data1.col);
-	Grid_mod( model->g_model->grid, RESIZE, &data1);
-//    Grid_resize(model->g_model->grid , tmpRows, model->g_model->grid->cols); //grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, tmpRows, model->g_model->cols );
-    //model->g_model->grid->rows = tmpRows;
-    GameModel_save(model->g_model);
+	/*
+	 *	Set value of rows to value read from spinbutton.
+	 *	TODO: overwrite new value to json and add to savefile.
+	 */
+	model->engine->board->rows = tmp_rows;
+
+	/* Redraw all widgets to update values. */
+    gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
+}
+
+G_MODULE_EXPORT
+void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
+{
+	/*
+	 *	TODO: pointer data should propably be engine.
+	 */
+    ViewObject *model = (ViewObject*)data;
+
+	/*
+	 *	Read value in gtk_spin_button using gtk function.
+	 */
+	int tmp_cols = gtk_spin_button_get_value (button);
+
+	/*
+	 *	Set value of rows to value read from spinbutton.
+	 *	TODO: overwrite new value to json and add to savefile.
+	 */
+	model->engine->board->cols = tmp_cols;
+
+	/* Redraw all widgets to update values. */
     gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
@@ -252,24 +279,6 @@ void on_DeadCellSwitch_state_set( GtkSwitch *widget, gboolean state, gpointer da
 	} else { object->g_model->visible = 0; }
 	GameModel_save(object->g_model);
 	gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
-}
-
-G_MODULE_EXPORT
-void on_SetCols_value_changed( GtkSpinButton *button, gpointer data )
-{
-    ViewObject *model = (ViewObject*)data;
-
-    int tmpCols = gtk_spin_button_get_value (button);
-	GtkWidget *cell_count = GTK_WIDGET(gtk_builder_get_object(model->g_model->builder, "cell_counter"));
-	Grid_ptr data1;
-	data1.row = model->g_model->grid->gArray->rows; //model->g_model->grid->gArray->rows;
-	data1.col = tmpCols;
-	//	data.rules = model->g_model->grid->gArray->rules;
-		Grid_mod( model->g_model->grid, RESIZE, &data1);
-    //Grid_resize(model->g_model->grid , model->g_model->grid->rows, tmpCols);//grid_resize(model->g_model->grid, model->g_model->rows, model->g_model->cols, model->g_model->rows, tmpCols);
-    //model->g_model->grid->cols = tmpCols;
-    GameModel_save(model->g_model);
-    gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
 }
 
 G_MODULE_EXPORT
@@ -289,25 +298,36 @@ void on_SetInterval_value_changed( GtkSpinButton *button, gpointer data )
 	GameModel_save(model->g_model);
 }
 
+
+
 G_MODULE_EXPORT
 void on_drawingarea1_button_press_event( GtkWidget *widget, GdkEventButton *event, gpointer data )
 {
-	g_print("Draw pressed of range.\n");
-	GtkAllocation widget_alloc;
-	gtk_widget_get_allocation(GTK_WIDGET(widget), &widget_alloc);
-	int maxx = widget_alloc.width,
-		maxy = widget_alloc.height;
+	ViewObject *object = (ViewObject*)data;
+	GameEngine *engine = object->engine;
 
-		int posx = GameArea_x_pos(data, event->x, maxx, maxy);// get_x_position( widget, data, event->x);
-		int posy = GameArea_y_pos(data, event->y, maxx, maxy);
-	//	g_print("button pressed on game : x:%f, y:%d.\n", event->x, event->y);
-		if(posx >= 0 && posy >= 0) {
-			ViewObject *model = (ViewObject*)data;
-			Grid_switch( model->g_model->grid, posy, posx );
-			gtk_widget_queue_draw(GTK_WIDGET(model->g_model->main_frame));
-		} else {
-			g_print("positions out of range.\n");
-		}
+	int posx = GameArea_x_pos(engine, event->x);
+	int posy = GameArea_y_pos(engine, event->y);
+
+	switch (event->button) {
+		case 1:
+			if(Board_get(engine->board, posy, posx) == NULL) {
+				Board_add(engine->board, Node_new(posy, posx));
+				gtk_widget_queue_draw(GTK_WIDGET(object->g_model->main_frame));
+			} else { printf("position already has Node, ignoring add.\n"); }
+			break;
+		case 2:
+			/* Middle mouse button was pressed. */
+			break;
+		case 3:
+			/*
+				Right mouse button was pressed.
+			   	TODO: Remove node from this position.
+			*/
+			break;
+		default:
+			break;
+	}
 }
 
 G_MODULE_EXPORT

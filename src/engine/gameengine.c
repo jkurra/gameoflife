@@ -45,7 +45,7 @@ void GameEngine_mainloop( GameEngine *engine )
         engine->RUNNING = 1;
         engine->interval = 10000;
         engine->board = Board_new(10,10);
-
+        engine->bmodel = BModel_new();
 
     }
 

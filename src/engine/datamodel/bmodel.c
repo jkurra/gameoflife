@@ -4,13 +4,23 @@ BModel *BModel_new()
 {
     BModel *model = (BModel*)calloc(1, sizeof(BModel));
 
+    model->cell_s = 15.0f;		/* Size of each cell in the screen. */
+    model->space  = 1.0f;
+
+    model->margin_left  = 10.0f;
+    model->margin_right = 10.0f;
+    model->margin_up    = 10.0f;
+    model->margin_down  = 10.0f;
+
+    model->zoom = 0.0f;
+
+    //printf("bmodel values initialized\n");
     return model;
 }
 
 void BModel_save( BModel *model )
 {
     if(model) {
-
 
         char *cell_s = (char*) calloc(10, sizeof(char*));
         char *zoom_s = (char*) calloc(10, sizeof(char*));

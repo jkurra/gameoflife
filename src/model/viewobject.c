@@ -76,7 +76,8 @@ void ViewObject_select( ViewObject *object, int view )
                 //engine->node_count = 0;
                 object->engine->RUNNING = 1;
                 object->engine->interval = 10000;
-                object->engine->board = Board_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);//Grid_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);
+                object->engine->board = Board_new(30, 30);//Grid_new(object->g_model->grid->gArray->rows,object->g_model->grid->gArray->cols);
+                object->engine->bmodel = BModel_new();
                 //object->engine->area->gmodel = object->g_model;
                 object->engine->gmodel = object->g_model;
                 GameEngine_mainloop(object->engine);
