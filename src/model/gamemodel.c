@@ -102,7 +102,7 @@ void GameModel_save( GameModel *model )
 
         char *zoom = (char*)calloc(10, sizeof(char*));
         sprintf(zoom, "%f", model->zoom);
-
+/*
 		json_add_value(object, json_keypair_create("gridRows", rows));
 		json_add_value(object, json_keypair_create("gridCols", cols));
 		json_add_value(object, json_keypair_create("tickInterval", t_time));
@@ -111,7 +111,7 @@ void GameModel_save( GameModel *model )
 		json_add_value(object, json_keypair_create("cellColor", cell));
         json_add_value(object, json_keypair_create("defaultTheme", model->themes->sel_name));
         json_add_value(object, json_keypair_create("zoom", zoom));
-
+*/
         free(bgrn);
         free(cell);
         ///printf("Writing object: \n %s\n", object->main_object);

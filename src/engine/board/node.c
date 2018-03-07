@@ -66,17 +66,13 @@ char *Node_json( Node *node )
     char *y = (char*) calloc(10, sizeof(char*));
 
     sprintf(id,"%d", node->id);
-
     sprintf(x,"%d", node->pos->x);
     sprintf(y,"%d", node->pos->y);
-/*    sprintf(script_count,"%d", node->script_count);
-*/
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-    json_add_value(nodeObject, json_keypair_create("id", id));
-    json_add_value(nodeObject, json_keypair_create("x", x));
-    json_add_value(nodeObject, json_keypair_create("y", y));
-
+    json_add_value(nodeObject, json_keypair_create("id", id), 2);
+    json_add_value(nodeObject, json_keypair_create("x", x), 2);
+    json_add_value(nodeObject, json_keypair_create("y", y), 2);
 
     //json_add(engineObject, json_tok());
     return nodeObject->main_object;

@@ -96,14 +96,14 @@ char *BModel_json( BModel *bmodel )
     sprintf(space,"%f",bmodel->space);
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-    json_add_value(bmodelObject, json_keypair_create("margin_left", margin_left));
-    json_add_value(bmodelObject, json_keypair_create("margin_right", margin_right));
-    json_add_value(bmodelObject, json_keypair_create("margin_up", margin_up));
-    json_add_value(bmodelObject, json_keypair_create("margin_down", margin_down));
+    json_add_value(bmodelObject, json_keypair_create("margin_left", margin_left), 1);
+    json_add_value(bmodelObject, json_keypair_create("margin_right", margin_right), 1);
+    json_add_value(bmodelObject, json_keypair_create("margin_up", margin_up), 1);
+    json_add_value(bmodelObject, json_keypair_create("margin_down", margin_down), 1);
 
-    json_add_value(bmodelObject, json_keypair_create("zoom", zoom));
-    json_add_value(bmodelObject, json_keypair_create("cell_s", cell_s));
-    json_add_value(bmodelObject, json_keypair_create("space", space));
+    json_add_value(bmodelObject, json_keypair_create("zoom", zoom), 1);
+    json_add_value(bmodelObject, json_keypair_create("cell_s", cell_s), 1);
+    json_add_value(bmodelObject, json_keypair_create("space", space), 1);
 
     //json_add(engineObject, json_tok());
     return bmodelObject->main_object;

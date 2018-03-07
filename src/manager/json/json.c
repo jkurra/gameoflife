@@ -3,7 +3,7 @@
 static void create_main_object( JsonObject *object, int in );
 void json_keypair_free(JsonKeypair *keypair);
 
-void json_add_value( JsonObject *json, JsonKeypair *to_add );
+void json_add_value( JsonObject *json, JsonKeypair *to_add, int depth );
 void json_add_object( JsonObject *json, JsonObject *to_add, int i );
 
 /** @brief Pull single token from json string.
@@ -160,7 +160,7 @@ void json_add( JsonObject *json, JsonToken *to_add )
     if(json && to_add) {
         switch (to_add->type) {
             case KEYPAIR:
-                json_add_value (json, (JsonKeypair*)to_add);
+                json_add_value (json, (JsonKeypair*)to_add, 0);
                 break;
             case OBJECT:
                 json_add_object(json, (JsonObject*)to_add, 0);
@@ -251,7 +251,7 @@ void json_keypair_free(JsonKeypair *keypair)
 
 }
 
-void json_add_value( JsonObject *json, JsonKeypair *to_add )
+void json_add_value( JsonObject *json, JsonKeypair *to_add, int depth )
 {
     if(json && to_add) { /* Only change data if both pointers are provided. */
         /*
@@ -265,7 +265,7 @@ void json_add_value( JsonObject *json, JsonKeypair *to_add )
         */
         json->values[json->values_size] = to_add;
         json->values_size++; /* Update size variable. */
-        create_main_object(json, 0); /* Update main_object string. */
+        create_main_object(json, depth); /* Update main_object string. */
     } else { }
 }
 
@@ -314,23 +314,38 @@ char *array_realloc( char *array, int oldSize, int newSize )
     return rtn;
 
 }
-
+static int depth = 3;
 static void create_main_object( JsonObject *object, int in )
 {
-    char *tmp = (char*)calloc(4, sizeof(char));
-    strncpy(tmp, "{\n", 2);
+    char *tmp = (char*)calloc(4+(in*depth), sizeof(char));
+
+    //strncpy(tmp, "{\n", 2);
+    if(in > 0) {
+        strncpy(tmp, " ", 1);
+        for(int k=1; k<in*depth; k++) {
+            strncat(tmp, " ", 1);
+        }
+        strncat(tmp, "{\n", 2);
+    } else {
+        strncpy(tmp, "{\n", 2);
+    }
 
     for(int i=0; i<object->values_size; i++) {
-        int length = strlen(object->values[i]->key)+strlen(object->values[i]->value)+7+(in*7);
+        int length = strlen(object->values[i]->key)+strlen(object->values[i]->value)+17+(in*depth*7);
         char *line = (char*)calloc(length+1, sizeof(char));
         if(in > 0) {
             strncpy(line, " ", 1);
-            for(int k=1; k<in; k++) {
+            for(int k=1; k<in*(depth+depth); k++) {
                 strncat(line, " ", 1);
             }
             strncat(line, "\"", 1);
         } else {
-            strncpy(line, "\"", 1);
+            strncpy(line, " ", 1);
+            for(int k=1; k<depth; k++) {
+                strncat(line, " ", 1);
+            }
+            strncat(line, "\"", 1);
+            //strncpy(line, "\"", 1);
         }
 
         strncat(line, object->values[i]->key, strlen(object->values[i]->key));
@@ -374,8 +389,19 @@ static void create_main_object( JsonObject *object, int in )
         free(object->main_object);
         object->main_object = NULL;
     }
-    tmp = array_realloc( tmp, strlen(tmp), strlen(tmp)+1);
-    strncat(tmp, "}", 1);
+
+    tmp = array_realloc(tmp, strlen(tmp), strlen(tmp)+10+(in*depth));
+
+    if(in > 0) {
+        strncat(tmp, " ", 1);
+        for(int k=1; k<in*depth; k++) {
+            strncat(tmp, " ", 1);
+        }
+        strncat(tmp, "}\n", 2);
+    } else {
+        strncat(tmp, "}\n", 2);
+    }
+    //strncat(tmp, "}", 1);
 
     object->main_object = (char*)calloc(strlen(tmp)+1, sizeof(char));
     strncpy(object->main_object, tmp, strlen(tmp));

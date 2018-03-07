@@ -74,9 +74,9 @@ char *GameEngine_json( GameEngine *engine )
     sprintf(iv,"%d",engine->interval);
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-	json_add_value(engineObject, json_keypair_create( "interval", iv));
-    json_add_object(engineObject, json_parse(Board_json(engine->board)), 3);
-    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)), 3);
+	json_add_value(engineObject, json_keypair_create( "interval", iv), 0);
+    json_add_object(engineObject, json_parse(Board_json(engine->board)), 0);
+    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)), 0);
     //json_add(engineObject, json_tok());
     return engineObject->main_object;
 }
