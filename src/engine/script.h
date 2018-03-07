@@ -23,7 +23,7 @@ typedef struct
 /** @brief
  *
  */
-void script_update( Script *script );
+void script_update( Script *cscript );
 
 /** @brief
  *

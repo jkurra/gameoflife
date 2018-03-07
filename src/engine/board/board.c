@@ -115,8 +115,7 @@ char *Board_json( Board *board )
     json_add_value(boardObject, json_keypair_create("cols", cols));
 
     for(int i=0; i<board->node_count; i++) {
-        json_add_object(boardObject, json_parse(Node_json(board->nodes[i])));
-        //Node_json(
+        json_add_object(boardObject, json_parse(Node_json(board->nodes[i])), 3);
     }
     //json_add(engineObject, json_tok());
     return boardObject->main_object;

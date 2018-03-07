@@ -1,10 +1,10 @@
 #include "json.h"
 
-static void create_main_object( JsonObject *object );
+static void create_main_object( JsonObject *object, int in );
 void json_keypair_free(JsonKeypair *keypair);
 
 void json_add_value( JsonObject *json, JsonKeypair *to_add );
-void json_add_object( JsonObject *json, JsonObject *to_add );
+void json_add_object( JsonObject *json, JsonObject *to_add, int i );
 
 /** @brief Pull single token from json string.
  *
@@ -163,7 +163,7 @@ void json_add( JsonObject *json, JsonToken *to_add )
                 json_add_value (json, (JsonKeypair*)to_add);
                 break;
             case OBJECT:
-                json_add_object(json, (JsonObject*)to_add);
+                json_add_object(json, (JsonObject*)to_add, 0);
                 break;
             default:
                 break;
@@ -265,7 +265,7 @@ void json_add_value( JsonObject *json, JsonKeypair *to_add )
         */
         json->values[json->values_size] = to_add;
         json->values_size++; /* Update size variable. */
-        create_main_object(json); /* Update main_object string. */
+        create_main_object(json, 0); /* Update main_object string. */
     } else { }
 }
 
@@ -276,7 +276,7 @@ void json_rem_value( JsonObject *json, JsonKeypair *to_rem )
     } else { }
 }
 
-void json_add_object( JsonObject *json, JsonObject *to_add )
+void json_add_object( JsonObject *json, JsonObject *to_add, int i )
 {
     if(json && to_add) { /* Only change data if both pointers are provided. */
         /*
@@ -290,7 +290,7 @@ void json_add_object( JsonObject *json, JsonObject *to_add )
         */
         json->objects[json->objects_size] = to_add;
         json->objects_size++; /* Update size variable. */
-        create_main_object(json); /* Update main_object string. */
+        create_main_object(json, i); /* Update main_object string. */
     } else { }
 }
 
@@ -315,15 +315,24 @@ char *array_realloc( char *array, int oldSize, int newSize )
 
 }
 
-static void create_main_object( JsonObject *object )
+static void create_main_object( JsonObject *object, int in )
 {
     char *tmp = (char*)calloc(4, sizeof(char));
     strncpy(tmp, "{\n", 2);
 
     for(int i=0; i<object->values_size; i++) {
-        int length = strlen(object->values[i]->key)+strlen(object->values[i]->value)+7;
+        int length = strlen(object->values[i]->key)+strlen(object->values[i]->value)+7+(in*7);
         char *line = (char*)calloc(length+1, sizeof(char));
-        strncpy(line, "\"", 1);
+        if(in > 0) {
+            strncpy(line, " ", 1);
+            for(int k=1; k<in; k++) {
+                strncat(line, " ", 1);
+            }
+            strncat(line, "\"", 1);
+        } else {
+            strncpy(line, "\"", 1);
+        }
+
         strncat(line, object->values[i]->key, strlen(object->values[i]->key));
         strncat(line, "\"", 1);
         strncat(line, ":", 1);

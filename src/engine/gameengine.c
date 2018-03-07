@@ -3,7 +3,7 @@
 void *engineThread(void *arg)
 {
     GameEngine *engine = (GameEngine*)arg;
-    
+
     while(engine->RUNNING) {
         for(int i=0; i<engine->board->node_count; i++) {
             Node_run_scripts(engine->board->nodes[i]);
@@ -66,7 +66,7 @@ char *GameEngine_json( GameEngine *engine )
 {
     JsonObject *engineObject = json_parse(NULL);
 
-    char *iv =   (char*) calloc(10, sizeof(char*));
+    char *iv = (char*) calloc(10, sizeof(char*));
 /*    char *cols =   (char*) calloc(10, sizeof(char*));
     char *t_time = (char*) calloc(10, sizeof(char*));
     char *vis =    (char*) calloc(10, sizeof(char*));*/
@@ -75,8 +75,8 @@ char *GameEngine_json( GameEngine *engine )
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
 	json_add_value(engineObject, json_keypair_create( "interval", iv));
-    json_add_object(engineObject, json_parse(Board_json(engine->board)));
-    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)));
+    json_add_object(engineObject, json_parse(Board_json(engine->board)), 3);
+    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)), 3);
     //json_add(engineObject, json_tok());
     return engineObject->main_object;
 }
