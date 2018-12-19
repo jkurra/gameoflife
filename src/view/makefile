@@ -1,7 +1,7 @@
 CC = gcc -g
 CFLAGS = -Wall -c
 
-PKGCONFIG = `pkg-config --cflags --libs  gtk+-3.0`
+PKGCONFIG = `pkg-config --cflags --libs gtk+-3.0`
 
 all: gamearea_src signal_src view_src
 

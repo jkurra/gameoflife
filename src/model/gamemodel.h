@@ -2,6 +2,8 @@
 #define GAMEMODEL_H_INCLUDED
 
 #include "model.h"
+#include "../json/objectbase.h"
+
 /** @brief
  *
  */

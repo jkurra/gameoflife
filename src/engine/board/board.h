@@ -2,7 +2,6 @@
 #define BOARD_H_INCLUDED
 
 #include "node.h"
-#include "../../manager/json/json.h"
 
 /** @brief Structure for Board which can hold Nodes.
  *

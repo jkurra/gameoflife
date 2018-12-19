@@ -36,46 +36,54 @@ void GameModel_read( GameModel *model, const char *file )
     char *json = file_read(file);
 
     if( json && model ) {
+    //    printf("reading file...%s\n", json );
+
+        ObjectBase *base = ObjectBase_create(json);
+
+        printf("%s\n", ObjectBase_to_string(base));
+        ObjectBase_get(base, "cellColor");
+
         /* Parse data got from file. */
-        JsonObject *jsn = json_parse(json);
+        //JsonObject *jsn = json_parse(json);
         /* Retrieve needed keypairs from json object and cast to JsonKeypair. */
-        JsonKeypair *bg_col  = (JsonKeypair*)json_find(jsn, "backgroundColor");
+        /*JsonKeypair *bg_col  = (JsonKeypair*)json_find(jsn, "backgroundColor");
         JsonKeypair *fr_col  = (JsonKeypair*)json_find(jsn, "cellColor");
         JsonKeypair *rows1   = (JsonKeypair*)json_find(jsn, "gridRows");
         JsonKeypair *rows2   = (JsonKeypair*)json_find(jsn, "gridCols");
         JsonKeypair *zoom    = (JsonKeypair*)json_find(jsn, "zoom");
         JsonKeypair *tmpGrid = (JsonKeypair*)json_find(jsn, "gridVisible");
-        JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");
+        JsonKeypair *tmpTick = (JsonKeypair*)json_find(jsn, "tickInterval");*/
         /* parse colors to model */
-        if(bg_col) { gdk_rgba_parse(&model->bgrn_col, bg_col->value); }
-        if(fr_col) { gdk_rgba_parse(&model->cell_col, fr_col->value); }
+        //if(bg_col) { gdk_rgba_parse(&model->bgrn_col, bg_col->value); }
+        //if(fr_col) { gdk_rgba_parse(&model->cell_col, fr_col->value); }
         /* Convert necessary values to integer. */
-        int rows = atoi(rows1->value);
+        //printf("row value %s\n", rows1->value);
+        /*int rows = atoi(rows1->value);
         int cols = atoi(rows2->value);
         model->zoom     = atoi(zoom->value);
         model->visible  = atoi(tmpGrid->value);
-        model->interval = atoi(tmpTick->value);
+        model->interval = atoi(tmpTick->value);*/
         /* Initialize grid using found rows/cols values. */
-        if(model->grid) {
+        /*if(model->grid) {
             Grid_free(model->grid);
         }
-        model->grid = Grid_new(rows, cols);
+        model->grid = Grid_new(rows, cols);*/
         /* Initialize ruleset values. */
-        model->ruleset->live_a = (int*)calloc(2, sizeof(int));
+        /*model->ruleset->live_a = (int*)calloc(2, sizeof(int));
         model->ruleset->live_s = 2;
         model->ruleset->live_d = (int*)calloc(1, sizeof(int));
-        model->ruleset->dead_s = 1;
+        model->ruleset->dead_s = 1;*/
         /* TODO: Rules will be read from json file, for now we use static "classic" rules. */
-        model->ruleset->live_a[0] = 3;
+        /*model->ruleset->live_a[0] = 3;
         model->ruleset->live_a[1] = 2;
-        model->ruleset->live_d[0] = 3;
+        model->ruleset->live_d[0] = 3;*/
         /* TODO: add dynamic modification to these values. */
-        model->infinite = 0;
+        /*model->infinite = 0;
         model->spacing  = 2.0;
-        model->cell_s   = 10.0;
+        model->cell_s   = 10.0;*/
         /* Free dynamically allocated values. */
-        free(json);
-        json_free(jsn);
+    //    free(json);
+        //json_free(jsn);
     }
 }
 
@@ -98,10 +106,11 @@ void GameModel_save( GameModel *model )
         printf("saving bgrn: %s\n", bgrn);
         printf("saving cell: %s\n", cell);
 
-		JsonObject *object = json_parse(NULL);
+	//	JsonObject *object = json_parse(NULL);
 
         char *zoom = (char*)calloc(10, sizeof(char*));
         sprintf(zoom, "%f", model->zoom);
+
 /*
 		json_add_value(object, json_keypair_create("gridRows", rows));
 		json_add_value(object, json_keypair_create("gridCols", cols));
@@ -115,7 +124,7 @@ void GameModel_save( GameModel *model )
         free(bgrn);
         free(cell);
         ///printf("Writing object: \n %s\n", object->main_object);
-        file_write(object->main_object, model->conf->sel_path);
+    //    file_write(object->main_object, model->conf->sel_path);
     }
 }
 

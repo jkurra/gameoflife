@@ -5,11 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../../json/objectbase.h"
 #include "../math/position.h"
-#include "string.h"
 #include "../script.h"
-
-#include "../../manager/json/json.h"
 
 /** @brief
  *
@@ -68,6 +66,6 @@ int Node_cmp( Node *orig, Node *toCompare );
 /** @brief
  *
  */
-char *Node_json( Node *node );
+ObjectBase* Node_json( Node *node );
 
 #endif  /*  NODE_H_INCLUDED */

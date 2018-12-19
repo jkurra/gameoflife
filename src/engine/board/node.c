@@ -5,7 +5,7 @@ Node *Node_new( int row, int col )
     Node *node = (Node*)calloc(1, sizeof(Node));
 
     node->id = -1;
-    node->pos = (Position*)calloc(1, sizeof(Position));
+    node->pos = Position_new(row, col);//(Position*)calloc(1, sizeof(Position));
     node->type = -1;
     node->script_count = 0;
 
@@ -55,25 +55,24 @@ void Node_run_scripts( Node *node )
     */
 }
 
-char *Node_json( Node *node )
+ObjectBase *Node_json( Node *node )
 {
-    JsonObject *nodeObject = json_parse(NULL);
+    ObjectBase *node_obj = ObjectBase_new();
 
+    char *id   = (char*) calloc(10, sizeof(char*));
     char *type = (char*) calloc(10, sizeof(char*));
-    char *id = (char*) calloc(10, sizeof(char*));
-    char *script_count = (char*) calloc(10, sizeof(char*));
-    char *x = (char*) calloc(10, sizeof(char*));
-    char *y = (char*) calloc(10, sizeof(char*));
+    char *x    = (char*) calloc(10, sizeof(char*));
+    char *y    = (char*) calloc(10, sizeof(char*));
 
-    sprintf(id,"%d", node->id);
-    sprintf(x,"%d", node->pos->x);
-    sprintf(y,"%d", node->pos->y);
+    sprintf(id, "%d", node->id);
+    sprintf(type, "%d", node->type);
+    sprintf(x, "%d", node->pos->x);
+    sprintf(y, "%d", node->pos->y);
 
-    //JsonKeypair interval = json_keypair_create( "interval", iv);
-    json_add_value(nodeObject, json_keypair_create("id", id), 2);
-    json_add_value(nodeObject, json_keypair_create("x", x), 2);
-    json_add_value(nodeObject, json_keypair_create("y", y), 2);
+    ObjectBase_add(node_obj, JsonValue_new_string("id", id));
+    ObjectBase_add(node_obj, JsonValue_new_string("type", type));
+    ObjectBase_add(node_obj, JsonValue_new_string("x", x));
+    ObjectBase_add(node_obj, JsonValue_new_string("y", y));
 
-    //json_add(engineObject, json_tok());
-    return nodeObject->main_object;
+    return node_obj;
 }

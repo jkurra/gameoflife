@@ -102,7 +102,7 @@ Node *Board_get( Board *board, int x, int y )
 
 char *Board_json( Board *board )
 {
-    JsonObject *boardObject = json_parse(NULL);
+/*    JsonObject *boardObject = json_parse(NULL);
 
     char *cols = (char*) calloc(10, sizeof(char*));
     char *rows = (char*) calloc(10, sizeof(char*));
@@ -111,12 +111,13 @@ char *Board_json( Board *board )
     sprintf(cols,"%d",board->cols);
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-    json_add_value(boardObject, json_keypair_create("rows", rows), 1);
-    json_add_value(boardObject, json_keypair_create("cols", cols), 1);
+    json_add_value(boardObject, json_keypair_create("rows", rows));
+    json_add_value(boardObject, json_keypair_create("cols", cols));
 
     for(int i=0; i<board->node_count; i++) {
-        json_add_object(boardObject, json_parse(Node_json(board->nodes[i])), 1);
+        //JsonObject *obj = json_parse(Node_json(board->nodes[i]));
+        json_add_object(boardObject, json_parse(Node_json(board->nodes[i])));
     }
     //json_add(engineObject, json_tok());
-    return boardObject->main_object;
+    return boardObject->main_object;*/
 }

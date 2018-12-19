@@ -1,10 +1,24 @@
 {
-"gridRows":"20",
-"gridCols":"11",
-"tickInterval":"200",
-"gridVisible":"1",
-"backgroundColor":"rgb(46,52,54)",
-"cellColor":"rgb(245,121,0)",
-"defaultTheme":"default",
-"zoom":"1,600000"
+   "test1":"value",
+   "gridCols":"100",
+   "tickInterval":"100",
+   "gridVisible":"1",
+   "backgroundColor":"rgb(46,52,54)",
+   "cellColor":"rgb(206,92,0)",
+   "defaultTheme":"testTheme",
+   "onMouseUp":"sun1.opacity = (sun1.opacity / 100) * 90;",
+   "somevalue":22,
+   "othersome":23,
+   "obj1" :
+   {
+       "myNewTest":"value"
+   },
+   "obj2" :
+   {
+       "data":"Click Here",
+       "style":"bold",
+       "name":"text1",
+       "alignment":"center",
+       "onMouseUp":"sun1.opacity = (sun1.opacity / 100) * 90;"
+   }
 }

@@ -12,8 +12,6 @@
 #include "../manager/theme.h"
 #include "../manager/config.h"
 #include "../data/grid.h"
-#include "../manager/json/json.h"
-#include "../manager/json/file.h"
 
 /* Types of views that may be used */
 #define MENU  0

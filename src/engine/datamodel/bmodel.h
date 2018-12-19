@@ -1,8 +1,6 @@
 #ifndef BMODEL_H_INCLUDED
 #define BMODEL_H_INCLUDED
 
-#include "../../manager/json/json.h"
-
 /** @brief
  *
  */

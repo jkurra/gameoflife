@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "manager.h"
-#include "json/file.h"
 #include "../output/log.h"
 
 /** @brief Initialize new configuration from path.

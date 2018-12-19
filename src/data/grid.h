@@ -9,6 +9,8 @@
 
 #include "cell.h"
 
+#include "../json/jsonvalue.h"
+
 /* Grid modify functions. */
 #define EMPTY  0
 #define RESIZE 1

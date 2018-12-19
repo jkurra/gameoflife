@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../manager/json/json.h"
 #include "../model/gamemodel.h"
 #include "datamodel/bmodel.h"
 #include "board/board.h"

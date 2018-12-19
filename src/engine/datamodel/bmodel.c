@@ -30,7 +30,7 @@ void BModel_save( BModel *model )
         char *m_up = (char*) calloc(10, sizeof(char*));
         char *m_down = (char*) calloc(10, sizeof(char*));
 
-        char *bgrn = NULL;
+    //    char *bgrn = NULL;
 
         //sprintf(rows, "%d",   model->cell_s);
         //sprintf(rows, "%d",   model->zoom);
@@ -74,7 +74,7 @@ void BModel_read( BModel *model )
 
 char *BModel_json( BModel *bmodel )
 {
-    JsonObject *bmodelObject = json_parse(NULL);
+    /*JsonObject *bmodelObject = json_parse(NULL);
 
 	char *margin_left = (char*) calloc(10, sizeof(char*));
 	char *margin_right = (char*) calloc(10, sizeof(char*));
@@ -93,18 +93,18 @@ char *BModel_json( BModel *bmodel )
 
     sprintf(zoom,"%f",bmodel->zoom);
     sprintf(cell_s,"%f",bmodel->cell_s);
-    sprintf(space,"%f",bmodel->space);
+    sprintf(space,"%f",bmodel->space);*/
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-    json_add_value(bmodelObject, json_keypair_create("margin_left", margin_left), 1);
-    json_add_value(bmodelObject, json_keypair_create("margin_right", margin_right), 1);
-    json_add_value(bmodelObject, json_keypair_create("margin_up", margin_up), 1);
-    json_add_value(bmodelObject, json_keypair_create("margin_down", margin_down), 1);
+    /*json_add_value(bmodelObject, json_keypair_create("margin_left", margin_left));
+    json_add_value(bmodelObject, json_keypair_create("margin_right", margin_right));
+    json_add_value(bmodelObject, json_keypair_create("margin_up", margin_up));
+    json_add_value(bmodelObject, json_keypair_create("margin_down", margin_down));
 
-    json_add_value(bmodelObject, json_keypair_create("zoom", zoom), 1);
-    json_add_value(bmodelObject, json_keypair_create("cell_s", cell_s), 1);
-    json_add_value(bmodelObject, json_keypair_create("space", space), 1);
+    json_add_value(bmodelObject, json_keypair_create("zoom", zoom));
+    json_add_value(bmodelObject, json_keypair_create("cell_s", cell_s));
+    json_add_value(bmodelObject, json_keypair_create("space", space));*/
 
     //json_add(engineObject, json_tok());
-    return bmodelObject->main_object;
+    //return bmodelObject->main_object;
 }

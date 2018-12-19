@@ -64,19 +64,27 @@ int GameEngine_count( GameEngine *engine, int type )
 
 char *GameEngine_json( GameEngine *engine )
 {
-    JsonObject *engineObject = json_parse(NULL);
+
+    /*JsonObject *engineObject = json_parse(NULL);
 
     char *iv = (char*) calloc(10, sizeof(char*));
 /*    char *cols =   (char*) calloc(10, sizeof(char*));
     char *t_time = (char*) calloc(10, sizeof(char*));
     char *vis =    (char*) calloc(10, sizeof(char*));*/
 
-    sprintf(iv,"%d",engine->interval);
+    /*sprintf(iv,"%d",engine->interval);*/
 
     //JsonKeypair interval = json_keypair_create( "interval", iv);
-	json_add_value(engineObject, json_keypair_create( "interval", iv), 0);
-    json_add_object(engineObject, json_parse(Board_json(engine->board)), 0);
-    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)), 0);
+/*	json_add_value(engineObject, json_keypair_create( "interval", iv));
+    printf("Adding board %s\n", Board_json(engine->board));
+    json_add_object(engineObject, json_parse(Board_json(engine->board)));
+    printf("Adding model %s\n",BModel_json(engine->bmodel));
+    json_add_object(engineObject, json_parse(BModel_json(engine->bmodel)));
+
+    printf("Final objects %d\n", engineObject->objects_size);
+    for(int i=0; i<engineObject->objects_size; i++) {
+        printf("object[%d] :: %s\n", i, engineObject->objects[i]->main_object);
+    }
     //json_add(engineObject, json_tok());
-    return engineObject->main_object;
+    return engineObject->main_object;*/
 }
